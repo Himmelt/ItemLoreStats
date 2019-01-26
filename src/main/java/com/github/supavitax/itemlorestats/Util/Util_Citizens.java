@@ -8,16 +8,16 @@ import org.bukkit.entity.Entity;
 
 public class Util_Citizens {
 
-   ItemLoreStats main;
+    ItemLoreStats main;
 
 
-   public Util_Citizens(ItemLoreStats instance) {
-      this.main = instance;
-   }
+    public Util_Citizens(ItemLoreStats instance) {
+        this.main = instance;
+    }
 
-   public boolean checkVulnerability(Entity entity) {
-      NPCRegistry registry = CitizensAPI.getNPCRegistry();
-      NPC npc = registry.getNPC(entity);
-      return entity != null?npc.data().has("protected"):false;
-   }
+    public boolean checkVulnerability(Entity entity) {
+        NPCRegistry registry = CitizensAPI.getNPCRegistry();
+        NPC npc = registry.getNPC(entity);
+        return entity != null ? npc.data().has("protected") : false;
+    }
 }

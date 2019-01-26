@@ -682,7 +682,7 @@ public class ItemLoreStats extends JavaPlugin {
                                                                 }
 
                                                                 if (Integer.parseInt(args[2]) - 1 >= ((List) var44).size()) {
-                                                                    health = new ItemStack(player.getItemInHand());
+                                                                    health = player.getItemInHand();
                                                                     healthRegen = health.getItemMeta();
 
                                                                     for (lifeSteal = 0; lifeSteal < args.length; ++lifeSteal) {
@@ -704,10 +704,10 @@ public class ItemLoreStats extends JavaPlugin {
                                                                         player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getType().name());
                                                                     }
 
-                                                                    player.getInventory().setItemInHand(new ItemStack(health));
+                                                                    player.getInventory().setItemInHand(health);
                                                                 } else {
                                                                     var50 = Integer.parseInt(args[2]);
-                                                                    var52 = new ItemStack(player.getItemInHand());
+                                                                    var52 = player.getItemInHand();
                                                                     var54 = var52.getItemMeta();
 
                                                                     for (reflect = 0; reflect < args.length; ++reflect) {
@@ -743,7 +743,7 @@ public class ItemLoreStats extends JavaPlugin {
                                                                         }, 2L);
                                                                     }
 
-                                                                    player.getInventory().setItemInHand(new ItemStack(var52));
+                                                                    player.getInventory().setItemInHand(var52);
                                                                 }
                                                             } else {
                                                                 player.sendMessage(ChatColor.RED + "You need to give the stat a value. For example, /ils lore " + args[2] + " " + "Damage: " + ChatColor.DARK_RED + "+15");
@@ -787,7 +787,7 @@ public class ItemLoreStats extends JavaPlugin {
                                                                 }
 
                                                                 if (Integer.parseInt(args[1]) - 1 >= ((List) var44).size()) {
-                                                                    health = new ItemStack(player.getItemInHand());
+                                                                    health = player.getItemInHand();
                                                                     healthRegen = health.getItemMeta();
 
                                                                     for (lifeSteal = 0; lifeSteal < args.length; ++lifeSteal) {
@@ -823,10 +823,10 @@ public class ItemLoreStats extends JavaPlugin {
                                                                         }, 2L);
                                                                     }
 
-                                                                    player.getInventory().setItemInHand(new ItemStack(health));
+                                                                    player.getInventory().setItemInHand(health);
                                                                 } else {
                                                                     var50 = Integer.parseInt(args[1]);
-                                                                    var52 = new ItemStack(player.getItemInHand());
+                                                                    var52 = player.getItemInHand();
                                                                     var54 = var52.getItemMeta();
 
                                                                     for (reflect = 0; reflect < args.length; ++reflect) {
@@ -862,7 +862,7 @@ public class ItemLoreStats extends JavaPlugin {
                                                                         }, 2L);
                                                                     }
 
-                                                                    player.getInventory().setItemInHand(new ItemStack(var52));
+                                                                    player.getInventory().setItemInHand(var52);
                                                                 }
                                                             } else {
                                                                 player.sendMessage(ChatColor.RED + "You need to give the stat a value. For example, /ils lore " + args[1] + " " + "Damage: " + ChatColor.DARK_RED + "+15");

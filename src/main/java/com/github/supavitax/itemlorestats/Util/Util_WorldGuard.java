@@ -7,20 +7,20 @@ import org.bukkit.entity.Player;
 
 public class Util_WorldGuard {
 
-   ItemLoreStats main;
+    ItemLoreStats main;
 
 
-   public Util_WorldGuard(ItemLoreStats instance) {
-      this.main = instance;
-   }
+    public Util_WorldGuard(ItemLoreStats instance) {
+        this.main = instance;
+    }
 
-   public boolean playerInPVPRegion(Player player) {
-      ApplicableRegionSet set = ItemLoreStats.plugin.getWorldGuard().getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
-      return set.allows(DefaultFlag.PVP);
-   }
+    public boolean playerInPVPRegion(Player player) {
+        ApplicableRegionSet set = ItemLoreStats.plugin.getWorldGuard().getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
+        return set.allows(DefaultFlag.PVP);
+    }
 
-   public boolean playerInInvincibleRegion(Player player) {
-      ApplicableRegionSet set = ItemLoreStats.plugin.getWorldGuard().getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
-      return set.allows(DefaultFlag.INVINCIBILITY);
-   }
+    public boolean playerInInvincibleRegion(Player player) {
+        ApplicableRegionSet set = ItemLoreStats.plugin.getWorldGuard().getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
+        return set.allows(DefaultFlag.INVINCIBILITY);
+    }
 }

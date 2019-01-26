@@ -7,15 +7,15 @@ import org.bukkit.inventory.ItemStack;
 
 public class Vanilla_Sharpness {
 
-   Util_EntityManager util_EntityManager = new Util_EntityManager();
+    Util_EntityManager util_EntityManager = new Util_EntityManager();
 
 
-   public boolean hasSharpness(ItemStack itemInHand) {
-      return ItemLoreStats.plugin.isTool(itemInHand.getType()) && itemInHand.getEnchantments().containsKey(Enchantment.DAMAGE_ALL);
-   }
+    public boolean hasSharpness(ItemStack itemInHand) {
+        return ItemLoreStats.plugin.isTool(itemInHand.getType()) && itemInHand.getEnchantments().containsKey(Enchantment.DAMAGE_ALL);
+    }
 
-   public double calculateNewDamage(double damage, int enchantLevel) {
-      double value = damage + damage / 100.0D * ItemLoreStats.plugin.getConfig().getDouble("enchants.sharpness.levelMultiplier") * (double)enchantLevel;
-      return value;
-   }
+    public double calculateNewDamage(double damage, int enchantLevel) {
+        double value = damage + damage / 100.0D * ItemLoreStats.plugin.getConfig().getDouble("enchants.sharpness.levelMultiplier") * (double) enchantLevel;
+        return value;
+    }
 }
