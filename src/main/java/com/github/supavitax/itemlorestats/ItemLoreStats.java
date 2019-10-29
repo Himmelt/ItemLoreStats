@@ -65,8 +65,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class ItemLoreStats extends JavaPlugin {
-
+public final class ItemLoreStats extends JavaPlugin {
     public static ItemLoreStats plugin;
     private static final Logger log = Logger.getLogger("Minecraft");
     private File PlayerDataFile;
@@ -105,7 +104,6 @@ public class ItemLoreStats extends JavaPlugin {
     Name_Com name_Com = new Name_Com();
     Repair_Com repair_Com = new Repair_Com();
 
-
     private int setMinecraftBuildNumber(String buildNum) {
         String version = buildNum.split("-")[0].replace(".", "");
         this.getConfig().set("serverVersion", Integer.parseInt(version));
@@ -121,6 +119,7 @@ public class ItemLoreStats extends JavaPlugin {
         return this.getConfig().getInt("serverVersion");
     }
 
+    @Override
     public void onEnable() {
         this.checkDependencies();
         PluginManager plma = this.getServer().getPluginManager();
@@ -154,6 +153,7 @@ public class ItemLoreStats extends JavaPlugin {
         this.spigotStatCapWarning.updateSpigotValues();
     }
 
+    @Override
     public void onDisable() {
         log.info(String.format("[%s] Disabled Version %s", this.getDescription().getName(), this.getDescription().getVersion()));
     }
@@ -488,8 +488,16 @@ public class ItemLoreStats extends JavaPlugin {
 
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("ils")) {
+        final Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else {
+            player = null;
+        }
+
+        if ("ils".equalsIgnoreCase(cmd.getName())) {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     sender.sendMessage(ChatColor.GOLD + "Item Lore Stats " + ChatColor.LIGHT_PURPLE + "commands:");
@@ -535,10 +543,8 @@ public class ItemLoreStats extends JavaPlugin {
             }
 
             if (args.length > 0) {
-                Player player;
-                if (args[0].equalsIgnoreCase("version")) {
+                if ("version".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
                         player.sendMessage(ChatColor.GOLD + "[ItemLoreStats] " + ChatColor.GREEN + " Currently running version " + this.getDescription().getVersion() + ", Created by Supavitax.");
                         return true;
                     }
@@ -546,378 +552,337 @@ public class ItemLoreStats extends JavaPlugin {
                     System.out.println("[ItemLoreStats] Currently running version " + this.getDescription().getVersion());
                 }
 
-                if (args[0].equalsIgnoreCase("name")) {
+                if ("name".equalsIgnoreCase(args[0])) {
                     this.name_Com.onNameCommand(sender, args);
                 }
 
                 String updater;
                 String playerFinal;
                 String var43;
-                if (args[0].equalsIgnoreCase("give")) {
+                Player player5;
+                if ("give".equalsIgnoreCase(args[0])) {
+                    int damage;
                     if (sender instanceof Player) {
-                        player = (Player) sender;
-                        if (player.hasPermission("ils.admin")) {
-                            if (args.length > 1) {
-                                if (player.getServer().getPlayer(args[1]) != null) {
-                                    if (args.length > 2) {
-                                        updater = "";
-                                        playerFinal = "";
-
-                                        for (int damage = 0; damage < args.length; ++damage) {
-                                            if (damage >= 3) {
-                                                updater = updater + " " + args[damage];
-                                            } else {
-                                                updater = args[damage];
-                                            }
-                                        }
-
-                                        if (updater.contains(",")) {
-                                            playerFinal = updater.split(",")[1].trim();
-                                            updater = updater.split(",")[0].trim();
-                                        }
-
-                                        if ((new File(this.getDataFolder() + File.separator + "SavedItems" + File.separator + updater + ".yml")).exists()) {
-                                            Player var48 = player.getServer().getPlayer(args[1]);
-                                            if (var48.getInventory().firstEmpty() == -1) {
-                                                var48.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.InventoryFull", player, player, var48.getName(), var48.getName()));
-                                                if (!playerFinal.equals("")) {
-                                                    Bukkit.getServer().getWorld(var48.getWorld().getName()).dropItemNaturally(var48.getLocation(), this.generateFromFile.importWeapon(updater, playerFinal, player.getName()));
-                                                } else {
-                                                    Bukkit.getServer().getWorld(var48.getWorld().getName()).dropItemNaturally(var48.getLocation(), this.generateFromFile.importWeapon(updater, "noChange", player.getName()));
-                                                }
-                                            } else if (!playerFinal.equals("")) {
-                                                var48.getInventory().addItem(this.generateFromFile.importWeapon(updater, playerFinal, player.getName()));
-                                            } else {
-                                                var48.getInventory().addItem(this.generateFromFile.importWeapon(updater, "noChange", player.getName()));
-                                            }
-                                        } else {
-                                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.DoesntExistError", player, player, updater, updater));
-                                        }
-                                    } else {
-                                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
-                                    }
-                                } else {
-                                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PlayerNotOnlineError", player, player, args[1], args[1]));
-                                }
-                            } else {
-                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.EnterPlayerNameError", null, null, "", ""));
-                            }
-                        } else {
+                        if (!player.hasPermission("ils.admin")) {
                             player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
-                        }
-                    } else if (args.length > 1) {
-                        if (Bukkit.getServer().getPlayer(args[1]) != null) {
-                            if (args.length > 2) {
-                                var43 = "";
-                                updater = "";
+                        } else if (args.length <= 1) {
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.EnterPlayerNameError", null, null, "", ""));
+                        } else if (player.getServer().getPlayer(args[1]) == null) {
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PlayerNotOnlineError", player, player, args[1], args[1]));
+                        } else if (args.length <= 2) {
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
+                        } else {
+                            updater = "";
+                            playerFinal = "";
 
-                                for (int var46 = 0; var46 < args.length; ++var46) {
-                                    if (var46 >= 3) {
-                                        var43 = var43 + " " + args[var46];
-                                    } else {
-                                        var43 = args[var46];
-                                    }
+                            for (damage = 0; damage < args.length; ++damage) {
+                                if (damage >= 3) {
+                                    updater = updater + " " + args[damage];
+                                } else {
+                                    updater = args[damage];
                                 }
+                            }
 
-                                if (var43.contains(",")) {
-                                    updater = var43.split(",")[1].trim();
-                                }
+                            if (updater.contains(",")) {
+                                playerFinal = updater.split(",")[1].trim();
+                                updater = updater.split(",")[0].trim();
+                            }
 
-                                if ((new File(this.getDataFolder() + File.separator + "SavedItems" + File.separator + var43 + ".yml")).exists()) {
-                                    Player var47 = Bukkit.getServer().getPlayer(args[1]);
-                                    if (var47.getInventory().firstEmpty() == -1) {
-                                        System.out.println(ChatColor.stripColor(this.util_GetResponse.getResponse("ErrorMessages.InventoryFull", var47, var47, var47.getName(), var47.getName())));
-                                        if (!updater.equals("")) {
-                                            Bukkit.getServer().getWorld(var47.getWorld().getName()).dropItemNaturally(var47.getLocation(), this.generateFromFile.importWeapon(var43, updater, var47.getName()));
-                                        } else {
-                                            Bukkit.getServer().getWorld(var47.getWorld().getName()).dropItemNaturally(var47.getLocation(), this.generateFromFile.importWeapon(var43, "noChange", var47.getName()));
-                                        }
-                                    } else if (var43.contains(",")) {
-                                        System.out.println(var47.getName() + " successfully received " + updater + ".");
-                                        var47.getInventory().addItem(this.generateFromFile.importWeapon(var43, updater, var47.getName()));
+                            if ((new File(this.getDataFolder() + File.separator + "SavedItems" + File.separator + updater + ".yml")).exists()) {
+                                player5 = player.getServer().getPlayer(args[1]);
+                                if (player5.getInventory().firstEmpty() == -1) {
+                                    player5.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.InventoryFull", player, player, player5.getName(), player5.getName()));
+                                    if (!"".equals(playerFinal)) {
+                                        Bukkit.getServer().getWorld(player5.getWorld().getName()).dropItemNaturally(player5.getLocation(), this.generateFromFile.importWeapon(updater, playerFinal, player.getName()));
                                     } else {
-                                        System.out.println(var47.getName() + " successfully received " + var43 + ".");
-                                        var47.getInventory().addItem(this.generateFromFile.importWeapon(var43, "noChange", var47.getName()));
+                                        Bukkit.getServer().getWorld(player5.getWorld().getName()).dropItemNaturally(player5.getLocation(), this.generateFromFile.importWeapon(updater, "noChange", player.getName()));
                                     }
+                                } else if (!"".equals(playerFinal)) {
+                                    player5.getInventory().addItem(this.generateFromFile.importWeapon(updater, playerFinal, player.getName()));
+                                } else {
+                                    player5.getInventory().addItem(this.generateFromFile.importWeapon(updater, "noChange", player.getName()));
                                 }
                             } else {
-                                System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
+                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.DoesntExistError", player, player, updater, updater));
                             }
                         }
-                    } else {
+                    } else if (args.length <= 1) {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.EnterPlayerNameError", null, null, "", ""));
+                    } else if (Bukkit.getServer().getPlayer(args[1]) != null) {
+                        if (args.length <= 2) {
+                            System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
+                        } else {
+                            var43 = "";
+                            updater = "";
+
+                            for (damage = 0; damage < args.length; ++damage) {
+                                if (damage >= 3) {
+                                    var43 = var43 + " " + args[damage];
+                                } else {
+                                    var43 = args[damage];
+                                }
+                            }
+
+                            if (var43.contains(",")) {
+                                updater = var43.split(",")[1].trim();
+                            }
+
+                            if ((new File(this.getDataFolder() + File.separator + "SavedItems" + File.separator + var43 + ".yml")).exists()) {
+                                player5 = Bukkit.getServer().getPlayer(args[1]);
+                                if (player5.getInventory().firstEmpty() == -1) {
+                                    System.out.println(ChatColor.stripColor(this.util_GetResponse.getResponse("ErrorMessages.InventoryFull", player5, player5, player5.getName(), player5.getName())));
+                                    if (!"".equals(updater)) {
+                                        Bukkit.getServer().getWorld(player5.getWorld().getName()).dropItemNaturally(player5.getLocation(), this.generateFromFile.importWeapon(var43, updater, player5.getName()));
+                                    } else {
+                                        Bukkit.getServer().getWorld(player5.getWorld().getName()).dropItemNaturally(player5.getLocation(), this.generateFromFile.importWeapon(var43, "noChange", player5.getName()));
+                                    }
+                                } else if (var43.contains(",")) {
+                                    System.out.println(player5.getName() + " successfully received " + updater + ".");
+                                    player5.getInventory().addItem(this.generateFromFile.importWeapon(var43, updater, player5.getName()));
+                                } else {
+                                    System.out.println(player5.getName() + " successfully received " + var43 + ".");
+                                    player5.getInventory().addItem(this.generateFromFile.importWeapon(var43, "noChange", player5.getName()));
+                                }
+                            }
+                        }
                     }
                 }
 
-                if (args[0].equalsIgnoreCase("export")) {
+                if ("export".equalsIgnoreCase(args[0])) {
                     this.export_Com.onExportCommand(sender, args);
                 }
 
-                if (args[0].equalsIgnoreCase("lore")) {
-                    if (sender instanceof Player) {
-                        if (args.length > 1) {
-                            ItemStack health;
-                            ItemMeta healthRegen;
-                            int lifeSteal;
-                            int reflect;
-                            Object var44;
-                            int var50;
-                            ItemStack var52;
-                            ItemMeta var54;
-                            if (Bukkit.getServer().getPlayer(args[1]) != null) {
-                                player = Bukkit.getServer().getPlayer(args[1]);
-                                if (player.getItemInHand() != null) {
-                                    if (player.getItemInHand().getType() != Material.AIR) {
-                                        if (sender.hasPermission("ils.admin")) {
-                                            if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
-                                                if (args.length > 2) {
-                                                    if (isInteger(args[2])) {
-                                                        if (args.length > 3) {
-                                                            if (args.length > 4) {
-                                                                playerFinal = "";
-                                                                if (player.getItemInHand().getItemMeta().hasLore()) {
-                                                                    var44 = player.getItemInHand().getItemMeta().getLore();
-                                                                } else {
-                                                                    var44 = new ArrayList();
-                                                                }
-
-                                                                if (Integer.parseInt(args[2]) - 1 >= ((List) var44).size()) {
-                                                                    health = player.getItemInHand();
-                                                                    healthRegen = health.getItemMeta();
-
-                                                                    for (lifeSteal = 0; lifeSteal < args.length; ++lifeSteal) {
-                                                                        if (lifeSteal >= 4) {
-                                                                            playerFinal = playerFinal + " " + args[lifeSteal];
-                                                                        } else {
-                                                                            playerFinal = args[lifeSteal];
-                                                                        }
-                                                                    }
-
-                                                                    ((List) var44).add(this.util_Colours.replaceTooltipColour(playerFinal));
-                                                                    healthRegen.setLore((List) var44);
-                                                                    health.setItemMeta(healthRegen);
-                                                                    if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
-                                                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
-                                                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getItemMeta().getDisplayName());
-                                                                        }
-                                                                    } else if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
-                                                                        player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getType().name());
-                                                                    }
-
-                                                                    player.getInventory().setItemInHand(health);
-                                                                } else {
-                                                                    var50 = Integer.parseInt(args[2]);
-                                                                    var52 = player.getItemInHand();
-                                                                    var54 = var52.getItemMeta();
-
-                                                                    for (reflect = 0; reflect < args.length; ++reflect) {
-                                                                        if (reflect >= 4) {
-                                                                            playerFinal = playerFinal + " " + args[reflect];
-                                                                        } else {
-                                                                            playerFinal = args[reflect];
-                                                                        }
-                                                                    }
-
-                                                                    ((List) var44).set(var50 - 1, this.util_Colours.replaceTooltipColour(playerFinal));
-                                                                    var54.setLore((List) var44);
-                                                                    var52.setItemMeta(var54);
-                                                                    if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
-                                                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
-                                                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getItemMeta().getDisplayName());
-                                                                        }
-                                                                        final Player fPlayer = player;
-                                                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                                                                            ItemLoreStats.this.updateHealth(fPlayer);
-                                                                            ItemLoreStats.this.updatePlayerSpeed(fPlayer);
-                                                                            ItemLoreStats.this.removeWeaponSpeedEffects(fPlayer);
-                                                                        }, 2L);
-                                                                    } else {
-                                                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
-                                                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getType().name());
-                                                                        }
-                                                                        final Player fPlayer = player;
-                                                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                                                                            ItemLoreStats.this.updateHealth(fPlayer);
-                                                                            ItemLoreStats.this.updatePlayerSpeed(fPlayer);
-                                                                            ItemLoreStats.this.removeWeaponSpeedEffects(fPlayer);
-                                                                        }, 2L);
-                                                                    }
-
-                                                                    player.getInventory().setItemInHand(var52);
-                                                                }
-                                                            } else {
-                                                                player.sendMessage(ChatColor.RED + "You need to give the stat a value. For example, /ils lore " + args[2] + " " + "Damage: " + ChatColor.DARK_RED + "+15");
-                                                            }
-                                                        } else {
-                                                            player.sendMessage(ChatColor.RED + "You need a stat to add. For example, /ils lore " + args[1] + " " + args[2] + " " + ChatColor.DARK_RED + "Damage: +15");
-                                                        }
-                                                    } else {
-                                                        player.sendMessage(ChatColor.RED + args[2] + " is not a line number. For example, /ils lore " + ChatColor.DARK_RED + "1");
-                                                    }
-                                                } else {
-                                                    player.sendMessage(ChatColor.RED + "You need a line number and a stat. For example, /ils lore " + ChatColor.DARK_RED + "1 " + "Damage: +15");
-                                                }
-                                            } else {
-                                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
-                                            }
-                                        } else {
-                                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
-                                        }
-                                    } else {
-                                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
-                                    }
-                                } else {
-                                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
-                                }
+                if ("lore".equalsIgnoreCase(args[0])) {
+                    if (!(sender instanceof Player)) {
+                        System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
+                    } else if (args.length <= 1) {
+                        sender.sendMessage(ChatColor.RED + "You need a line number or player name. For example, /ils lore " + ChatColor.DARK_RED + "1" + ChatColor.RED + " or /ils lore " + ChatColor.DARK_RED + sender.getName());
+                    } else {
+                        ItemMeta healthRegen;
+                        int lifeSteal;
+                        int reflect;
+                        Object var44;
+                        int var50;
+                        ItemStack var52;
+                        ItemMeta var54;
+                        ItemStack health;
+                        if (Bukkit.getServer().getPlayer(args[1]) != null) {
+                            final Player tplayer = Bukkit.getServer().getPlayer(args[1]);
+                            if (tplayer.getItemInHand() == null) {
+                                tplayer.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
+                            } else if (tplayer.getItemInHand().getType() == Material.AIR) {
+                                tplayer.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
+                            } else if (!sender.hasPermission("ils.admin")) {
+                                tplayer.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
+                            } else if (tplayer.getItemInHand().getItemMeta().getDisplayName() == null) {
+                                tplayer.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
+                            } else if (args.length <= 2) {
+                                tplayer.sendMessage(ChatColor.RED + "You need a line number and a stat. For example, /ils lore " + ChatColor.DARK_RED + "1 Damage: +15");
+                            } else if (!isInteger(args[2])) {
+                                tplayer.sendMessage(ChatColor.RED + args[2] + " is not a line number. For example, /ils lore " + ChatColor.DARK_RED + "1");
+                            } else if (args.length <= 3) {
+                                tplayer.sendMessage(ChatColor.RED + "You need a stat to add. For example, /ils lore " + args[1] + " " + args[2] + " " + ChatColor.DARK_RED + "Damage: +15");
+                            } else if (args.length <= 4) {
+                                tplayer.sendMessage(ChatColor.RED + "You need to give the stat a value. For example, /ils lore " + args[2] + " Damage: " + ChatColor.DARK_RED + "+15");
                             } else {
-                                player = (Player) sender;
-                                if (player.getItemInHand() != null) {
-                                    if (player.getItemInHand().getType() != Material.AIR) {
-                                        if (sender.hasPermission("ils.admin")) {
-                                            if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
-                                                if (args.length > 1) {
-                                                    if (isInteger(args[1])) {
-                                                        if (args.length > 2) {
-                                                            if (args.length > 3) {
-                                                                playerFinal = "";
-                                                                if (player.getItemInHand().getItemMeta().hasLore()) {
-                                                                    var44 = player.getItemInHand().getItemMeta().getLore();
-                                                                } else {
-                                                                    var44 = new ArrayList();
-                                                                }
-
-                                                                if (Integer.parseInt(args[1]) - 1 >= ((List) var44).size()) {
-                                                                    health = player.getItemInHand();
-                                                                    healthRegen = health.getItemMeta();
-
-                                                                    for (lifeSteal = 0; lifeSteal < args.length; ++lifeSteal) {
-                                                                        if (lifeSteal >= 3) {
-                                                                            playerFinal = playerFinal + " " + args[lifeSteal];
-                                                                        } else {
-                                                                            playerFinal = args[lifeSteal];
-                                                                        }
-                                                                    }
-
-                                                                    ((List) var44).add(this.util_Colours.replaceTooltipColour(playerFinal));
-                                                                    healthRegen.setLore((List) var44);
-                                                                    health.setItemMeta(healthRegen);
-                                                                    if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
-                                                                        if (this.getConfig().getBoolean("messages.messages.loreSuccessfullyAdded")) {
-                                                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getItemMeta().getDisplayName());
-                                                                        }
-                                                                        final Player fPlayer = player;
-                                                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                                                                            ItemLoreStats.this.updateHealth(fPlayer);
-                                                                            ItemLoreStats.this.updatePlayerSpeed(fPlayer);
-                                                                            ItemLoreStats.this.removeWeaponSpeedEffects(fPlayer);
-                                                                        }, 2L);
-                                                                    } else {
-                                                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
-                                                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getType().name());
-                                                                        }
-                                                                        final Player fPlayer = player;
-                                                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                                                                            ItemLoreStats.this.updateHealth(fPlayer);
-                                                                            ItemLoreStats.this.updatePlayerSpeed(fPlayer);
-                                                                            ItemLoreStats.this.removeWeaponSpeedEffects(fPlayer);
-                                                                        }, 2L);
-                                                                    }
-
-                                                                    player.getInventory().setItemInHand(health);
-                                                                } else {
-                                                                    var50 = Integer.parseInt(args[1]);
-                                                                    var52 = player.getItemInHand();
-                                                                    var54 = var52.getItemMeta();
-
-                                                                    for (reflect = 0; reflect < args.length; ++reflect) {
-                                                                        if (reflect >= 3) {
-                                                                            playerFinal = playerFinal + " " + args[reflect];
-                                                                        } else {
-                                                                            playerFinal = args[reflect];
-                                                                        }
-                                                                    }
-
-                                                                    ((List) var44).set(var50 - 1, this.util_Colours.replaceTooltipColour(playerFinal));
-                                                                    var54.setLore((List) var44);
-                                                                    var52.setItemMeta(var54);
-                                                                    if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
-                                                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
-                                                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getItemMeta().getDisplayName());
-                                                                        }
-                                                                        final Player fPlayer = player;
-                                                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                                                                            ItemLoreStats.this.updateHealth(fPlayer);
-                                                                            ItemLoreStats.this.updatePlayerSpeed(fPlayer);
-                                                                            ItemLoreStats.this.removeWeaponSpeedEffects(fPlayer);
-                                                                        }, 2L);
-                                                                    } else {
-                                                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
-                                                                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getType().name());
-                                                                        }
-                                                                        final Player fPlayer = player;
-                                                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                                                                            ItemLoreStats.this.updateHealth(fPlayer);
-                                                                            ItemLoreStats.this.updatePlayerSpeed(fPlayer);
-                                                                            ItemLoreStats.this.removeWeaponSpeedEffects(fPlayer);
-                                                                        }, 2L);
-                                                                    }
-
-                                                                    player.getInventory().setItemInHand(var52);
-                                                                }
-                                                            } else {
-                                                                player.sendMessage(ChatColor.RED + "You need to give the stat a value. For example, /ils lore " + args[1] + " " + "Damage: " + ChatColor.DARK_RED + "+15");
-                                                            }
-                                                        } else {
-                                                            player.sendMessage(ChatColor.RED + "You need a stat to add. For example, /ils lore " + args[1] + " " + ChatColor.DARK_RED + "Damage: +15");
-                                                        }
-                                                    } else {
-                                                        player.sendMessage(ChatColor.RED + args[1] + " is not a line number. For example, /ils lore " + ChatColor.DARK_RED + "1 " + ChatColor.RED + "Damage: +15");
-                                                    }
-                                                } else {
-                                                    player.sendMessage(ChatColor.RED + "You need a line number and a stat. For example, /ils lore " + ChatColor.DARK_RED + "1 " + "Damage: +15");
-                                                }
-                                            } else {
-                                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
-                                            }
-                                        } else {
-                                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
-                                        }
-                                    } else {
-                                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
-                                    }
+                                playerFinal = "";
+                                if (tplayer.getItemInHand().getItemMeta().hasLore()) {
+                                    var44 = tplayer.getItemInHand().getItemMeta().getLore();
                                 } else {
-                                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
+                                    var44 = new ArrayList();
+                                }
+
+                                if (Integer.parseInt(args[2]) - 1 >= ((List) var44).size()) {
+                                    health = tplayer.getItemInHand();
+                                    healthRegen = health.getItemMeta();
+
+                                    for (lifeSteal = 0; lifeSteal < args.length; ++lifeSteal) {
+                                        if (lifeSteal >= 4) {
+                                            playerFinal = playerFinal + " " + args[lifeSteal];
+                                        } else {
+                                            playerFinal = args[lifeSteal];
+                                        }
+                                    }
+
+                                    ((List) var44).add(this.util_Colours.replaceTooltipColour(playerFinal));
+                                    healthRegen.setLore((List) var44);
+                                    health.setItemMeta(healthRegen);
+                                    if (tplayer.getItemInHand().getItemMeta().getDisplayName() != null) {
+                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
+                                            tplayer.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + tplayer.getItemInHand().getItemMeta().getDisplayName());
+                                        }
+                                    } else if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
+                                        tplayer.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + tplayer.getItemInHand().getType().name());
+                                    }
+
+                                    tplayer.getInventory().setItemInHand(health);
+                                } else {
+                                    var50 = Integer.parseInt(args[2]);
+                                    var52 = tplayer.getItemInHand();
+                                    var54 = var52.getItemMeta();
+
+                                    for (reflect = 0; reflect < args.length; ++reflect) {
+                                        if (reflect >= 4) {
+                                            playerFinal = playerFinal + " " + args[reflect];
+                                        } else {
+                                            playerFinal = args[reflect];
+                                        }
+                                    }
+
+                                    ((List) var44).set(var50 - 1, this.util_Colours.replaceTooltipColour(playerFinal));
+                                    var54.setLore((List) var44);
+                                    var52.setItemMeta(var54);
+                                    if (tplayer.getItemInHand().getItemMeta().getDisplayName() != null) {
+                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
+                                            tplayer.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + tplayer.getItemInHand().getItemMeta().getDisplayName());
+                                        }
+
+                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                            ItemLoreStats.this.updateHealth(tplayer);
+                                            ItemLoreStats.this.updatePlayerSpeed(tplayer);
+                                            ItemLoreStats.this.removeWeaponSpeedEffects(tplayer);
+                                        }, 2L);
+                                    } else {
+                                        if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
+                                            tplayer.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + tplayer.getItemInHand().getType().name());
+                                        }
+
+                                        this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                            ItemLoreStats.this.updateHealth(tplayer);
+                                            ItemLoreStats.this.updatePlayerSpeed(tplayer);
+                                            ItemLoreStats.this.removeWeaponSpeedEffects(tplayer);
+                                        }, 2L);
+                                    }
+
+                                    tplayer.getInventory().setItemInHand(var52);
                                 }
                             }
+                        } else if (player.getItemInHand() == null) {
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
+                        } else if (player.getItemInHand().getType() == Material.AIR) {
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
+                        } else if (!sender.hasPermission("ils.admin")) {
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
+                        } else if (player.getItemInHand().getItemMeta().getDisplayName() == null) {
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.IncludeItemNameError", null, null, "", ""));
+                        } else if (args.length <= 1) {
+                            player.sendMessage(ChatColor.RED + "You need a line number and a stat. For example, /ils lore " + ChatColor.DARK_RED + "1 Damage: +15");
+                        } else if (!isInteger(args[1])) {
+                            player.sendMessage(ChatColor.RED + args[1] + " is not a line number. For example, /ils lore " + ChatColor.DARK_RED + "1 " + ChatColor.RED + "Damage: +15");
+                        } else if (args.length <= 2) {
+                            player.sendMessage(ChatColor.RED + "You need a stat to add. For example, /ils lore " + args[1] + " " + ChatColor.DARK_RED + "Damage: +15");
+                        } else if (args.length <= 3) {
+                            player.sendMessage(ChatColor.RED + "You need to give the stat a value. For example, /ils lore " + args[1] + " Damage: " + ChatColor.DARK_RED + "+15");
                         } else {
-                            sender.sendMessage(ChatColor.RED + "You need a line number or player name. For example, /ils lore " + ChatColor.DARK_RED + "1" + ChatColor.RED + " or /ils lore " + ChatColor.DARK_RED + sender.getName());
+                            playerFinal = "";
+                            if (player.getItemInHand().getItemMeta().hasLore()) {
+                                var44 = player.getItemInHand().getItemMeta().getLore();
+                            } else {
+                                var44 = new ArrayList();
+                            }
+
+                            if (Integer.parseInt(args[1]) - 1 >= ((List) var44).size()) {
+                                health = player.getItemInHand();
+                                healthRegen = health.getItemMeta();
+
+                                for (lifeSteal = 0; lifeSteal < args.length; ++lifeSteal) {
+                                    if (lifeSteal >= 3) {
+                                        playerFinal = playerFinal + " " + args[lifeSteal];
+                                    } else {
+                                        playerFinal = args[lifeSteal];
+                                    }
+                                }
+
+                                ((List) var44).add(this.util_Colours.replaceTooltipColour(playerFinal));
+                                healthRegen.setLore((List) var44);
+                                health.setItemMeta(healthRegen);
+                                if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
+                                    if (this.getConfig().getBoolean("messages.messages.loreSuccessfullyAdded")) {
+                                        player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getItemMeta().getDisplayName());
+                                    }
+
+                                    this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                        ItemLoreStats.this.updateHealth(player);
+                                        ItemLoreStats.this.updatePlayerSpeed(player);
+                                        ItemLoreStats.this.removeWeaponSpeedEffects(player);
+                                    }, 2L);
+                                } else {
+                                    if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
+                                        player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getType().name());
+                                    }
+
+                                    this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                        ItemLoreStats.this.updateHealth(player);
+                                        ItemLoreStats.this.updatePlayerSpeed(player);
+                                        ItemLoreStats.this.removeWeaponSpeedEffects(player);
+                                    }, 2L);
+                                }
+
+                                player.getInventory().setItemInHand(health);
+                            } else {
+                                var50 = Integer.parseInt(args[1]);
+                                var52 = player.getItemInHand();
+                                var54 = var52.getItemMeta();
+
+                                for (reflect = 0; reflect < args.length; ++reflect) {
+                                    if (reflect >= 3) {
+                                        playerFinal = playerFinal + " " + args[reflect];
+                                    } else {
+                                        playerFinal = args[reflect];
+                                    }
+                                }
+
+                                ((List) var44).set(var50 - 1, this.util_Colours.replaceTooltipColour(playerFinal));
+                                var54.setLore((List) var44);
+                                var52.setItemMeta(var54);
+                                if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
+                                    if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
+                                        player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getItemMeta().getDisplayName());
+                                    }
+
+                                    this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                        ItemLoreStats.this.updateHealth(player);
+                                        ItemLoreStats.this.updatePlayerSpeed(player);
+                                        ItemLoreStats.this.removeWeaponSpeedEffects(player);
+                                    }, 2L);
+                                } else {
+                                    if (this.getConfig().getBoolean("messages.loreSuccessfullyAdded")) {
+                                        player.sendMessage(ChatColor.LIGHT_PURPLE + "Lore added to " + ChatColor.RESET + player.getItemInHand().getType().name());
+                                    }
+
+                                    this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                        ItemLoreStats.this.updateHealth(player);
+                                        ItemLoreStats.this.updatePlayerSpeed(player);
+                                        ItemLoreStats.this.removeWeaponSpeedEffects(player);
+                                    }, 2L);
+                                }
+
+                                player.getInventory().setItemInHand(var52);
+                            }
                         }
-                    } else {
-                        System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
                 }
 
-                if (args[0].equalsIgnoreCase("repair")) {
+                if ("repair".equalsIgnoreCase(args[0])) {
                     this.repair_Com.onRepairCommand(sender, args);
                 }
 
-                if (args[0].equalsIgnoreCase("custom")) {
+                if ("custom".equalsIgnoreCase(args[0])) {
                     this.customMaterial_Com.onCustomMaterialCommand(sender, args);
                 }
 
-                if (args[0].equalsIgnoreCase("test") && sender instanceof Player) {
-                    player = (Player) sender;
+                if ("test".equalsIgnoreCase(args[0]) && sender instanceof Player) {
                     player.hasPermission("ils.admin");
                 }
 
-                if (args[0].equalsIgnoreCase("reload")) {
+                if ("reload".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
-                        if (!player.hasPermission("ils.admin")) {
-                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
+                        player5 = (Player) sender;
+                        if (!player5.hasPermission("ils.admin")) {
+                            player5.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
                         } else {
                             this.reloadConfig();
-                            player.sendMessage(ChatColor.GOLD + "[ItemLoreStats] " + ChatColor.GREEN + " Configuration Reloaded!");
+                            player5.sendMessage(ChatColor.GOLD + "[ItemLoreStats] " + ChatColor.GREEN + " Configuration Reloaded!");
                         }
 
                         return true;
@@ -927,7 +892,7 @@ public class ItemLoreStats extends JavaPlugin {
                     System.out.println("[ItemLoreStats] Configuration Reloaded!");
                 }
 
-                if (args[0].equalsIgnoreCase("createlore")) {
+                if ("createlore".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
                         var43 = plugin.getConfig().getString("primaryStats.armour.name");
                         updater = plugin.getConfig().getString("secondaryStats.critChance.name");
@@ -962,7 +927,7 @@ public class ItemLoreStats extends JavaPlugin {
                             debugItemList.add(ChatColor.RED + fire + ": " + ChatColor.DARK_GREEN + "9.0" + ChatColor.GREEN + "%");
                             debugItemList.add(ChatColor.DARK_RED + wither + ": " + ChatColor.DARK_GREEN + "4.0" + ChatColor.GREEN + "%");
                             debugItemList.add("");
-                            debugItemList.add(ChatColor.GOLD + durability + ": " + "1250/1250");
+                            debugItemList.add(ChatColor.GOLD + durability + ": 1250/1250");
                             debugItemList.add("");
                             debugItemList.add(ChatColor.DARK_AQUA + soulbound + " " + player1.getName());
                             debugItemMeta.setLore(debugItemList);
@@ -979,7 +944,7 @@ public class ItemLoreStats extends JavaPlugin {
                             debugItemList1.add(ChatColor.LIGHT_PURPLE + poison + ": " + ChatColor.DARK_GREEN + "2.0" + ChatColor.GREEN + "%");
                             debugItemList1.add(ChatColor.GREEN + var55 + ": " + ChatColor.DARK_GREEN + "4.0" + ChatColor.GREEN + "%");
                             debugItemList1.add("");
-                            debugItemList1.add(ChatColor.GOLD + durability + ": " + "1750/1750");
+                            debugItemList1.add(ChatColor.GOLD + durability + ": 1750/1750");
                             debugItemList1.add("");
                             debugItemList1.add(ChatColor.DARK_AQUA + xplevel + ": 2");
                             debugItemMeta1.setLore(debugItemList1);
@@ -996,7 +961,7 @@ public class ItemLoreStats extends JavaPlugin {
                             debugItemList2.add(ChatColor.RED + fire + ": " + ChatColor.DARK_GREEN + "5.0" + ChatColor.GREEN + "%");
                             debugItemList2.add(ChatColor.GREEN + var55 + ": " + ChatColor.DARK_GREEN + "3.0" + ChatColor.GREEN + "%");
                             debugItemList2.add("");
-                            debugItemList2.add(ChatColor.GOLD + durability + ": " + "1500/1500");
+                            debugItemList2.add(ChatColor.GOLD + durability + ": 1500/1500");
                             debugItemList2.add("");
                             debugItemList2.add(ChatColor.DARK_AQUA + xplevel + ": 3");
                             debugItemMeta2.setLore(debugItemList2);
@@ -1014,7 +979,7 @@ public class ItemLoreStats extends JavaPlugin {
                             debugItemList3.add(ChatColor.DARK_RED + wither + ": " + ChatColor.DARK_GREEN + "3.0" + ChatColor.GREEN + "%");
                             debugItemList3.add(ChatColor.YELLOW + movementspeed + ": " + ChatColor.DARK_GREEN + "8.0" + ChatColor.GREEN + "%");
                             debugItemList3.add("");
-                            debugItemList3.add(ChatColor.GOLD + durability + ": " + "1500/1500");
+                            debugItemList3.add(ChatColor.GOLD + durability + ": 1500/1500");
                             debugItemList3.add("");
                             debugItemList3.add(ChatColor.DARK_AQUA + xplevel + ": 4");
                             debugItemMeta3.setLore(debugItemList3);
@@ -1033,7 +998,7 @@ public class ItemLoreStats extends JavaPlugin {
                             debugItemList4.add(ChatColor.RED + fire + ": " + ChatColor.DARK_GREEN + "7.0" + ChatColor.GREEN + "%");
                             debugItemList4.add(ChatColor.DARK_PURPLE + harming + ": " + ChatColor.DARK_GREEN + "3.0" + ChatColor.GREEN + "%");
                             debugItemList4.add("");
-                            debugItemList4.add(ChatColor.GOLD + durability + ": " + "350/350");
+                            debugItemList4.add(ChatColor.GOLD + durability + ": 350/350");
                             debugItemList4.add("");
                             debugItemList4.add(ChatColor.DARK_AQUA + "Level: 1");
                             debugItemList4.add(ChatColor.DARK_AQUA + soulbound + " " + player1.getName());
@@ -1053,7 +1018,7 @@ public class ItemLoreStats extends JavaPlugin {
                             debugItemList5.add(ChatColor.RED + fire + ": " + ChatColor.DARK_GREEN + "7.0" + ChatColor.GREEN + "%");
                             debugItemList5.add(ChatColor.DARK_PURPLE + harming + ": " + ChatColor.DARK_GREEN + "3.0" + ChatColor.GREEN + "%");
                             debugItemList5.add("");
-                            debugItemList5.add(ChatColor.GOLD + durability + ": " + "350/350");
+                            debugItemList5.add(ChatColor.GOLD + durability + ": 350/350");
                             debugItemList5.add("");
                             debugItemList5.add(ChatColor.DARK_AQUA + "Level: 1");
                             debugItemList5.add(ChatColor.DARK_AQUA + soulbound + " " + player1.getName());
@@ -1065,92 +1030,90 @@ public class ItemLoreStats extends JavaPlugin {
                     } else {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
-                } else if (args[0].equalsIgnoreCase("setMultiplier")) {
+                } else if ("setMultiplier".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
-                        if (!player.isOp() && !player.hasPermission("ils.admin")) {
-                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
+                        player5 = (Player) sender;
+                        if (!player5.isOp() && !player5.hasPermission("ils.admin")) {
+                            player5.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
                         } else {
-                            this.getConfig().set("npcModifier." + player.getWorld().getName() + ".healthMultiplier", 0.045D);
-                            this.getConfig().set("npcModifier." + player.getWorld().getName() + ".damageMultiplier", 0.004D);
-                            this.getConfig().set("npcModifier." + player.getWorld().getName() + ".expMultiplier", 0.004D);
-                            this.getConfig().set("npcModifier." + player.getWorld().getName() + ".location.x", player.getLocation().getBlockX());
-                            this.getConfig().set("npcModifier." + player.getWorld().getName() + ".location.y", player.getLocation().getBlockY());
-                            this.getConfig().set("npcModifier." + player.getWorld().getName() + ".location.z", player.getLocation().getBlockZ());
+                            this.getConfig().set("npcModifier." + player5.getWorld().getName() + ".healthMultiplier", 0.045D);
+                            this.getConfig().set("npcModifier." + player5.getWorld().getName() + ".damageMultiplier", 0.004D);
+                            this.getConfig().set("npcModifier." + player5.getWorld().getName() + ".expMultiplier", 0.004D);
+                            this.getConfig().set("npcModifier." + player5.getWorld().getName() + ".location.x", player5.getLocation().getBlockX());
+                            this.getConfig().set("npcModifier." + player5.getWorld().getName() + ".location.y", player5.getLocation().getBlockY());
+                            this.getConfig().set("npcModifier." + player5.getWorld().getName() + ".location.z", player5.getLocation().getBlockZ());
                             this.saveConfig();
-                            player.sendMessage(ChatColor.LIGHT_PURPLE + "Successfully set the NPC multiplier to multiply health and damage from " + ChatColor.GOLD + player.getLocation().getBlockX() + ChatColor.LIGHT_PURPLE + ", " + ChatColor.GOLD + player.getLocation().getBlockY() + ChatColor.LIGHT_PURPLE + ", " + ChatColor.GOLD + player.getLocation().getBlockZ() + ChatColor.LIGHT_PURPLE + ".");
+                            player5.sendMessage(ChatColor.LIGHT_PURPLE + "Successfully set the NPC multiplier to multiply health and damage from " + ChatColor.GOLD + player5.getLocation().getBlockX() + ChatColor.LIGHT_PURPLE + ", " + ChatColor.GOLD + player5.getLocation().getBlockY() + ChatColor.LIGHT_PURPLE + ", " + ChatColor.GOLD + player5.getLocation().getBlockZ() + ChatColor.LIGHT_PURPLE + ".");
                         }
                     } else {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
-                } else if (args[0].equalsIgnoreCase("stats")) {
+                } else if ("stats".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
-                        this.characterSheet.returnStats(player, this.getHealthValue(player));
+                        player5 = (Player) sender;
+                        this.characterSheet.returnStats(player5, this.getHealthValue(player5));
                     } else {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
-                } else if (args[0].equalsIgnoreCase("combatlog")) {
+                } else if ("combatlog".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
+                        player5 = (Player) sender;
                         if (this.getConfig().getBoolean("combatMessages.outgoing.damageDone") || this.getConfig().getBoolean("combatMessages.incoming.damageTaken")) {
                             try {
                                 this.PlayerDataConfig = new YamlConfiguration();
                                 this.PlayerDataConfig.load(new File(plugin.getDataFolder() + File.separator + "PlayerData" + File.separator + player.getName() + ".yml"));
                                 if (this.PlayerDataConfig.getBoolean("extra.combatLogVisible")) {
-                                    this.PlayerDataConfig.set("extra.combatLogVisible", Boolean.FALSE);
-                                    this.combatLogVisible.put(player.getName(), Boolean.FALSE);
+                                    this.PlayerDataConfig.set("extra.combatLogVisible", false);
+                                    this.combatLogVisible.put(player.getName(), false);
                                     player.sendMessage(ChatColor.LIGHT_PURPLE + "Combat Log " + ChatColor.RED + "disabled" + ChatColor.LIGHT_PURPLE + ".");
                                 } else if (!this.PlayerDataConfig.getBoolean("extra.combatLogVisible")) {
-                                    this.PlayerDataConfig.set("extra.combatLogVisible", Boolean.TRUE);
-                                    this.combatLogVisible.put(player.getName(), Boolean.TRUE);
+                                    this.PlayerDataConfig.set("extra.combatLogVisible", true);
+                                    this.combatLogVisible.put(player.getName(), true);
                                     player.sendMessage(ChatColor.LIGHT_PURPLE + "Combat Log " + ChatColor.GREEN + "enabled" + ChatColor.LIGHT_PURPLE + ".");
                                 } else if (this.PlayerDataConfig.get("extra.combatLogVisible") == null) {
-                                    this.PlayerDataConfig.set("extra.combatLogVisible", Boolean.FALSE);
-                                    this.combatLogVisible.put(player.getName(), Boolean.FALSE);
+                                    this.PlayerDataConfig.set("extra.combatLogVisible", false);
+                                    this.combatLogVisible.put(player.getName(), false);
                                     player.sendMessage(ChatColor.LIGHT_PURPLE + "Combat Log " + ChatColor.RED + "disabled" + ChatColor.LIGHT_PURPLE + ".");
                                 }
 
                                 this.PlayerDataConfig.save(plugin.getDataFolder() + File.separator + "PlayerData" + File.separator + player.getName() + ".yml");
-                            } catch (Exception var42) {
-                                var42.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                                 System.out.println("*********** Failed to load player data for " + player.getName() + " when toggling combat log! ***********");
                             }
                         }
                     } else {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
-                } else if (args[0].equalsIgnoreCase("sell")) {
+                } else if ("sell".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
+                        player5 = (Player) sender;
                         this.util_Vault.removeMoneyForSale(player, player.getItemInHand().getAmount());
                     } else {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
-                } else if (args[0].equalsIgnoreCase("health")) {
+                } else if ("health".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
+                        player5 = (Player) sender;
                         player.sendMessage(ChatColor.RED + "[DEBUGGER] " + ChatColor.WHITE + player.getHealth() + " out of " + player.getMaxHealth());
                     } else {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
-                } else if (args[0].equalsIgnoreCase("speed")) {
+                } else if ("speed".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
                         player.sendMessage(ChatColor.GOLD + "Your movement speed is " + ChatColor.WHITE + player.getWalkSpeed());
                     } else {
                         System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                     }
-                } else if (args[0].equalsIgnoreCase("upgrade")) {
+                } else if ("upgrade".equalsIgnoreCase(args[0])) {
                     if (sender instanceof Player) {
-                        player = (Player) sender;
                         if (!player.isOp() && !player.hasPermission("ils.command.upgrade")) {
                             player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
                         } else if (args.length >= 2) {
-                            if (!args[1].equalsIgnoreCase("armour") && !args[1].equalsIgnoreCase("armor")) {
-                                if (args[1].equalsIgnoreCase("hand")) {
+                            if (!"armour".equalsIgnoreCase(args[1]) && !"armor".equalsIgnoreCase(args[1])) {
+                                if ("hand".equalsIgnoreCase(args[1])) {
                                     this.itemUpgrade.increaseItemStatOnItemInHand(player);
-                                } else if (args[1].equalsIgnoreCase("all")) {
+                                } else if ("all".equalsIgnoreCase(args[1])) {
                                     this.itemUpgrade.increaseItemStatOnHelmet(player);
                                     this.itemUpgrade.increaseItemStatOnChestplate(player);
                                     this.itemUpgrade.increaseItemStatOnLeggings(player);
@@ -1173,9 +1136,8 @@ public class ItemLoreStats extends JavaPlugin {
                     }
                 } else {
                     LivingEntity var45;
-                    if (args[0].equalsIgnoreCase("zombie")) {
+                    if ("zombie".equalsIgnoreCase(args[0])) {
                         if (sender instanceof Player) {
-                            player = (Player) sender;
                             if (player.isOp() || player.hasPermission("ils.admin")) {
                                 var45 = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), EntityType.ZOMBIE);
                                 var45.setCustomName("ItemLoreStats Test Dummy");
@@ -1206,9 +1168,8 @@ public class ItemLoreStats extends JavaPlugin {
                         } else {
                             System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                         }
-                    } else if (args[0].equalsIgnoreCase("skeleton")) {
+                    } else if ("skeleton".equalsIgnoreCase(args[0])) {
                         if (sender instanceof Player) {
-                            player = (Player) sender;
                             if (player.isOp() || player.hasPermission("ils.admin")) {
                                 var45 = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), EntityType.SKELETON);
                                 var45.setCustomName("ItemLoreStats Test Dummy");
@@ -1239,13 +1200,13 @@ public class ItemLoreStats extends JavaPlugin {
                         } else {
                             System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
                         }
-                    } else if (args[0].equalsIgnoreCase("update")) {
+                    } else if ("update".equalsIgnoreCase(args[0])) {
                         if (sender instanceof Player) {
-                            player = (Player) sender;
                             if ((player.isOp() || player.hasPermission("ils.admin")) && this.getConfig().getBoolean("checkForUpdates")) {
                                 new Updater(this, 67983, this.getFile(), Updater.UpdateType.NO_VERSION_CHECK, true);
-                                final Player fp = player;
-                                this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> fp.sendMessage(ChatColor.GOLD + "Item Lore Stats" + ChatColor.GREEN + " update has successfully completed. To complete the update please stop the server and delete/backup the /SavedItems/ directory, the /SavedMobs/ directory and the language file. Once that is completed you can start the server back up."), 260L);
+                                this.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                    player.sendMessage(ChatColor.GOLD + "Item Lore Stats" + ChatColor.GREEN + " update has successfully completed. To complete the update please stop the server and delete/backup the /SavedItems/ directory, the /SavedMobs/ directory and the language file. Once that is completed you can start the server back up.");
+                                }, 260L);
                             }
                         } else if (this.getConfig().getBoolean("checkForUpdates")) {
                             new Updater(this, 67983, this.getFile(), Updater.UpdateType.NO_VERSION_CHECK, true);
@@ -1316,24 +1277,24 @@ public class ItemLoreStats extends JavaPlugin {
             }
 
             if (!this.getConfig().getStringList("disabledInWorlds").contains(player.getWorld().getName())) {
-                double newHP;
                 double maxHealth1;
+                double newHP;
                 if (plugin.getHeroes() != null) {
                     maxHealth1 = (double) this.util_Heroes.getHeroBaseHealth(player) + this.util_Heroes.getHeroHealthPerLevel(player) * (double) this.util_Heroes.getHeroLevel(player) + healthBoost;
                     if (this.isTool(player.getItemInHand().getType())) {
-                        newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
+                        newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
                         return newHP;
                     } else {
-                        newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
+                        newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
                         return newHP;
                     }
                 } else if (plugin.getSkillAPI() != null) {
                     maxHealth1 = (double) (this.util_SkillAPI.getSkillAPIBaseHealth(player) + this.util_SkillAPI.getSkillAPIHealthPerLevel(player) * this.util_SkillAPI.getSkillAPILevel(player)) + healthBoost;
                     if (this.isTool(player.getItemInHand().getType())) {
-                        newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
+                        newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
                         return newHP;
                     } else {
-                        newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
+                        newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
                         return newHP;
                     }
                 } else {
@@ -1371,33 +1332,33 @@ public class ItemLoreStats extends JavaPlugin {
                 }
             }
 
-            double newHP;
             double maxHealth1;
+            double newHP;
             if (plugin.getHeroes() != null) {
                 maxHealth1 = (double) this.util_Heroes.getHeroBaseHealth(player) + modifier + this.util_Heroes.getHeroHealthPerLevel(player) * (double) this.util_Heroes.getHeroLevel(player) + healthBoost;
                 if (this.isTool(player.getItemInHand().getType())) {
-                    newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
+                    newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
                     player.setMaxHealth(newHP);
                 } else {
-                    newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
+                    newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
                     player.setMaxHealth(newHP);
                 }
             } else if (plugin.getSkillAPI() != null) {
                 maxHealth1 = (double) (this.util_SkillAPI.getSkillAPIBaseHealth(player) + this.util_SkillAPI.getSkillAPIHealthPerLevel(player) * this.util_SkillAPI.getSkillAPILevel(player)) + healthBoost;
                 if (this.isTool(player.getItemInHand().getType())) {
-                    newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
+                    newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
                     player.setMaxHealth(newHP);
                 } else {
-                    newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
+                    newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
                     player.setMaxHealth(newHP);
                 }
             } else {
                 maxHealth1 = this.getConfig().getDouble("baseHealth") + modifier + this.getConfig().getDouble("additionalStatsPerLevel.health") * (double) player.getLevel() + healthBoost;
                 if (this.isTool(player.getItemInHand().getType())) {
-                    newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
+                    newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player) + this.gearStats.getHealthItemInHand(player)).intValue();
                     player.setMaxHealth(newHP);
                 } else {
-                    newHP = (double) Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
+                    newHP = Double.valueOf(maxHealth1 + this.gearStats.getHealthGear(player)).intValue();
                     player.setMaxHealth(newHP);
                 }
             }
@@ -1421,7 +1382,7 @@ public class ItemLoreStats extends JavaPlugin {
                 float speed;
                 if (ItemLoreStats.this.isTool(player.getItemInHand().getType())) {
                     maxSpeed = 0.99F;
-                    speed = (float) (0.0020000000949949026D * (ItemLoreStats.this.gearStats.getMovementSpeedGear(player) + ItemLoreStats.this.gearStats.getMovementSpeedItemInHand(player)) + (double) compressedModifier + ItemLoreStats.plugin.getConfig().getDouble("baseMovementSpeed") + Double.valueOf((double) player.getLevel()).doubleValue() * ItemLoreStats.this.getConfig().getDouble("additionalStatsPerLevel.speed"));
+                    speed = (float) (0.0020000000949949026D * (ItemLoreStats.this.gearStats.getMovementSpeedGear(player) + ItemLoreStats.this.gearStats.getMovementSpeedItemInHand(player)) + (double) compressedModifier + ItemLoreStats.plugin.getConfig().getDouble("baseMovementSpeed") + Double.valueOf(player.getLevel()) * ItemLoreStats.this.getConfig().getDouble("additionalStatsPerLevel.speed"));
                     if (speed > maxSpeed) {
                         player.setWalkSpeed(maxSpeed);
                     } else {
@@ -1429,7 +1390,7 @@ public class ItemLoreStats extends JavaPlugin {
                     }
                 } else {
                     maxSpeed = 0.99F;
-                    speed = (float) (0.0020000000949949026D * ItemLoreStats.this.gearStats.getMovementSpeedGear(player) + (double) compressedModifier + ItemLoreStats.plugin.getConfig().getDouble("baseMovementSpeed") + Double.valueOf((double) player.getLevel()).doubleValue() * ItemLoreStats.this.getConfig().getDouble("additionalStatsPerLevel.speed"));
+                    speed = (float) (0.0020000000949949026D * ItemLoreStats.this.gearStats.getMovementSpeedGear(player) + (double) compressedModifier + ItemLoreStats.plugin.getConfig().getDouble("baseMovementSpeed") + Double.valueOf(player.getLevel()) * ItemLoreStats.this.getConfig().getDouble("additionalStatsPerLevel.speed"));
                     if (speed > maxSpeed) {
                         player.setWalkSpeed(maxSpeed);
                     } else {
@@ -1462,7 +1423,7 @@ public class ItemLoreStats extends JavaPlugin {
             weaponSpeed = this.gearStats.getSwingSpeedItemInHand(player).toLowerCase();
         }
 
-        if (weaponSpeed.equalsIgnoreCase("very fast")) {
+        if ("very fast".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
             }
@@ -1473,7 +1434,7 @@ public class ItemLoreStats extends JavaPlugin {
             plugin.removeWeaponSpeedEffects(player);
             plugin.updateMana(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 99999, 1));
-        } else if (weaponSpeed.equalsIgnoreCase("fast")) {
+        } else if ("fast".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
             }
@@ -1484,7 +1445,7 @@ public class ItemLoreStats extends JavaPlugin {
             plugin.removeWeaponSpeedEffects(player);
             plugin.updateMana(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 99999, 0));
-        } else if (weaponSpeed.equalsIgnoreCase("slow")) {
+        } else if ("slow".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.FAST_DIGGING);
             }
@@ -1495,7 +1456,7 @@ public class ItemLoreStats extends JavaPlugin {
             plugin.removeWeaponSpeedEffects(player);
             plugin.updateMana(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 99999, 0));
-        } else if (weaponSpeed.equalsIgnoreCase("very slow")) {
+        } else if ("very slow".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.FAST_DIGGING);
             }
@@ -1506,17 +1467,17 @@ public class ItemLoreStats extends JavaPlugin {
             plugin.removeWeaponSpeedEffects(player);
             plugin.updateMana(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 99999, 1));
-        } else if (weaponSpeed.equalsIgnoreCase("normal")) {
+        } else if ("normal".equalsIgnoreCase(weaponSpeed)) {
             plugin.updateHealth(player);
             plugin.updatePlayerSpeed(player);
             this.setBonuses.updateSetBonus(player);
             plugin.removeWeaponSpeedEffects(player);
             plugin.updateMana(player);
         }
+
     }
 
     public class ItemLoreStatsListener implements Listener {
-
         @EventHandler
         public void onRegenHealth(EntityRegainHealthEvent event) {
             if (event.getEntity() instanceof Player) {
@@ -1537,7 +1498,7 @@ public class ItemLoreStats extends JavaPlugin {
 
                         double baseRegen = ItemLoreStats.this.getConfig().getDouble("baseHealthRegen");
                         double additionalLevelRegen = ItemLoreStats.this.getConfig().getDouble("additionalStatsPerLevel.healthRegen");
-                        double modifiedHealthRegen = player.getMaxHealth() / 100.0D * (gearRegen + baseRegen + Double.valueOf((double) player.getLevel()).doubleValue() * additionalLevelRegen + modifier);
+                        double modifiedHealthRegen = player.getMaxHealth() / 100.0D * (gearRegen + baseRegen + Double.valueOf(player.getLevel()) * additionalLevelRegen + modifier);
                         if (ItemLoreStats.plugin.getHeroes() != null) {
                             if (player.getHealth() + modifiedHealthRegen > player.getMaxHealth()) {
                                 event.setCancelled(true);
@@ -1579,6 +1540,7 @@ public class ItemLoreStats extends JavaPlugin {
 
                 ItemLoreStats.this.updateBarAPI(player);
             }
+
         }
 
         @EventHandler
@@ -1605,24 +1567,22 @@ public class ItemLoreStats extends JavaPlugin {
 
         @EventHandler
         public void saveExpOnDeath(PlayerDeathEvent event) {
-            if (!event.getEntity().hasMetadata("NPC")) {
-                if (ItemLoreStats.plugin.getConfig().getBoolean("keepXPOnDeath")) {
-                    Player player = event.getEntity();
+            if (!event.getEntity().hasMetadata("NPC") && ItemLoreStats.plugin.getConfig().getBoolean("keepXPOnDeath")) {
+                Player player = event.getEntity();
 
-                    try {
-                        ItemLoreStats.this.PlayerDataConfig = new YamlConfiguration();
-                        ItemLoreStats.this.PlayerDataConfig.load(new File(ItemLoreStats.plugin.getDataFolder() + File.separator + "PlayerData" + File.separator + player.getName() + ".yml"));
-                        event.setDroppedExp(0);
-                        ItemLoreStats.this.PlayerDataConfig.set("extra.xp", player.getExp());
-                        ItemLoreStats.this.PlayerDataConfig.set("extra.level", player.getLevel());
-                        ItemLoreStats.this.PlayerDataConfig.save(ItemLoreStats.plugin.getDataFolder() + File.separator + "PlayerData" + File.separator + player.getName() + ".yml");
-                    } catch (Exception var4) {
-                        var4.printStackTrace();
-                        System.out.println("*********** Failed to save player data for " + player.getName() + " when dying! ***********");
-                    }
+                try {
+                    ItemLoreStats.this.PlayerDataConfig = new YamlConfiguration();
+                    ItemLoreStats.this.PlayerDataConfig.load(new File(ItemLoreStats.plugin.getDataFolder() + File.separator + "PlayerData" + File.separator + player.getName() + ".yml"));
+                    event.setDroppedExp(0);
+                    ItemLoreStats.this.PlayerDataConfig.set("extra.xp", player.getExp());
+                    ItemLoreStats.this.PlayerDataConfig.set("extra.level", player.getLevel());
+                    ItemLoreStats.this.PlayerDataConfig.save(ItemLoreStats.plugin.getDataFolder() + File.separator + "PlayerData" + File.separator + player.getName() + ".yml");
+                } catch (Exception var4) {
+                    var4.printStackTrace();
+                    System.out.println("*********** Failed to save player data for " + player.getName() + " when dying! ***********");
                 }
-
             }
+
         }
 
         @EventHandler
@@ -1652,7 +1612,7 @@ public class ItemLoreStats extends JavaPlugin {
                         playerFinal.setHealth(ItemLoreStats.this.PlayerDataConfig.getDouble("extra.logoutHealth"));
                         playerFinal.setFoodLevel(ItemLoreStats.this.PlayerDataConfig.getInt("extra.hunger"));
                         if (ItemLoreStats.this.PlayerDataConfig.get("extra.combatLogVisible") == null) {
-                            ItemLoreStats.this.combatLogVisible.put(playerFinal.getName(), Boolean.TRUE);
+                            ItemLoreStats.this.combatLogVisible.put(playerFinal.getName(), true);
                         } else {
                             ItemLoreStats.this.combatLogVisible.put(playerFinal.getName(), ItemLoreStats.this.PlayerDataConfig.getBoolean("extra.combatLogVisible"));
                         }
@@ -1737,8 +1697,8 @@ public class ItemLoreStats extends JavaPlugin {
                     try {
                         ItemLoreStats.this.PlayerDataConfig = new YamlConfiguration();
                         ItemLoreStats.this.PlayerDataConfig.load(new File(ItemLoreStats.plugin.getDataFolder() + File.separator + "PlayerData" + File.separator + player.getName() + ".yml"));
-                        ItemLoreStats.this.PlayerDataConfig.set("extra.logoutHealth", (long) Math.round(player.getHealth()));
-                        ItemLoreStats.this.PlayerDataConfig.set("extra.maxHealth", (long) Math.round(player.getMaxHealth()));
+                        ItemLoreStats.this.PlayerDataConfig.set("extra.logoutHealth", Math.round(player.getHealth()));
+                        ItemLoreStats.this.PlayerDataConfig.set("extra.maxHealth", Math.round(player.getMaxHealth()));
                         ItemLoreStats.this.PlayerDataConfig.set("extra.hunger", player.getFoodLevel());
                         ItemLoreStats.this.PlayerDataConfig.set("extra.xp", player.getExp());
                         ItemLoreStats.this.PlayerDataConfig.set("extra.level", player.getLevel());
@@ -1799,44 +1759,42 @@ public class ItemLoreStats extends JavaPlugin {
 
         @EventHandler
         public void checkOnPickup(PlayerPickupItemEvent event) {
-            if (!event.isCancelled() && !event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-                if (!ItemLoreStats.this.getConfig().getStringList("disabledInWorlds").contains(event.getPlayer().getWorld().getName())) {
-                    Player player = event.getPlayer();
-                    ItemStack item = event.getItem().getItemStack().clone();
-                    if (item != null && item.getAmount() == 1 && ItemLoreStats.this.isTool(item.getType()) && item.hasItemMeta() && item.getItemMeta().getLore() != null && player.getInventory().firstEmpty() == player.getInventory().getHeldItemSlot()) {
-                        for (int slot = player.getInventory().getHeldItemSlot() + 1; slot < 35; ++slot) {
-                            if (player.getInventory().getItem(slot) == null) {
-                                if (ItemLoreStats.this.gearStats.getSoulboundName(player, item) != "" && !ItemLoreStats.this.gearStats.getSoulboundName(player, item).equals(player.getName())) {
-                                    event.setCancelled(true);
-                                    event.getItem().remove();
-                                    event.getPlayer().getInventory().setItem(slot, item);
-                                    break;
-                                }
+            if (!event.isCancelled() && !event.getPlayer().getGameMode().equals(GameMode.CREATIVE) && !ItemLoreStats.this.getConfig().getStringList("disabledInWorlds").contains(event.getPlayer().getWorld().getName())) {
+                Player player = event.getPlayer();
+                ItemStack item = event.getItem().getItemStack().clone();
+                if (item != null && item.getAmount() == 1 && ItemLoreStats.this.isTool(item.getType()) && item.hasItemMeta() && item.getItemMeta().getLore() != null && player.getInventory().firstEmpty() == player.getInventory().getHeldItemSlot()) {
+                    for (int slot = player.getInventory().getHeldItemSlot() + 1; slot < 35; ++slot) {
+                        if (player.getInventory().getItem(slot) == null) {
+                            if (ItemLoreStats.this.gearStats.getSoulboundName(player, item) != "" && !ItemLoreStats.this.gearStats.getSoulboundName(player, item).equals(player.getName())) {
+                                event.setCancelled(true);
+                                event.getItem().remove();
+                                event.getPlayer().getInventory().setItem(slot, item);
+                                break;
+                            }
 
-                                if (ItemLoreStats.this.gearStats.getXPLevelRequirement(player, item) != 0 && ItemLoreStats.this.gearStats.getXPLevelRequirement(player, item) > player.getLevel()) {
-                                    event.setCancelled(true);
-                                    event.getItem().remove();
-                                    event.getPlayer().getInventory().setItem(slot, item);
-                                    break;
-                                }
+                            if (ItemLoreStats.this.gearStats.getXPLevelRequirement(player, item) != 0 && ItemLoreStats.this.gearStats.getXPLevelRequirement(player, item) > player.getLevel()) {
+                                event.setCancelled(true);
+                                event.getItem().remove();
+                                event.getPlayer().getInventory().setItem(slot, item);
+                                break;
+                            }
 
-                                if (ItemLoreStats.this.gearStats.getClass(item) != null && !player.hasPermission("ils.use." + ItemLoreStats.this.gearStats.getClass(item))) {
-                                    event.setCancelled(true);
-                                    event.getItem().remove();
-                                    event.getPlayer().getInventory().setItem(slot, item);
-                                    break;
-                                }
+                            if (ItemLoreStats.this.gearStats.getClass(item) != null && !player.hasPermission("ils.use." + ItemLoreStats.this.gearStats.getClass(item))) {
+                                event.setCancelled(true);
+                                event.getItem().remove();
+                                event.getPlayer().getInventory().setItem(slot, item);
+                                break;
                             }
                         }
                     }
-
-                    ItemLoreStats.this.updateHealth(player);
-                    ItemLoreStats.this.updatePlayerSpeed(player);
-                    ItemLoreStats.this.updateMana(player);
-                    ItemLoreStats.this.setBonuses.updateSetBonus(player);
                 }
 
+                ItemLoreStats.this.updateHealth(player);
+                ItemLoreStats.this.updatePlayerSpeed(player);
+                ItemLoreStats.this.updateMana(player);
+                ItemLoreStats.this.setBonuses.updateSetBonus(player);
             }
+
         }
 
         @EventHandler
@@ -1877,38 +1835,36 @@ public class ItemLoreStats extends JavaPlugin {
 
         @EventHandler
         public void onInventoryDrag(InventoryDragEvent event) {
-            if (!event.isCancelled() && !event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) {
-                if (event.getInventory().getType().equals(InventoryType.CRAFTING) || event.getInventory().getType().equals(InventoryType.PLAYER) || event.getInventory().getType().equals(InventoryType.FURNACE) || event.getInventory().getType().equals(InventoryType.DROPPER) || event.getInventory().getType().equals(InventoryType.HOPPER) || event.getInventory().getType().equals(InventoryType.DISPENSER) || event.getInventory().getType().equals(InventoryType.CHEST) || event.getInventory().getType().equals(InventoryType.ENCHANTING) || event.getInventory().getType().equals(InventoryType.ENDER_CHEST)) {
-                    Player player = (Player) event.getWhoClicked();
-                    if (event.getOldCursor() != null) {
-                        ItemStack item = event.getOldCursor().clone();
-                        if (!ItemLoreStats.this.getConfig().getBoolean("usingMcMMO")) {
-                            ItemLoreStats.this.durability.syncArmourDurability(player);
+            if (!event.isCancelled() && !event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) && (event.getInventory().getType().equals(InventoryType.CRAFTING) || event.getInventory().getType().equals(InventoryType.PLAYER) || event.getInventory().getType().equals(InventoryType.FURNACE) || event.getInventory().getType().equals(InventoryType.DROPPER) || event.getInventory().getType().equals(InventoryType.HOPPER) || event.getInventory().getType().equals(InventoryType.DISPENSER) || event.getInventory().getType().equals(InventoryType.CHEST) || event.getInventory().getType().equals(InventoryType.ENCHANTING) || event.getInventory().getType().equals(InventoryType.ENDER_CHEST))) {
+                Player player = (Player) event.getWhoClicked();
+                if (event.getOldCursor() != null) {
+                    ItemStack item = event.getOldCursor().clone();
+                    if (!ItemLoreStats.this.getConfig().getBoolean("usingMcMMO")) {
+                        ItemLoreStats.this.durability.syncArmourDurability(player);
+                    }
+
+                    if (ItemLoreStats.this.isArmourSlot(event.getRawSlots().toString().replaceAll("\\[|\\]", "")) && ItemLoreStats.this.isArmour(item.getType()) || ItemLoreStats.this.isHotbarSlot(event.getRawSlots().toString().replaceAll("\\[|\\]", "")) && player.getInventory().getHeldItemSlot() == ItemLoreStats.this.getRawHeldItemSlot(event.getRawSlots().toString().replaceAll("\\[|\\]", "")) && ItemLoreStats.this.isTool(item.getType())) {
+                        if (!ItemLoreStats.this.xpLevel.checkXPLevel(player, item)) {
+                            event.setCancelled(true);
+                            player.updateInventory();
+                            return;
                         }
 
-                        if (ItemLoreStats.this.isArmourSlot(event.getRawSlots().toString().replaceAll("\\[|\\]", "")) && ItemLoreStats.this.isArmour(item.getType()) || ItemLoreStats.this.isHotbarSlot(event.getRawSlots().toString().replaceAll("\\[|\\]", "")) && player.getInventory().getHeldItemSlot() == ItemLoreStats.this.getRawHeldItemSlot(event.getRawSlots().toString().replaceAll("\\[|\\]", "")) && ItemLoreStats.this.isTool(item.getType())) {
-                            if (!ItemLoreStats.this.xpLevel.checkXPLevel(player, item)) {
-                                event.setCancelled(true);
-                                player.updateInventory();
-                                return;
-                            }
+                        if (!ItemLoreStats.this.soulbound.checkSoulbound(player, item)) {
+                            event.setCancelled(true);
+                            player.updateInventory();
+                            return;
+                        }
 
-                            if (!ItemLoreStats.this.soulbound.checkSoulbound(player, item)) {
-                                event.setCancelled(true);
-                                player.updateInventory();
-                                return;
-                            }
-
-                            if (!ItemLoreStats.this.classes.checkClasses(player, item)) {
-                                event.setCancelled(true);
-                                player.updateInventory();
-                                return;
-                            }
+                        if (!ItemLoreStats.this.classes.checkClasses(player, item)) {
+                            event.setCancelled(true);
+                            player.updateInventory();
+                            return;
                         }
                     }
                 }
-
             }
+
         }
 
         @EventHandler
@@ -1923,48 +1879,46 @@ public class ItemLoreStats extends JavaPlugin {
                         ItemLoreStats.this.updateMana(player);
                     }, 1L);
                 }
-
             }
+
         }
 
         @EventHandler
         public void onInventoryClick(InventoryClickEvent event) {
-            if (!event.isCancelled() && !event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) {
-                if (!ItemLoreStats.this.getConfig().getStringList("disabledInWorlds").contains(event.getWhoClicked().getWorld().getName()) && (event.getInventory().getType().equals(InventoryType.CRAFTING) || event.getInventory().getType().equals(InventoryType.PLAYER) || event.getInventory().getType().equals(InventoryType.FURNACE) || event.getInventory().getType().equals(InventoryType.DROPPER) || event.getInventory().getType().equals(InventoryType.HOPPER) || event.getInventory().getType().equals(InventoryType.DISPENSER) || event.getInventory().getType().equals(InventoryType.CHEST) || event.getInventory().getType().equals(InventoryType.ENCHANTING) || event.getInventory().getType().equals(InventoryType.ENDER_CHEST))) {
-                    Player player = (Player) event.getWhoClicked();
-                    if (event.getCurrentItem() != null) {
-                        ItemStack item = event.getCursor().clone();
-                        if (event.isShiftClick()) {
-                            item = event.getCurrentItem().clone();
+            if (!event.isCancelled() && !event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) && !ItemLoreStats.this.getConfig().getStringList("disabledInWorlds").contains(event.getWhoClicked().getWorld().getName()) && (event.getInventory().getType().equals(InventoryType.CRAFTING) || event.getInventory().getType().equals(InventoryType.PLAYER) || event.getInventory().getType().equals(InventoryType.FURNACE) || event.getInventory().getType().equals(InventoryType.DROPPER) || event.getInventory().getType().equals(InventoryType.HOPPER) || event.getInventory().getType().equals(InventoryType.DISPENSER) || event.getInventory().getType().equals(InventoryType.CHEST) || event.getInventory().getType().equals(InventoryType.ENCHANTING) || event.getInventory().getType().equals(InventoryType.ENDER_CHEST))) {
+                Player player = (Player) event.getWhoClicked();
+                if (event.getCurrentItem() != null) {
+                    ItemStack item = event.getCursor().clone();
+                    if (event.isShiftClick()) {
+                        item = event.getCurrentItem().clone();
+                    }
+
+                    if (!ItemLoreStats.this.getConfig().getBoolean("usingMcMMO")) {
+                        ItemLoreStats.this.durability.syncArmourDurability(player);
+                    }
+
+                    if (event.getSlotType().equals(SlotType.ARMOR) && ItemLoreStats.this.isArmour(item.getType()) || event.isShiftClick() && ItemLoreStats.this.isArmour(item.getType()) || event.getSlotType().equals(SlotType.QUICKBAR) && event.getSlot() == player.getInventory().getHeldItemSlot() && ItemLoreStats.this.isTool(item.getType())) {
+                        if (!ItemLoreStats.this.xpLevel.checkXPLevel(player, item)) {
+                            event.setCancelled(true);
+                            player.updateInventory();
+                            return;
                         }
 
-                        if (!ItemLoreStats.this.getConfig().getBoolean("usingMcMMO")) {
-                            ItemLoreStats.this.durability.syncArmourDurability(player);
+                        if (!ItemLoreStats.this.soulbound.checkSoulbound(player, item)) {
+                            event.setCancelled(true);
+                            player.updateInventory();
+                            return;
                         }
 
-                        if (event.getSlotType().equals(SlotType.ARMOR) && ItemLoreStats.this.isArmour(item.getType()) || event.isShiftClick() && ItemLoreStats.this.isArmour(item.getType()) || event.getSlotType().equals(SlotType.QUICKBAR) && event.getSlot() == player.getInventory().getHeldItemSlot() && ItemLoreStats.this.isTool(item.getType())) {
-                            if (!ItemLoreStats.this.xpLevel.checkXPLevel(player, item)) {
-                                event.setCancelled(true);
-                                player.updateInventory();
-                                return;
-                            }
-
-                            if (!ItemLoreStats.this.soulbound.checkSoulbound(player, item)) {
-                                event.setCancelled(true);
-                                player.updateInventory();
-                                return;
-                            }
-
-                            if (!ItemLoreStats.this.classes.checkClasses(player, item)) {
-                                event.setCancelled(true);
-                                player.updateInventory();
-                                return;
-                            }
+                        if (!ItemLoreStats.this.classes.checkClasses(player, item)) {
+                            event.setCancelled(true);
+                            player.updateInventory();
+                            return;
                         }
                     }
                 }
-
             }
+
         }
 
         @EventHandler
@@ -1979,8 +1933,8 @@ public class ItemLoreStats extends JavaPlugin {
                         ItemLoreStats.this.updateMana(player);
                     }, 1L);
                 }
-
             }
+
         }
 
         @EventHandler
@@ -2000,31 +1954,31 @@ public class ItemLoreStats extends JavaPlugin {
                     ItemStack checkItemHeld = player.getItemInHand();
                     if (checkItemHeld != null && checkItemHeld.getType() != Material.AIR && checkItemHeld.getItemMeta() != null && checkItemHeld.getItemMeta().getLore() != null && ItemLoreStats.plugin.isTool(checkItemHeld.getType())) {
                         weaponSpeed = ItemLoreStats.this.gearStats.getSwingSpeedItemInHand(player).toLowerCase();
-                        if (weaponSpeed.equalsIgnoreCase("very fast")) {
+                        if ("very fast".equalsIgnoreCase(weaponSpeed)) {
                             if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
                                 event.getPlayer().removePotionEffect(PotionEffectType.SLOW_DIGGING);
                             }
 
                             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 99999, 1));
-                        } else if (weaponSpeed.equalsIgnoreCase("fast")) {
+                        } else if ("fast".equalsIgnoreCase(weaponSpeed)) {
                             if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
                                 event.getPlayer().removePotionEffect(PotionEffectType.SLOW_DIGGING);
                             }
 
                             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 99999, 0));
-                        } else if (weaponSpeed.equalsIgnoreCase("slow")) {
+                        } else if ("slow".equalsIgnoreCase(weaponSpeed)) {
                             if (event.getPlayer().hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                                 event.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
                             }
 
                             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 99999, 0));
-                        } else if (weaponSpeed.equalsIgnoreCase("very slow")) {
+                        } else if ("very slow".equalsIgnoreCase(weaponSpeed)) {
                             if (event.getPlayer().hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                                 event.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
                             }
 
                             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 99999, 1));
-                        } else if (weaponSpeed.equalsIgnoreCase("normal")) {
+                        } else if ("normal".equalsIgnoreCase(weaponSpeed)) {
                             ItemLoreStats.this.removeWeaponSpeedEffects(event.getPlayer());
                         }
                     }
@@ -2039,18 +1993,18 @@ public class ItemLoreStats extends JavaPlugin {
         public void modifyMobHealth(CreatureSpawnEvent event) {
             if (!ItemLoreStats.this.getConfig().getStringList("disabledInWorlds").contains(event.getEntity().getWorld().getName())) {
                 if (ItemLoreStats.plugin.getConfig().getBoolean("ILSLootFromNaturalSpawnsOnly") && event.getSpawnReason().equals(SpawnReason.NATURAL)) {
-                    event.getEntity().setMetadata("naturalSpawn", new FixedMetadataValue(ItemLoreStats.plugin, Boolean.TRUE));
+                    event.getEntity().setMetadata("naturalSpawn", new FixedMetadataValue(ItemLoreStats.plugin, true));
                 }
 
                 if (ItemLoreStats.this.getConfig().getString("npcModifier." + event.getEntity().getWorld().getName()) != null) {
                     String worldName = event.getEntity().getWorld().getName();
-                    Location loc = new Location(event.getEntity().getWorld(), (double) ItemLoreStats.this.getConfig().getInt("npcModifier." + worldName + ".location.x"), (double) ItemLoreStats.this.getConfig().getInt("npcModifier." + worldName + ".location.y"), (double) ItemLoreStats.this.getConfig().getInt("npcModifier." + worldName + ".location.z"));
+                    Location loc = new Location(event.getEntity().getWorld(), ItemLoreStats.this.getConfig().getInt("npcModifier." + worldName + ".location.x"), ItemLoreStats.this.getConfig().getInt("npcModifier." + worldName + ".location.y"), ItemLoreStats.this.getConfig().getInt("npcModifier." + worldName + ".location.z"));
                     double distance = event.getEntity().getLocation().distance(loc);
                     double distanceHealth = (double) Math.round(event.getEntity().getHealth() + distance * ItemLoreStats.this.getConfig().getDouble("npcModifier." + worldName + ".healthMultiplier"));
                     double additionalHealth = ItemLoreStats.this.gearStats.getHealthItemInHand(event.getEntity()) + ItemLoreStats.this.gearStats.getHealthGear(event.getEntity());
                     double newHealth = distanceHealth + additionalHealth;
-                    event.getEntity().setMaxHealth((double) Double.valueOf(newHealth).intValue());
-                    event.getEntity().setHealth((double) Double.valueOf(newHealth).intValue());
+                    event.getEntity().setMaxHealth(Double.valueOf(newHealth).intValue());
+                    event.getEntity().setHealth(Double.valueOf(newHealth).intValue());
                 }
             }
 

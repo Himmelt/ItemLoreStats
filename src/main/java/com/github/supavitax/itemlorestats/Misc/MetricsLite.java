@@ -12,12 +12,12 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
 public class MetricsLite {
-
     private static final int REVISION = 7;
     private static final String BASE_URL = "http://report.mcstats.org";
     private static final String REPORT_URL = "/plugin/%s";
@@ -30,7 +30,6 @@ public class MetricsLite {
     private final Object optOutLock = new Object();
     private volatile BukkitTask task = null;
 
-
     public MetricsLite(Plugin plugin) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null");
@@ -38,10 +37,10 @@ public class MetricsLite {
             this.plugin = plugin;
             this.configurationFile = this.getConfigFile();
             this.configuration = YamlConfiguration.loadConfiguration(this.configurationFile);
-            this.configuration.addDefault("opt-out", Boolean.valueOf(false));
+            this.configuration.addDefault("opt-out", false);
             this.configuration.addDefault("guid", UUID.randomUUID().toString());
-            this.configuration.addDefault("debug", Boolean.valueOf(false));
-            if (this.configuration.get("guid", (Object) null) == null) {
+            this.configuration.addDefault("debug", false);
+            if (this.configuration.get("guid", null) == null) {
                 this.configuration.options().header("http://mcstats.org").copyDefaults(true);
                 this.configuration.save(this.configurationFile);
             }
@@ -60,9 +59,9 @@ public class MetricsLite {
                 return true;
             } else {
                 this.task = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
-
                     private boolean firstPost = true;
 
+                    @Override
                     public void run() {
                         try {
                             synchronized (MetricsLite.this.optOutLock) {
@@ -74,9 +73,9 @@ public class MetricsLite {
 
                             MetricsLite.this.postPlugin(!this.firstPost);
                             this.firstPost = false;
-                        } catch (IOException var3) {
+                        } catch (IOException var4) {
                             if (MetricsLite.this.debug) {
-                                Bukkit.getLogger().log(Level.INFO, "[Metrics] " + var3.getMessage());
+                                Bukkit.getLogger().log(Level.INFO, "[Metrics] " + var4.getMessage());
                             }
                         }
 
@@ -92,15 +91,15 @@ public class MetricsLite {
         synchronized (this.optOutLock) {
             try {
                 this.configuration.load(this.getConfigFile());
-            } catch (IOException var3) {
+            } catch (IOException var5) {
                 if (this.debug) {
-                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + var3.getMessage());
+                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + var5.getMessage());
                 }
 
                 return true;
-            } catch (InvalidConfigurationException var4) {
+            } catch (InvalidConfigurationException var6) {
                 if (this.debug) {
-                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + var4.getMessage());
+                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + var6.getMessage());
                 }
 
                 return true;
@@ -114,7 +113,7 @@ public class MetricsLite {
         Object var1 = this.optOutLock;
         synchronized (this.optOutLock) {
             if (this.isOptOut()) {
-                this.configuration.set("opt-out", Boolean.valueOf(false));
+                this.configuration.set("opt-out", false);
                 this.configuration.save(this.configurationFile);
             }
 
@@ -129,7 +128,7 @@ public class MetricsLite {
         Object var1 = this.optOutLock;
         synchronized (this.optOutLock) {
             if (!this.isOptOut()) {
-                this.configuration.set("opt-out", Boolean.valueOf(true));
+                this.configuration.set("opt-out", true);
                 this.configuration.save(this.configurationFile);
             }
 
@@ -179,7 +178,7 @@ public class MetricsLite {
         }
 
         json.append('}');
-        URL url = new URL("http://report.mcstats.org" + String.format("/plugin/%s", new Object[]{urlEncode(pluginName)}));
+        URL url = new URL("http://report.mcstats.org" + String.format("/plugin/%s", urlEncode(pluginName)));
         URLConnection connection;
         if (this.isMineshafterPresent()) {
             connection = url.openConnection(Proxy.NO_PROXY);
@@ -224,7 +223,7 @@ public class MetricsLite {
 
         try {
             gzos = new GZIPOutputStream(baos);
-            gzos.write(input.getBytes("UTF-8"));
+            gzos.write(input.getBytes(StandardCharsets.UTF_8));
         } catch (IOException var12) {
             var12.printStackTrace();
         } finally {
@@ -232,7 +231,6 @@ public class MetricsLite {
                 try {
                     gzos.close();
                 } catch (IOException var11) {
-                    ;
                 }
             }
 
@@ -262,7 +260,7 @@ public class MetricsLite {
             isValueNumeric = false;
         }
 
-        if (json.charAt(json.length() - 1) != 123) {
+        if (json.charAt(json.length() - 1) != '{') {
             json.append(',');
         }
 
@@ -278,39 +276,39 @@ public class MetricsLite {
 
     private static String escapeJSON(String text) {
         StringBuilder builder = new StringBuilder();
-        builder.append('\"');
+        builder.append('"');
 
         for (int index = 0; index < text.length(); ++index) {
             char chr = text.charAt(index);
             switch (chr) {
-                case 8:
+                case '\b':
                     builder.append("\\b");
                     break;
-                case 9:
+                case '\t':
                     builder.append("\\t");
                     break;
-                case 10:
+                case '\n':
                     builder.append("\\n");
                     break;
-                case 13:
+                case '\r':
                     builder.append("\\r");
                     break;
-                case 34:
-                case 92:
+                case '"':
+                case '\\':
                     builder.append('\\');
                     builder.append(chr);
                     break;
                 default:
-                    if (chr < 32) {
+                    if (chr < ' ') {
                         String t = "000" + Integer.toHexString(chr);
-                        builder.append("\\u" + t.substring(t.length() - 4));
+                        builder.append("\\u").append(t.substring(t.length() - 4));
                     } else {
                         builder.append(chr);
                     }
             }
         }
 
-        builder.append('\"');
+        builder.append('"');
         return builder.toString();
     }
 

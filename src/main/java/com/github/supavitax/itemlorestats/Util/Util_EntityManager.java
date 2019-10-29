@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class Util_EntityManager {
-
     public ItemStack returnItemStackHelmet(Entity entity) {
         ItemStack stack;
         if (entity instanceof Player) {
@@ -96,14 +95,14 @@ public class Util_EntityManager {
     public String returnEntityName(Entity entity) {
         String name;
         if (entity instanceof Player) {
-            name = ((Player) entity).getName();
+            name = entity.getName();
             return name;
         } else if (entity instanceof LivingEntity) {
-            if (((LivingEntity) entity).getCustomName() != null) {
-                name = ((LivingEntity) entity).getCustomName();
+            if (entity.getCustomName() != null) {
+                name = entity.getCustomName();
                 return name;
             } else {
-                name = ((LivingEntity) entity).getType().toString().substring(0, 1) + ((LivingEntity) entity).getType().toString().substring(1, ((LivingEntity) entity).getType().toString().length()).toLowerCase().replace("_", " ");
+                name = entity.getType().toString().substring(0, 1) + entity.getType().toString().substring(1).toLowerCase().replace("_", " ");
                 return name;
             }
         } else {

@@ -13,7 +13,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Iterator;
 
 public class HealPotions implements Listener {
-
     @EventHandler
     public void drinkHealPotion(PlayerItemConsumeEvent event) {
         if (event.getItem().getDurability() == 8261 || event.getItem().getDurability() == 8229) {
@@ -37,6 +36,7 @@ public class HealPotions implements Listener {
 
             final Player playerFinal1 = event.getPlayer();
             ItemLoreStats.plugin.getServer().getScheduler().scheduleSyncDelayedTask(ItemLoreStats.plugin, new Runnable() {
+                @Override
                 public void run() {
                     ItemLoreStats.plugin.updateBarAPI(playerFinal1);
                 }
@@ -86,6 +86,5 @@ public class HealPotions implements Listener {
                 }
             }
         }
-
     }
 }

@@ -3,7 +3,6 @@ package com.github.supavitax.itemlorestats.Util;
 import org.bukkit.ChatColor;
 
 public class Util_Colours {
-
     public String extractTooltipColour(String input) {
         String toolTipColour = "";
         if (input.contains("&r")) {

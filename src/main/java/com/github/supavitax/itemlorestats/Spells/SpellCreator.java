@@ -11,9 +11,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.io.File;
 
 public class SpellCreator {
-
     private FileConfiguration PlayerDataConfig;
-
 
     public void spellBuilder(String spellFileName, Player player) {
         Projectile projectile = this.getProjectile(spellFileName, player);
@@ -37,28 +35,28 @@ public class SpellCreator {
     public Projectile getProjectile(String spellFileName, Player player) {
         String projectileType = this.getValue(spellFileName, "projectile-type").toLowerCase();
         Location loc = player.getEyeLocation().toVector().add(player.getLocation().getDirection().multiply(2)).toLocation(player.getWorld(), player.getLocation().getYaw(), player.getLocation().getPitch());
-        if (projectileType.equals("snowball")) {
-            Snowball projectile4 = (Snowball) player.getWorld().spawn(loc, Snowball.class);
+        if ("snowball".equals(projectileType)) {
+            Snowball projectile4 = player.getWorld().spawn(loc, Snowball.class);
             projectile4.setMetadata("ILS_Snowball", new FixedMetadataValue(ItemLoreStats.getPlugin(), player.getName()));
             return projectile4;
-        } else if (projectileType.equals("smallfireball")) {
-            SmallFireball projectile3 = (SmallFireball) player.getWorld().spawn(loc, SmallFireball.class);
+        } else if ("smallfireball".equals(projectileType)) {
+            SmallFireball projectile3 = player.getWorld().spawn(loc, SmallFireball.class);
             projectile3.setYield(0.0F);
             projectile3.setIsIncendiary(false);
             projectile3.setMetadata("ILS_SmallFireball", new FixedMetadataValue(ItemLoreStats.getPlugin(), player.getName()));
             return projectile3;
-        } else if (projectileType.equals("fireball")) {
-            Fireball projectile2 = (Fireball) player.getWorld().spawn(loc, Fireball.class);
+        } else if ("fireball".equals(projectileType)) {
+            Fireball projectile2 = player.getWorld().spawn(loc, Fireball.class);
             projectile2.setYield(0.0F);
             projectile2.setIsIncendiary(false);
             projectile2.setMetadata("ILS_Fireball", new FixedMetadataValue(ItemLoreStats.getPlugin(), player.getName()));
             return projectile2;
-        } else if (projectileType.equals("arrow")) {
-            Arrow projectile1 = (Arrow) player.getWorld().spawn(loc, Arrow.class);
+        } else if ("arrow".equals(projectileType)) {
+            Arrow projectile1 = player.getWorld().spawn(loc, Arrow.class);
             projectile1.setMetadata("ILS_Arrow", new FixedMetadataValue(ItemLoreStats.getPlugin(), player.getName()));
             return projectile1;
-        } else if (projectileType.equals("egg")) {
-            Egg projectile = (Egg) player.getWorld().spawn(loc, Egg.class);
+        } else if ("egg".equals(projectileType)) {
+            Egg projectile = player.getWorld().spawn(loc, Egg.class);
             projectile.setMetadata("ILS_Egg", new FixedMetadataValue(ItemLoreStats.getPlugin(), player.getName()));
             return projectile;
         } else {
@@ -74,16 +72,16 @@ public class SpellCreator {
     public Effect getProjectileHitEffect(String spellFileName) {
         String projectileHitEffect = this.getValue(spellFileName, "projectile-hit-effect").toLowerCase();
         Effect hitEffect;
-        if (projectileHitEffect.equals("ender_signal")) {
+        if ("ender_signal".equals(projectileHitEffect)) {
             hitEffect = Effect.ENDER_SIGNAL;
             return hitEffect;
-        } else if (projectileHitEffect.equals("mobspawner_flames")) {
+        } else if ("mobspawner_flames".equals(projectileHitEffect)) {
             hitEffect = Effect.MOBSPAWNER_FLAMES;
             return hitEffect;
-        } else if (projectileHitEffect.equals("potion_break")) {
+        } else if ("potion_break".equals(projectileHitEffect)) {
             hitEffect = Effect.POTION_BREAK;
             return hitEffect;
-        } else if (projectileHitEffect.equals("smoke")) {
+        } else if ("smoke".equals(projectileHitEffect)) {
             hitEffect = Effect.SMOKE;
             return hitEffect;
         } else {
@@ -131,18 +129,18 @@ public class SpellCreator {
         double AHA = this.getAOEHealAmount(spellFileName);
         double DDA = this.getDirectDamageAmount(spellFileName);
         double ADA = this.getAOEDamageAmount(spellFileName);
-        projectile.setMetadata("DHA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Double.valueOf(DHA)));
-        projectile.setMetadata("AHA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Double.valueOf(AHA)));
-        projectile.setMetadata("AHR=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Double.valueOf(this.getAOEHealRange(spellFileName))));
-        projectile.setMetadata("DDA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Double.valueOf(DDA)));
-        projectile.setMetadata("ADA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Double.valueOf(ADA)));
-        projectile.setMetadata("ADR=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Double.valueOf(this.getAOEDamageRange(spellFileName))));
+        projectile.setMetadata("DHA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), DHA));
+        projectile.setMetadata("AHA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), AHA));
+        projectile.setMetadata("AHR=", new FixedMetadataValue(ItemLoreStats.getPlugin(), this.getAOEHealRange(spellFileName)));
+        projectile.setMetadata("DDA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), DDA));
+        projectile.setMetadata("ADA=", new FixedMetadataValue(ItemLoreStats.getPlugin(), ADA));
+        projectile.setMetadata("ADR=", new FixedMetadataValue(ItemLoreStats.getPlugin(), this.getAOEDamageRange(spellFileName)));
         if (DHA > 0.0D || AHA > 0.0D) {
-            projectile.setMetadata("Heal=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Boolean.valueOf(true)));
+            projectile.setMetadata("Heal=", new FixedMetadataValue(ItemLoreStats.getPlugin(), true));
         }
 
         if (DDA > 0.0D || ADA > 0.0D) {
-            projectile.setMetadata("Damage=", new FixedMetadataValue(ItemLoreStats.getPlugin(), Boolean.valueOf(true)));
+            projectile.setMetadata("Damage=", new FixedMetadataValue(ItemLoreStats.getPlugin(), true));
         }
 
     }

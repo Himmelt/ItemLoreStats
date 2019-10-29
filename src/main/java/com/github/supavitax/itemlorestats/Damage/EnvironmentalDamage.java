@@ -13,12 +13,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class EnvironmentalDamage implements Listener {
-
     Durability durability = new Durability();
     Util_EntityManager util_EntityManager = new Util_EntityManager();
     Vanilla_FeatherFalling vanilla_FeatherFalling = new Vanilla_FeatherFalling();
     Vanilla_Base_Armour vanilla_Base_Armour = new Vanilla_Base_Armour();
-
 
     @EventHandler
     public void onBlockExplosion(EntityDamageEvent event) {
@@ -177,7 +175,7 @@ public class EnvironmentalDamage implements Listener {
                     return;
                 }
 
-                double fallHeight = (double) entity.getFallDistance();
+                double fallHeight = entity.getFallDistance();
                 if (fallHeight <= 2.0D) {
                     event.setCancelled(true);
                     return;

@@ -1,6 +1,6 @@
 main: com.github.supavitax.itemlorestats.ItemLoreStats
 name: ItemLoreStats
-version: 6.2.1
+version: 6.2.2
 author: Supavitax
 website: http://dev.bukkit.org/profiles/Supavitax/
 description: Increase attributes with Item Lore Stats.

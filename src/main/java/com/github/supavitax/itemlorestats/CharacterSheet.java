@@ -11,7 +11,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 public class CharacterSheet {
-
     GearStats gearStats = new GearStats();
     SetBonuses setBonuses = new SetBonuses();
     Util_Colours util_Colours = new Util_Colours();
@@ -20,7 +19,6 @@ public class CharacterSheet {
     Util_EntityManager util_EntityManager = new Util_EntityManager();
     Vanilla_Sharpness vanilla_Sharpness = new Vanilla_Sharpness();
     Vanilla_Power vanilla_Power = new Vanilla_Power();
-
 
     public void returnStats(Player player, double passHealth) {
         String armour = ItemLoreStats.plugin.getConfig().getString("primaryStats.armour.colour") + ItemLoreStats.plugin.getConfig().getString("primaryStats.armour.name");
@@ -184,9 +182,9 @@ public class CharacterSheet {
         }
 
         if (ItemLoreStats.plugin.isTool(player.getItemInHand().getType())) {
-            player.sendMessage("    " + this.util_Colours.replaceTooltipColour(movementspeed) + ": " + ChatColor.LIGHT_PURPLE + this.util_Format.format(this.gearStats.getMovementSpeedGear(player) + this.gearStats.getMovementSpeedItemInHand(player) + Double.valueOf((double) player.getLevel()).doubleValue() * ItemLoreStats.plugin.getConfig().getDouble("additionalStatsPerLevel.speed") + speedModifier) + this.util_Colours.replaceTooltipColour(this.util_Colours.extractTooltipColour(movementspeed)) + "%");
+            player.sendMessage("    " + this.util_Colours.replaceTooltipColour(movementspeed) + ": " + ChatColor.LIGHT_PURPLE + this.util_Format.format(this.gearStats.getMovementSpeedGear(player) + this.gearStats.getMovementSpeedItemInHand(player) + Double.valueOf(player.getLevel()) * ItemLoreStats.plugin.getConfig().getDouble("additionalStatsPerLevel.speed") + speedModifier) + this.util_Colours.replaceTooltipColour(this.util_Colours.extractTooltipColour(movementspeed)) + "%");
         } else {
-            player.sendMessage("    " + this.util_Colours.replaceTooltipColour(movementspeed) + ": " + ChatColor.LIGHT_PURPLE + this.util_Format.format(this.gearStats.getMovementSpeedGear(player) + Double.valueOf((double) player.getLevel()).doubleValue() * ItemLoreStats.plugin.getConfig().getDouble("additionalStatsPerLevel.speed") + speedModifier) + this.util_Colours.replaceTooltipColour(this.util_Colours.extractTooltipColour(movementspeed)) + "%");
+            player.sendMessage("    " + this.util_Colours.replaceTooltipColour(movementspeed) + ": " + ChatColor.LIGHT_PURPLE + this.util_Format.format(this.gearStats.getMovementSpeedGear(player) + Double.valueOf(player.getLevel()) * ItemLoreStats.plugin.getConfig().getDouble("additionalStatsPerLevel.speed") + speedModifier) + this.util_Colours.replaceTooltipColour(this.util_Colours.extractTooltipColour(movementspeed)) + "%");
         }
 
     }

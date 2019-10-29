@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class GearStats implements Listener {
-
     Util_Colours util_Colours = new Util_Colours();
     Util_Format util_Format = new Util_Format();
     Util_GetResponse util_GetResponse = new Util_GetResponse();
@@ -65,17 +64,29 @@ public class GearStats implements Listener {
     String majorAOEHeal = null;
     String heroes_MaxMana = null;
     String skillAPI_MaxMana = null;
-    String languageRegex = "[^a-zA-Z一-龥-ÿĀ-ſƀ-ɏ가-힣Ѐ-ҁ]";
-
+    String languageRegex = "[^a-zA-Z一-龥\u0080-ÿĀ-ſƀ-ɏ가-힣Ѐ-ҁ]";
     private boolean inited = false;
     private String baubleName = "Bauble";
     private HashMap<Integer, String> baubles = new HashMap<>();
+    private static final Method cantUseStack;
+
+    static {
+        Method method = null;
+
+        try {
+            method = Class.forName("me.cilio.lvlitem.LevelItem").getDeclaredMethod("cantUseStack", Integer.TYPE, ItemStack.class);
+            method.setAccessible(true);
+        } catch (Throwable var2) {
+        }
+
+        cantUseStack = method;
+    }
 
     private void init() {
         ConfigurationSection section = ItemLoreStats.plugin.getConfig().getConfigurationSection("baubles");
         if (section != null) {
             for (String key : section.getKeys(false)) {
-                if (key.equals("name")) {
+                if ("name".equals(key)) {
                     baubleName = section.getString(key);
                     if (baubleName == null || baubleName.isEmpty()) {
                         baubleName = "Bauble";
@@ -89,20 +100,10 @@ public class GearStats implements Listener {
         }
     }
 
-    private static final Method cantUseStack;
-
-    static {
-        Method method = null;
-        try {
-            method = Class.forName("me.cilio.lvlitem.LevelItem").getDeclaredMethod("cantUseStack", int.class, ItemStack.class);
-            method.setAccessible(true);
-        } catch (Throwable ignored) {
-        }
-        cantUseStack = method;
-    }
-
     private double getDouble(LivingEntity entity, String format) {
-        if (!inited) init();
+        if (!inited) {
+            init();
+        }
         double value = 0.0D;
         for (Map.Entry<Integer, ItemStack> entry : getStacks(entity).entrySet()) {
             double temp = 0.0D;
@@ -120,7 +121,9 @@ public class GearStats implements Listener {
                         } catch (Throwable ignored) {
                             lvlOK = true;
                         }
-                    } else lvlOK = true;
+                    } else {
+                        lvlOK = true;
+                    }
                     lvlOK = lvlOK && ((Player) entity).getLevel() >= getXPLevelRequirement((Player) entity, stack);
                 }
                 for (String line : list) {
@@ -133,17 +136,22 @@ public class GearStats implements Listener {
                     }
                 }
             }
-            if (valid) value += temp;
+            if (valid) {
+                value += temp;
+            }
         }
         return value;
     }
 
     private String getRange(LivingEntity entity, String format) {
-        if (!inited) init();
+        if (!inited) {
+            init();
+        }
         double minValue = 0.0D;
         double maxValue = 0.0D;
         for (Map.Entry<Integer, ItemStack> entry : getStacks(entity).entrySet()) {
-            double min = 0.0D, max = 0.0D;
+            double min = 0.0D;
+            double max = 0.0D;
             int slot = entry.getKey();
             boolean valid = slot < 0;
             String type = slot < 0 ? "" : baubles.get(slot);
@@ -158,7 +166,9 @@ public class GearStats implements Listener {
                         } catch (Throwable ignored) {
                             lvlOK = true;
                         }
-                    } else lvlOK = true;
+                    } else {
+                        lvlOK = true;
+                    }
                     lvlOK = lvlOK && ((Player) entity).getLevel() >= getXPLevelRequirement((Player) entity, stack);
                 }
                 for (String line : list) {
@@ -207,97 +217,97 @@ public class GearStats implements Listener {
 
     public double getArmourGear(LivingEntity entity) {
         this.armour = ItemLoreStats.plugin.getConfig().getString("primaryStats.armour.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, armour));
+        return this.util_Format.format(this.getDouble(entity, this.armour));
     }
 
     public double getDodgeGear(LivingEntity entity) {
         this.dodge = ItemLoreStats.plugin.getConfig().getString("secondaryStats.dodge.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, dodge));
+        return this.util_Format.format(this.getDouble(entity, this.dodge));
     }
 
     public double getBlockGear(LivingEntity entity) {
         this.block = ItemLoreStats.plugin.getConfig().getString("secondaryStats.block.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, block));
+        return this.util_Format.format(this.getDouble(entity, this.block));
     }
 
     public String getDamageGear(LivingEntity entity) {
         this.damage = ItemLoreStats.plugin.getConfig().getString("primaryStats.damage.name").replaceAll(" ", "");
-        return getRange(entity, damage);
+        return this.getRange(entity, this.damage);
     }
 
     public double getCritChanceGear(LivingEntity entity) {
         this.critChance = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critChance.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, critChance));
+        return this.util_Format.format(this.getDouble(entity, this.critChance));
     }
 
     public double getCritDamageGear(LivingEntity entity) {
         this.critDamage = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critDamage.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, critDamage));
+        return this.util_Format.format(this.getDouble(entity, this.critDamage));
     }
 
     public double getHealthGear(LivingEntity entity) {
         this.health = ItemLoreStats.plugin.getConfig().getString("primaryStats.health.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, health));
+        return this.util_Format.format(this.getDouble(entity, this.health));
     }
 
     public double getHealthRegenGear(LivingEntity entity) {
         this.healthRegen = ItemLoreStats.plugin.getConfig().getString("primaryStats.healthRegen.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, healthRegen));
+        return this.util_Format.format(this.getDouble(entity, this.healthRegen));
     }
 
     public double getLifeStealGear(LivingEntity entity) {
         this.lifeSteal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeSteal.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, lifeSteal));
+        return this.util_Format.format(this.getDouble(entity, this.lifeSteal));
     }
 
     public double getLifeStealHealGear(LivingEntity entity) {
         this.lifeStealHeal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeStealHeal.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, lifeStealHeal));
+        return this.util_Format.format(this.getDouble(entity, this.lifeStealHeal));
     }
 
     public double getReflectGear(LivingEntity entity) {
         this.reflect = ItemLoreStats.plugin.getConfig().getString("secondaryStats.reflect.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, reflect));
+        return this.util_Format.format(this.getDouble(entity, this.reflect));
     }
 
     public double getFireGear(LivingEntity entity) {
         this.fire = ItemLoreStats.plugin.getConfig().getString("secondaryStats.fire.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, fire));
+        return this.util_Format.format(this.getDouble(entity, this.fire));
     }
 
     public double getIceGear(LivingEntity entity) {
         this.ice = ItemLoreStats.plugin.getConfig().getString("secondaryStats.ice.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, ice));
+        return this.util_Format.format(this.getDouble(entity, this.ice));
     }
 
     public double getPoisonGear(LivingEntity entity) {
         this.poison = ItemLoreStats.plugin.getConfig().getString("secondaryStats.poison.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, poison));
+        return this.util_Format.format(this.getDouble(entity, this.poison));
     }
 
     public double getWitherGear(LivingEntity entity) {
         this.wither = ItemLoreStats.plugin.getConfig().getString("secondaryStats.wither.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, wither));
+        return this.util_Format.format(this.getDouble(entity, this.wither));
     }
 
     public double getHarmingGear(LivingEntity entity) {
         this.harming = ItemLoreStats.plugin.getConfig().getString("secondaryStats.harming.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, harming));
+        return this.util_Format.format(this.getDouble(entity, this.harming));
     }
 
     public double getBlindGear(LivingEntity entity) {
         this.blind = ItemLoreStats.plugin.getConfig().getString("secondaryStats.blind.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(entity, blind));
+        return this.util_Format.format(this.getDouble(entity, this.blind));
     }
 
     public double getMovementSpeedGear(Player player) {
         this.movementspeed = ItemLoreStats.plugin.getConfig().getString("secondaryStats.movementSpeed.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(player, movementspeed));
+        return this.util_Format.format(this.getDouble(player, this.movementspeed));
     }
 
     public double getXPMultiplierGear(Player player) {
         this.xpmultiplier = ItemLoreStats.plugin.getConfig().getString("bonusStats.xpMultiplier.name").replaceAll(" ", "");
-        return this.util_Format.format(getDouble(player, xpmultiplier));
+        return this.util_Format.format(this.getDouble(player, this.xpmultiplier));
     }
 
     public double get_MaxManaGear(Player player) {
@@ -330,17 +340,17 @@ public class GearStats implements Listener {
 
     public double getArmourItemInHand(ItemStack item) {
         this.armour = ItemLoreStats.plugin.getConfig().getString("primaryStats.armour.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, armour));
+        return this.util_Format.format(this.getHandDouble(item, this.armour));
     }
 
     public double getDodgeItemInHand(ItemStack item) {
         this.dodge = ItemLoreStats.plugin.getConfig().getString("secondaryStats.dodge.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, dodge));
+        return this.util_Format.format(this.getHandDouble(item, this.dodge));
     }
 
     public double getBlockItemInHand(ItemStack item) {
         this.block = ItemLoreStats.plugin.getConfig().getString("secondaryStats.block.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, block));
+        return this.util_Format.format(this.getHandDouble(item, this.block));
     }
 
     public String getDamageItemInHand(ItemStack item) {
@@ -367,87 +377,87 @@ public class GearStats implements Listener {
 
     public double getCritChanceItemInHand(ItemStack item) {
         this.critChance = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critChance.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, critChance));
+        return this.util_Format.format(this.getHandDouble(item, this.critChance));
     }
 
     public double getCritDamageItemInHand(ItemStack item) {
         this.critDamage = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critDamage.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, critDamage));
+        return this.util_Format.format(this.getHandDouble(item, this.critDamage));
     }
 
     public double getHealthItemInHand(ItemStack item) {
         this.health = ItemLoreStats.plugin.getConfig().getString("primaryStats.health.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, health));
+        return this.util_Format.format(this.getHandDouble(item, this.health));
     }
 
     public double getHealthRegenItemInHand(ItemStack item) {
         this.healthRegen = ItemLoreStats.plugin.getConfig().getString("primaryStats.healthRegen.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, healthRegen));
+        return this.util_Format.format(this.getHandDouble(item, this.healthRegen));
     }
 
     public double getLifeStealItemInHand(ItemStack item) {
         this.lifeSteal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeSteal.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, lifeSteal));
+        return this.util_Format.format(this.getHandDouble(item, this.lifeSteal));
     }
 
     public double getLifeStealHealItemInHand(ItemStack item) {
         this.lifeStealHeal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeStealHeal.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, lifeStealHeal));
+        return this.util_Format.format(this.getHandDouble(item, this.lifeStealHeal));
     }
 
     public double getReflectItemInHand(ItemStack item) {
         this.reflect = ItemLoreStats.plugin.getConfig().getString("secondaryStats.reflect.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, reflect));
+        return this.util_Format.format(this.getHandDouble(item, this.reflect));
     }
 
     public double getIceItemInHand(ItemStack item) {
         this.ice = ItemLoreStats.plugin.getConfig().getString("secondaryStats.ice.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, ice));
+        return this.util_Format.format(this.getHandDouble(item, this.ice));
     }
 
     public double getFireItemInHand(ItemStack item) {
         this.fire = ItemLoreStats.plugin.getConfig().getString("secondaryStats.fire.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, fire));
+        return this.util_Format.format(this.getHandDouble(item, this.fire));
     }
 
     public double getPoisonItemInHand(ItemStack item) {
         this.poison = ItemLoreStats.plugin.getConfig().getString("secondaryStats.poison.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, poison));
+        return this.util_Format.format(this.getHandDouble(item, this.poison));
     }
 
     public double getWitherItemInHand(ItemStack item) {
         this.wither = ItemLoreStats.plugin.getConfig().getString("secondaryStats.wither.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, wither));
+        return this.util_Format.format(this.getHandDouble(item, this.wither));
     }
 
     public double getHarmingItemInHand(ItemStack item) {
         this.harming = ItemLoreStats.plugin.getConfig().getString("secondaryStats.harming.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, harming));
+        return this.util_Format.format(this.getHandDouble(item, this.harming));
     }
 
     public double getBlindItemInHand(ItemStack item) {
         this.blind = ItemLoreStats.plugin.getConfig().getString("secondaryStats.blind.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, blind));
+        return this.util_Format.format(this.getHandDouble(item, this.blind));
     }
 
     public double getMovementSpeedItemInHand(ItemStack item) {
         this.movementspeed = ItemLoreStats.plugin.getConfig().getString("secondaryStats.movementSpeed.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, movementspeed));
+        return this.util_Format.format(this.getHandDouble(item, this.movementspeed));
     }
 
     public double getXPMultiplierItemInHand(ItemStack item) {
         this.xpmultiplier = ItemLoreStats.plugin.getConfig().getString("bonusStats.xpMultiplier.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, xpmultiplier));
+        return this.util_Format.format(this.getHandDouble(item, this.xpmultiplier));
     }
 
     public double getPvPDamageModifierItemInHand(ItemStack item) {
         this.pvpdamage = ItemLoreStats.plugin.getConfig().getString("bonusStats.pvpDamage.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, pvpdamage));
+        return this.util_Format.format(this.getHandDouble(item, this.pvpdamage));
     }
 
     public double getPvEDamageModifierItemInHand(ItemStack item) {
         this.pvedamage = ItemLoreStats.plugin.getConfig().getString("bonusStats.pveDamage.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(item, pvedamage));
+        return this.util_Format.format(this.getHandDouble(item, this.pvedamage));
     }
 
     public int getSellValueItemInHand(ItemStack item) {
@@ -476,7 +486,7 @@ public class GearStats implements Listener {
             mana = this.skillAPI_MaxMana;
         }
 
-        return this.util_Format.format(getHandDouble(item, mana));
+        return this.util_Format.format(this.getHandDouble(item, mana));
     }
 
     public int getXPLevelRequirement(Player player, ItemStack item) {
@@ -641,7 +651,6 @@ public class GearStats implements Listener {
                 }
             }
         }
-
         return 0;
     }
 
@@ -665,17 +674,17 @@ public class GearStats implements Listener {
 
     public double getArmourItemInHand(LivingEntity entity) {
         this.armour = ItemLoreStats.plugin.getConfig().getString("primaryStats.armour.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), armour));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.armour));
     }
 
     public double getDodgeItemInHand(LivingEntity entity) {
         this.dodge = ItemLoreStats.plugin.getConfig().getString("secondaryStats.dodge.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), dodge));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.dodge));
     }
 
     public double getBlockItemInHand(LivingEntity entity) {
         this.block = ItemLoreStats.plugin.getConfig().getString("secondaryStats.block.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), block));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.block));
     }
 
     public String getDamageItemInHand(LivingEntity entity) {
@@ -687,7 +696,7 @@ public class GearStats implements Listener {
             List<String> itemLore = gear.getItemMeta().getLore();
 
             for (String line : itemLore) {
-                String lore = ChatColor.stripColor(line.toString());
+                String lore = ChatColor.stripColor(line);
                 if (lore.replaceAll(this.languageRegex, "").matches(this.damage)) {
                     if (lore.contains("-")) {
                         damageMinValue += Double.parseDouble(lore.split("-")[0].replaceAll("[^0-9.+-]", ""));
@@ -705,87 +714,87 @@ public class GearStats implements Listener {
 
     public double getCritChanceItemInHand(LivingEntity entity) {
         this.critChance = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critChance.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), critChance));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.critChance));
     }
 
     public double getCritDamageItemInHand(LivingEntity entity) {
         this.critDamage = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critDamage.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), critDamage));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.critDamage));
     }
 
     public double getHealthItemInHand(LivingEntity entity) {
         this.health = ItemLoreStats.plugin.getConfig().getString("primaryStats.health.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), health));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.health));
     }
 
     public double getHealthRegenItemInHand(LivingEntity entity) {
         this.healthRegen = ItemLoreStats.plugin.getConfig().getString("primaryStats.healthRegen.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), healthRegen));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.healthRegen));
     }
 
     public double getLifeStealItemInHand(LivingEntity entity) {
         this.lifeSteal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeSteal.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), lifeSteal));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.lifeSteal));
     }
 
     public double getLifeStealHealItemInHand(LivingEntity entity) {
         this.lifeStealHeal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeStealHeal.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), lifeStealHeal));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.lifeStealHeal));
     }
 
     public double getReflectItemInHand(LivingEntity entity) {
         this.reflect = ItemLoreStats.plugin.getConfig().getString("secondaryStats.reflect.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), reflect));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.reflect));
     }
 
     public double getIceItemInHand(LivingEntity entity) {
         this.ice = ItemLoreStats.plugin.getConfig().getString("secondaryStats.ice.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), ice));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.ice));
     }
 
     public double getFireItemInHand(LivingEntity entity) {
         this.fire = ItemLoreStats.plugin.getConfig().getString("secondaryStats.fire.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), fire));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.fire));
     }
 
     public double getPoisonItemInHand(LivingEntity entity) {
         this.poison = ItemLoreStats.plugin.getConfig().getString("secondaryStats.poison.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), poison));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.poison));
     }
 
     public double getWitherItemInHand(LivingEntity entity) {
         this.wither = ItemLoreStats.plugin.getConfig().getString("secondaryStats.wither.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), wither));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.wither));
     }
 
     public double getHarmingItemInHand(LivingEntity entity) {
         this.harming = ItemLoreStats.plugin.getConfig().getString("secondaryStats.harming.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), harming));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.harming));
     }
 
     public double getBlindItemInHand(LivingEntity entity) {
         this.blind = ItemLoreStats.plugin.getConfig().getString("secondaryStats.blind.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), blind));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.blind));
     }
 
     public double getMovementSpeedItemInHand(Player player) {
         this.movementspeed = ItemLoreStats.plugin.getConfig().getString("secondaryStats.movementSpeed.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(player.getEquipment().getItemInHand(), movementspeed));
+        return this.util_Format.format(this.getHandDouble(player.getEquipment().getItemInHand(), this.movementspeed));
     }
 
     public double getXPMultiplierItemInHand(Player player) {
         this.xpmultiplier = ItemLoreStats.plugin.getConfig().getString("bonusStats.xpMultiplier.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(player.getEquipment().getItemInHand(), xpmultiplier));
+        return this.util_Format.format(this.getHandDouble(player.getEquipment().getItemInHand(), this.xpmultiplier));
     }
 
     public double getPvPDamageModifierItemInHand(LivingEntity entity) {
         this.pvpdamage = ItemLoreStats.plugin.getConfig().getString("bonusStats.pvpDamage.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), pvpdamage));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.pvpdamage));
     }
 
     public double getPvEDamageModifierItemInHand(LivingEntity entity) {
         this.pvedamage = ItemLoreStats.plugin.getConfig().getString("bonusStats.pveDamage.name").replaceAll(" ", "");
-        return this.util_Format.format(getHandDouble(entity.getEquipment().getItemInHand(), pvedamage));
+        return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.pvedamage));
     }
 
     public int getSellValueItemInHand(Player player) {
@@ -796,7 +805,7 @@ public class GearStats implements Listener {
         if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
             List<String> list = stack.getItemMeta().getLore();
             for (String line : list) {
-                String lore = ChatColor.stripColor(line.toString());
+                String lore = ChatColor.stripColor(line);
                 if (lore.replaceAll(this.languageRegex, "").matches(this.sellValueName + this.currencyName)) {
                     value += Integer.parseInt(lore.replaceAll("[^0-9.+-]", ""));
                 }
@@ -825,7 +834,7 @@ public class GearStats implements Listener {
             List<String> itemLore = gear.getItemMeta().getLore();
 
             for (String line : itemLore) {
-                String lore = ChatColor.stripColor(line.toString());
+                String lore = ChatColor.stripColor(line);
                 if (lore.replaceAll(this.languageRegex, "").matches(this.weaponspeed)) {
                     builder.append(Integer.parseInt(lore.replaceAll("Very Slow", "").replaceAll("Slow", "").replaceAll("Normal", "").replaceAll("Fast", "").replaceAll("Very Fast", "").replaceAll("[^0-9.+-]", "")));
                 }

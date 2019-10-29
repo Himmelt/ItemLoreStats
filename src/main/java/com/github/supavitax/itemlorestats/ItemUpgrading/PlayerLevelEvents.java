@@ -7,9 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 
 public class PlayerLevelEvents implements Listener {
-
     ItemUpgrade itemUpgrade = new ItemUpgrade();
-
 
     @EventHandler
     public void onPlayerLevel(PlayerLevelChangeEvent event) {

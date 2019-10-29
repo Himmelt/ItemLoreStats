@@ -10,11 +10,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class Util_SkillAPI implements Listener {
-
     ItemLoreStats main;
     GearStats gearStats = new GearStats();
     ItemUpgrade itemUpgrade = new ItemUpgrade();
-
 
     public Util_SkillAPI(ItemLoreStats instance) {
         this.main = instance;

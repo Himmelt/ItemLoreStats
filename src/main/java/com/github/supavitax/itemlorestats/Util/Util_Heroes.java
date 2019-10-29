@@ -7,10 +7,8 @@ import com.herocraftonline.heroes.characters.Hero;
 import org.bukkit.entity.Player;
 
 public class Util_Heroes {
-
     GearStats gearStats = new GearStats();
     ItemLoreStats main;
-
 
     public Util_Heroes(ItemLoreStats instance) {
         this.main = instance;

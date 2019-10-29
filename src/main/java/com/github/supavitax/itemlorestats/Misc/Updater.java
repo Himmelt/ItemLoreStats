@@ -17,7 +17,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class Updater {
-
     private Plugin plugin;
     private Updater.UpdateType type;
     private String versionName;
@@ -44,7 +43,6 @@ public class Updater {
     private String updateFolder;
     private Updater.UpdateResult result;
 
-
     public Updater(Plugin plugin, int id, File file, Updater.UpdateType type, boolean announce) {
         this.result = Updater.UpdateResult.SUCCESS;
         this.plugin = plugin;
@@ -56,9 +54,9 @@ public class Updater {
         File pluginFile = plugin.getDataFolder().getParentFile();
         File updaterFile = new File(pluginFile, "Updater");
         File updaterConfigFile = new File(updaterFile, "config.yml");
-        this.config.options().header("This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )\nIf you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below.\nSome updating systems will not adhere to the disabled value, but these may be turned off in their plugin\'s configuration.");
+        this.config.options().header("This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )\nIf you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below.\nSome updating systems will not adhere to the disabled value, but these may be turned off in their plugin's configuration.");
         this.config.addDefault("api-key", "PUT_API_KEY_HERE");
-        this.config.addDefault("disable", Boolean.valueOf(false));
+        this.config.addDefault("disable", false);
         if (!updaterFile.exists()) {
             updaterFile.mkdir();
         }
@@ -80,14 +78,14 @@ public class Updater {
                 plugin.getLogger().severe("The updater could not load configuration at " + updaterFile.getAbsolutePath());
             }
 
-            plugin.getLogger().log(Level.SEVERE, (String) null, var13);
+            plugin.getLogger().log(Level.SEVERE, null, var13);
         }
 
         if (this.config.getBoolean("disable")) {
             this.result = Updater.UpdateResult.DISABLED;
         } else {
             String key = this.config.getString("api-key");
-            if (key.equalsIgnoreCase("PUT_API_KEY_HERE") || key.equals("")) {
+            if ("PUT_API_KEY_HERE".equalsIgnoreCase(key) || "".equals(key)) {
                 key = null;
             }
 
@@ -100,7 +98,7 @@ public class Updater {
                 this.result = Updater.UpdateResult.FAIL_BADID;
             }
 
-            this.thread = new Thread(new Updater.UpdateRunnable((Updater.UpdateRunnable) null));
+            this.thread = new Thread(new Updater.UpdateRunnable(null));
             this.thread.start();
         }
     }
@@ -147,7 +145,7 @@ public class Updater {
             try {
                 this.thread.join();
             } catch (InterruptedException var2) {
-                this.plugin.getLogger().log(Level.SEVERE, (String) null, var2);
+                this.plugin.getLogger().log(Level.SEVERE, null, var2);
             }
         }
 
@@ -175,7 +173,7 @@ public class Updater {
 
             int count;
             while ((count = in.read(data, 0, 1024)) != -1) {
-                downloaded += (long) count;
+                downloaded += count;
                 fout.write(data, 0, count);
                 int dFile = (int) (downloaded * 100L / (long) fileLength);
                 if (this.announce && dFile % 10 == 0) {
@@ -215,7 +213,6 @@ public class Updater {
                     fout.close();
                 }
             } catch (Exception var23) {
-                ;
             }
 
         }
@@ -325,9 +322,9 @@ public class Updater {
             String localVersion = this.plugin.getDescription().getVersion();
             String authorInfo;
             if (title.split("^v|[\\s_-]v").length != 2) {
-                authorInfo = this.plugin.getDescription().getAuthors().size() == 0 ? "" : " (" + (String) this.plugin.getDescription().getAuthors().get(0) + ")";
+                authorInfo = this.plugin.getDescription().getAuthors().size() == 0 ? "" : " (" + this.plugin.getDescription().getAuthors().get(0) + ")";
                 this.plugin.getLogger().warning("The author of this plugin" + authorInfo + " has misconfigured their Auto Update system");
-                this.plugin.getLogger().warning("File versions should follow the format \'PluginName vVERSION\'");
+                this.plugin.getLogger().warning("File versions should follow the format 'PluginName vVERSION'");
                 this.plugin.getLogger().warning("Please notify the author of this error.");
                 this.result = Updater.UpdateResult.FAIL_NOVERSION;
                 return false;
@@ -396,48 +393,16 @@ public class Updater {
                 this.result = Updater.UpdateResult.FAIL_DBO;
             }
 
-            this.plugin.getLogger().log(Level.SEVERE, (String) null, var5);
+            this.plugin.getLogger().log(Level.SEVERE, null, var5);
             return false;
         }
     }
 
-    public static enum ReleaseType {
-
-        ALPHA("ALPHA", 0),
-        BETA("BETA", 1),
-        RELEASE("RELEASE", 2);
-        // $FF: synthetic field
-        private static final Updater.ReleaseType[] ENUM$VALUES = new Updater.ReleaseType[]{ALPHA, BETA, RELEASE};
-
-
-        private ReleaseType(String var1, int var2) {
-        }
-    }
-
-    public static enum UpdateResult {
-
-        SUCCESS("SUCCESS", 0),
-        NO_UPDATE("NO_UPDATE", 1),
-        DISABLED("DISABLED", 2),
-        FAIL_DOWNLOAD("FAIL_DOWNLOAD", 3),
-        FAIL_DBO("FAIL_DBO", 4),
-        FAIL_NOVERSION("FAIL_NOVERSION", 5),
-        FAIL_BADID("FAIL_BADID", 6),
-        FAIL_APIKEY("FAIL_APIKEY", 7),
-        UPDATE_AVAILABLE("UPDATE_AVAILABLE", 8);
-        // $FF: synthetic field
-        private static final Updater.UpdateResult[] ENUM$VALUES = new Updater.UpdateResult[]{SUCCESS, NO_UPDATE, DISABLED, FAIL_DOWNLOAD, FAIL_DBO, FAIL_NOVERSION, FAIL_BADID, FAIL_APIKEY, UPDATE_AVAILABLE};
-
-
-        private UpdateResult(String var1, int var2) {
-        }
-    }
-
     private class UpdateRunnable implements Runnable {
-
         private UpdateRunnable() {
         }
 
+        @Override
         public void run() {
             if (Updater.this.url != null && Updater.this.read() && Updater.this.versionCheck(Updater.this.versionName)) {
                 if (Updater.this.versionLink != null && Updater.this.type != Updater.UpdateType.NO_DOWNLOAD) {
@@ -455,22 +420,32 @@ public class Updater {
 
         }
 
-        // $FF: synthetic method
         UpdateRunnable(Updater.UpdateRunnable var2) {
             this();
         }
     }
 
-    public static enum UpdateType {
+    public enum ReleaseType {
+        ALPHA,
+        BETA,
+        RELEASE
+    }
 
-        DEFAULT("DEFAULT", 0),
-        NO_VERSION_CHECK("NO_VERSION_CHECK", 1),
-        NO_DOWNLOAD("NO_DOWNLOAD", 2);
-        // $FF: synthetic field
-        private static final Updater.UpdateType[] ENUM$VALUES = new Updater.UpdateType[]{DEFAULT, NO_VERSION_CHECK, NO_DOWNLOAD};
+    public enum UpdateType {
+        DEFAULT,
+        NO_VERSION_CHECK,
+        NO_DOWNLOAD
+    }
 
-
-        private UpdateType(String var1, int var2) {
-        }
+    public enum UpdateResult {
+        SUCCESS,
+        NO_UPDATE,
+        DISABLED,
+        FAIL_DOWNLOAD,
+        FAIL_DBO,
+        FAIL_NOVERSION,
+        FAIL_BADID,
+        FAIL_APIKEY,
+        UPDATE_AVAILABLE
     }
 }

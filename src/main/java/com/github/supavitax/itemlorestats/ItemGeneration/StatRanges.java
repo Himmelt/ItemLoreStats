@@ -9,11 +9,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.logging.Level;
 
 public class StatRanges {
-
     Util_Colours util_Colours = new Util_Colours();
     Util_Random util_Random = new Util_Random();
     Util_Format util_Format = new Util_Format();
-
 
     public double getRandomStatFromRange(double minStat, double maxStat) {
         double stat = 0.0D;
@@ -30,7 +28,7 @@ public class StatRanges {
         try {
             if (stat.contains("-") && stat.contains("+")) {
                 if (stat.contains("player")) {
-                    level = Double.valueOf((double) playerLevel).doubleValue();
+                    level = Double.valueOf(playerLevel);
                     if (stat.split("-player")[0].contains("-")) {
                         minStat = this.getRandomStatFromRange(level - Double.parseDouble(stat.split("-")[1]), level - Double.parseDouble(stat.split("-")[0]));
                         maxStat = this.getRandomStatFromRange(minStat, level + Double.parseDouble(stat.split("\\+")[1].split("-")[1]));
@@ -39,7 +37,7 @@ public class StatRanges {
                         maxStat = this.getRandomStatFromRange(minStat, level + Double.parseDouble(stat.split("\\+")[1]));
                     }
                 } else if (stat.contains("mob")) {
-                    level = Double.valueOf((double) mobLevel).doubleValue();
+                    level = Double.valueOf(mobLevel);
                     if (stat.split("-mob")[0].contains("-")) {
                         minStat = this.getRandomStatFromRange(level - Double.parseDouble(stat.split("-")[1]), level - Double.parseDouble(stat.split("-")[0]));
                         maxStat = this.getRandomStatFromRange(minStat, level + Double.parseDouble(stat.split("\\+")[1].split("-")[1]));

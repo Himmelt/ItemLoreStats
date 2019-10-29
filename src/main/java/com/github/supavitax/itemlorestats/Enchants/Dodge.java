@@ -10,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Dodge {
-
     Durability durability = new Durability();
     GearStats gearStats = new GearStats();
     GetSlots getSlots = new GetSlots();
@@ -22,13 +21,12 @@ public class Dodge {
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     Util_Random util_Random = new Util_Random();
 
-
     public boolean dodgeChanceOnHit(LivingEntity getDefender, boolean isTool) {
         if (this.gearStats.getDodgeGear(getDefender) + this.gearStats.getDodgeItemInHand(getDefender) <= 0.0D) {
             return false;
         } else if (!this.internalCooldown.hasCooldown(this.util_EntityManager.returnEntityName(getDefender) + ".dod", ItemLoreStats.plugin.getConfig().getInt("secondaryStats.dodge.internalCooldown"))) {
             if (getDefender instanceof Player) {
-                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getDefender) + ".dod", Long.valueOf(System.currentTimeMillis()));
+                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getDefender) + ".dod", System.currentTimeMillis());
             }
 
             double dodgePercent = 0.0D;

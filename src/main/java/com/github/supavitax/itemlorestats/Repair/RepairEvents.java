@@ -9,9 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class RepairEvents implements Listener {
-
     Repair repair = new Repair();
-
 
     public Material getRepairBlock() {
         if (ItemLoreStats.plugin.getConfig().getString("durabilityAddedOnEachRepair.repairBlock") != null) {

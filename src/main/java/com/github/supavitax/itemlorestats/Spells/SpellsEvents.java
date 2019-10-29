@@ -13,22 +13,20 @@ import java.io.File;
 import java.util.logging.Level;
 
 public class SpellsEvents implements Listener {
-
     GearStats gearStats = new GearStats();
     SpellCreator spellCreator = new SpellCreator();
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     private FileConfiguration PlayerDataConfig;
 
-
     public boolean hasCooldown(String playerName, int getSeconds) {
         if (getSeconds == 0) {
             return false;
         } else if (ItemLoreStats.plugin.spellCooldowns.get(playerName) != null) {
-            if (((Long) ItemLoreStats.plugin.spellCooldowns.get(playerName)).longValue() < System.currentTimeMillis() - (long) (getSeconds * 1000)) {
+            if ((Long) ItemLoreStats.plugin.spellCooldowns.get(playerName) < System.currentTimeMillis() - (long) (getSeconds * 1000)) {
                 return false;
             } else {
                 long currentTime = System.currentTimeMillis();
-                long oldTime = ((Long) ItemLoreStats.plugin.spellCooldowns.get(playerName)).longValue();
+                long oldTime = (Long) ItemLoreStats.plugin.spellCooldowns.get(playerName);
                 String remainingCooldown = String.valueOf(Math.abs(currentTime - (oldTime + (long) (getSeconds * 1000))));
                 String modifiedPlayerName = playerName.split("\\.")[0];
                 Player player = Bukkit.getServer().getPlayer(modifiedPlayerName);
@@ -64,11 +62,11 @@ public class SpellsEvents implements Listener {
                             if (!this.hasCooldown(player.getName() + "." + e.replaceAll(" ", "").toLowerCase(), spellCooldown)) {
                                 this.spellCreator.spellBuilder(e, player);
                                 this.executeCommandList(player, e);
-                                ItemLoreStats.plugin.spellCooldowns.put(player.getName() + "." + e.replaceAll(" ", "").toLowerCase(), Long.valueOf(System.currentTimeMillis()));
+                                ItemLoreStats.plugin.spellCooldowns.put(player.getName() + "." + e.replaceAll(" ", "").toLowerCase(), System.currentTimeMillis());
                             }
                         }
                     }
-                } catch (Exception var5) {
+                } catch (Exception var6) {
                     ItemLoreStats.plugin.getLogger().log(Level.WARNING, player.getName() + " tried to cast " + this.gearStats.getSpellName(player.getItemInHand()) + " but ItemLoreStats was unable to find the config for that spell.");
                 }
             }
@@ -81,11 +79,11 @@ public class SpellsEvents implements Listener {
                         if (!this.hasCooldown(player.getName() + "." + e.replaceAll(" ", "").toLowerCase(), spellCooldown)) {
                             this.spellCreator.spellBuilder(e, player);
                             this.executeCommandList(player, e);
-                            ItemLoreStats.plugin.spellCooldowns.put(player.getName() + "." + e.replaceAll(" ", "").toLowerCase(), Long.valueOf(System.currentTimeMillis()));
+                            ItemLoreStats.plugin.spellCooldowns.put(player.getName() + "." + e.replaceAll(" ", "").toLowerCase(), System.currentTimeMillis());
                         }
                     }
                 }
-            } catch (Exception var4) {
+            } catch (Exception var5) {
                 ItemLoreStats.plugin.getLogger().log(Level.WARNING, player.getName() + " tried to cast " + this.gearStats.getSpellName(player.getItemInHand()) + " but ItemLoreStats was unable to find the config for that spell.");
             }
         }

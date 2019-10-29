@@ -1,23 +1,22 @@
 apply plugin: 'java'
 
 group = 'com.github'
-version = '6.2.1'
+version = '6.2.2'
 archivesBaseName = "ItemLoreStats"
 
 sourceCompatibility = targetCompatibility = 1.8
 
 dependencies {
     compile 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
-    //compile files('lib/spigot-nms-all.jar')
-    compile files('lib/ArmorWeight.jar')
-    compile files('lib/BarAPI.jar')
-    compile files('lib/BossBarAPI_v2.4.1.jar')
-    compile files('lib/Citizens.jar')
-    compile files('lib/Heroes.jar')
-    compile files('lib/MythicMobs-4.4.1.jar')
-    compile files('lib/ProtocolLib.jar')
-    compile files('lib/SkillAPI.jar')
-    compile files('lib/Vault.jar')
+    compile files('lib/ArmorWeight-0.3.16.jar')
+    compile files('lib/BarAPI-3.5.jar')
+    compile files('lib/BossBarAPI-2.4.1.jar')
+    compile files('lib/Citizens-2.0.25.jar')
+    compile files('lib/Heroes-1.5.5.7.jar')
+    compile files('lib/MythicMobs-4.6.5.jar')
+    compile files('lib/ProtocolLib-3.7.0.jar')
+    compile files('lib/SkillAPI-3.108.jar')
+    compile files('lib/Vault-1.5.6.jar')
     compile files('lib/worldedit-bukkit-6.1.9.jar')
     compile files('lib/worldguard-bukkit-6.2.2.jar')
 }

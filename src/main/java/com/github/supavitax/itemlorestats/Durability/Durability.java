@@ -17,11 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Durability {
-
     DurabilityEvents durabilityEvents = new DurabilityEvents();
     Util_Colours util_Colours = new Util_Colours();
     Vanilla_Unbreaking vanilla_Unbreaking = new Vanilla_Unbreaking();
-
 
     public void durabilityCalcForItemInHand(Player player, int amount, String durabilityLost) {
         if (!ItemLoreStats.plugin.getConfig().getBoolean("usingMcMMO") && player.getItemInHand() != null && ItemLoreStats.plugin.isTool(player.getItemInHand().getType()) && player.getItemInHand().getItemMeta().hasLore()) {
@@ -46,7 +44,7 @@ public class Durability {
                         return;
                     }
 
-                    double value = Double.valueOf((double) calculateNewValue).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                    double value = Double.valueOf(calculateNewValue) / Double.valueOf(maximumValue);
                     player.getItemInHand().setDurability((short) ((int) Math.abs(value * (double) player.getItemInHand().getType().getMaxDurability() - (double) player.getItemInHand().getType().getMaxDurability())));
                     if (setItemInHand.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(setItemInHand.substring(0, 2)).contains("&")) {
                         if (setItemInHand.length() > 4) {
@@ -80,20 +78,20 @@ public class Durability {
                         calculateNewValue += this.vanilla_Unbreaking.calculateNewDurabilityLoss(player.getItemInHand().getEnchantmentLevel(Enchantment.DURABILITY), durabilityLost);
                     }
 
-                    if (calculateNewValue < Integer.valueOf(Integer.parseInt(maximumValue) / 4).intValue()) {
-                        if (calculateNewValue == Integer.valueOf(Integer.parseInt(maximumValue) / 4).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
+                    if (calculateNewValue < Integer.valueOf(Integer.parseInt(maximumValue) / 4)) {
+                        if (calculateNewValue == Integer.valueOf(Integer.parseInt(maximumValue) / 4) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
                             player.sendMessage(player.getItemInHand().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
                         }
 
                         durabilityRebuilder = this.util_Colours.replaceTooltipColour(prefixColourOnly) + durabilityName + ": " + ChatColor.RED + calculateNewValue + this.util_Colours.replaceTooltipColour(prefixColourOnly) + durabilitySplitter + this.util_Colours.replaceTooltipColour(durabilityAmountColour) + maximumValue;
-                    } else if (calculateNewValue < Integer.valueOf(Integer.parseInt(maximumValue) / 2).intValue()) {
-                        if (calculateNewValue == Integer.valueOf(Integer.parseInt(maximumValue) / 2).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
+                    } else if (calculateNewValue < Integer.valueOf(Integer.parseInt(maximumValue) / 2)) {
+                        if (calculateNewValue == Integer.valueOf(Integer.parseInt(maximumValue) / 2) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
                             player.sendMessage(player.getItemInHand().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
                         }
 
                         durabilityRebuilder = this.util_Colours.replaceTooltipColour(prefixColourOnly) + durabilityName + ": " + ChatColor.YELLOW + calculateNewValue + this.util_Colours.replaceTooltipColour(prefixColourOnly) + durabilitySplitter + this.util_Colours.replaceTooltipColour(durabilityAmountColour) + maximumValue;
-                    } else if (calculateNewValue <= Integer.valueOf(Integer.parseInt(maximumValue) / 4 * 3).intValue()) {
-                        if (calculateNewValue == Integer.valueOf(Integer.parseInt(maximumValue) / 4 * 3).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
+                    } else if (calculateNewValue <= Integer.valueOf(Integer.parseInt(maximumValue) / 4 * 3)) {
+                        if (calculateNewValue == Integer.valueOf(Integer.parseInt(maximumValue) / 4 * 3) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
                             player.sendMessage(player.getItemInHand().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
                         }
 
@@ -105,7 +103,6 @@ public class Durability {
                     getItemLore.set(index, durabilityRebuilder);
                 }
             }
-
             ItemStack setItemInHand1 = player.getItemInHand();
             ItemMeta setItemInHandMeta1 = setItemInHand1.getItemMeta();
             setItemInHandMeta1.setLore(getItemLore);
@@ -113,7 +110,6 @@ public class Durability {
             player.setItemInHand(new ItemStack(Material.AIR));
             player.setItemInHand(setItemInHand1);
         }
-
     }
 
     public void durabilityCalcForArmour(Entity getDefender, int amount, String durabilityLost) {
@@ -147,10 +143,10 @@ public class Durability {
                         durabilityRebuilder = getItemLore.indexOf(getDurability);
                         getBootsItem = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                         getBootsItemMeta = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - amount;
-                        value = Double.valueOf((double) getBootsItemMeta).doubleValue() / Double.valueOf(getBootsItem).doubleValue();
+                        value = Double.valueOf(getBootsItemMeta) / Double.valueOf(getBootsItem);
                         ((Player) getDefender).getInventory().getHelmet().setDurability((short) ((int) Math.abs(value * (double) ((Player) getDefender).getInventory().getHelmet().getType().getMaxDurability() - (double) ((Player) getDefender).getInventory().getHelmet().getType().getMaxDurability())));
                         if (getBootsItemMeta + 1 <= 1) {
-                            ((Player) getDefender).playEffect(((Player) getDefender).getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
+                            ((Player) getDefender).playEffect(getDefender.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
                             ((Player) getDefender).getInventory().setHelmet(new ItemStack(Material.AIR));
                         } else {
                             if (getDurability.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(getDurability.substring(0, 2)).contains("&")) {
@@ -185,21 +181,21 @@ public class Durability {
                                 getBootsItemMeta += this.vanilla_Unbreaking.calculateNewDurabilityLoss(((Player) getDefender).getInventory().getHelmet().getEnchantmentLevel(Enchantment.DURABILITY), durabilityLost);
                             }
 
-                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getHelmet().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getHelmet().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.RED + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getHelmet().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getHelmet().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.YELLOW + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getHelmet().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getHelmet().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.GREEN + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
@@ -234,10 +230,10 @@ public class Durability {
                         durabilityRebuilder = getItemLore.indexOf(getDurability);
                         getBootsItem = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                         getBootsItemMeta = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - amount;
-                        value = Double.valueOf((double) getBootsItemMeta).doubleValue() / Double.valueOf(getBootsItem).doubleValue();
+                        value = Double.valueOf(getBootsItemMeta) / Double.valueOf(getBootsItem);
                         ((Player) getDefender).getInventory().getChestplate().setDurability((short) ((int) Math.abs(value * (double) ((Player) getDefender).getInventory().getChestplate().getType().getMaxDurability() - (double) ((Player) getDefender).getInventory().getChestplate().getType().getMaxDurability())));
                         if (getBootsItemMeta + 1 <= 1) {
-                            ((Player) getDefender).playEffect(((Player) getDefender).getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
+                            ((Player) getDefender).playEffect(getDefender.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
                             ((Player) getDefender).getInventory().setChestplate(new ItemStack(Material.AIR));
                         } else {
                             if (getDurability.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(getDurability.substring(0, 2)).contains("&")) {
@@ -272,21 +268,21 @@ public class Durability {
                                 getBootsItemMeta += this.vanilla_Unbreaking.calculateNewDurabilityLoss(((Player) getDefender).getInventory().getChestplate().getEnchantmentLevel(Enchantment.DURABILITY), durabilityLost);
                             }
 
-                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getChestplate().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getChestplate().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.RED + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getChestplate().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getChestplate().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.YELLOW + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getChestplate().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getChestplate().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.GREEN + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
@@ -321,10 +317,10 @@ public class Durability {
                         durabilityRebuilder = getItemLore.indexOf(getDurability);
                         getBootsItem = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                         getBootsItemMeta = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - amount;
-                        value = Double.valueOf((double) getBootsItemMeta).doubleValue() / Double.valueOf(getBootsItem).doubleValue();
+                        value = Double.valueOf(getBootsItemMeta) / Double.valueOf(getBootsItem);
                         ((Player) getDefender).getInventory().getLeggings().setDurability((short) ((int) Math.abs(value * (double) ((Player) getDefender).getInventory().getLeggings().getType().getMaxDurability() - (double) ((Player) getDefender).getInventory().getLeggings().getType().getMaxDurability())));
                         if (getBootsItemMeta + 1 <= 1) {
-                            ((Player) getDefender).playEffect(((Player) getDefender).getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
+                            ((Player) getDefender).playEffect(getDefender.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
                             ((Player) getDefender).getInventory().setLeggings(new ItemStack(Material.AIR));
                         } else {
                             if (getDurability.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(getDurability.substring(0, 2)).contains("&")) {
@@ -359,21 +355,21 @@ public class Durability {
                                 getBootsItemMeta += this.vanilla_Unbreaking.calculateNewDurabilityLoss(((Player) getDefender).getInventory().getLeggings().getEnchantmentLevel(Enchantment.DURABILITY), durabilityLost);
                             }
 
-                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getLeggings().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getLeggings().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.RED + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getLeggings().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getLeggings().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.YELLOW + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getLeggings().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getLeggings().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.GREEN + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
@@ -408,10 +404,10 @@ public class Durability {
                         durabilityRebuilder = getItemLore.indexOf(getDurability);
                         getBootsItem = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                         getBootsItemMeta = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - amount;
-                        value = Double.valueOf((double) getBootsItemMeta).doubleValue() / Double.valueOf(getBootsItem).doubleValue();
+                        value = Double.valueOf(getBootsItemMeta) / Double.valueOf(getBootsItem);
                         ((Player) getDefender).getInventory().getBoots().setDurability((short) ((int) Math.abs(value * (double) ((Player) getDefender).getInventory().getBoots().getType().getMaxDurability() - (double) ((Player) getDefender).getInventory().getBoots().getType().getMaxDurability())));
                         if (getBootsItemMeta + 1 <= 1) {
-                            ((Player) getDefender).playEffect(((Player) getDefender).getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
+                            ((Player) getDefender).playEffect(getDefender.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 1);
                             ((Player) getDefender).getInventory().setBoots(new ItemStack(Material.AIR));
                         } else {
                             if (getDurability.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(getDurability.substring(0, 2)).contains("&")) {
@@ -446,21 +442,21 @@ public class Durability {
                                 getBootsItemMeta += this.vanilla_Unbreaking.calculateNewDurabilityLoss(((Player) getDefender).getInventory().getBoots().getEnchantmentLevel(Enchantment.DURABILITY), durabilityLost);
                             }
 
-                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getBoots().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 4)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable25%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getBoots().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.RED + "25%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.RED + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getBoots().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta < Integer.valueOf(Integer.parseInt(getBootsItem) / 2)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 2) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable50%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getBoots().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.YELLOW + "50%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.YELLOW + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
-                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue()) {
-                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3).intValue() && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
-                                    ((Player) getDefender).sendMessage(((Player) getDefender).getInventory().getBoots().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
+                            } else if (getBootsItemMeta <= Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3)) {
+                                if (getBootsItemMeta == Integer.valueOf(Integer.parseInt(getBootsItem) / 4 * 3) && ItemLoreStats.plugin.getConfig().getBoolean("displayDurabilityWarnings.enable75%DurabilityWarning")) {
+                                    getDefender.sendMessage(((Player) getDefender).getInventory().getBoots().getItemMeta().getDisplayName() + ChatColor.LIGHT_PURPLE + " is at " + ChatColor.GREEN + "75%" + ChatColor.LIGHT_PURPLE + " durability.");
                                 }
 
                                 index = this.util_Colours.replaceTooltipColour(currentValue) + durabilityName + ": " + ChatColor.GREEN + getBootsItemMeta + this.util_Colours.replaceTooltipColour(currentValue) + durabilitySplitter + this.util_Colours.replaceTooltipColour(maximumValue) + getBootsItem;
@@ -630,7 +626,7 @@ public class Durability {
                     maximumValue = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                     calculateNewValue = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - 1;
                     if (calculateNewValue > 1) {
-                        value = Double.valueOf((double) calculateNewValue).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        value = Double.valueOf(calculateNewValue) / Double.valueOf(maximumValue);
                         player.getInventory().getHelmet().setDurability((short) ((int) Math.abs(value * (double) player.getInventory().getHelmet().getType().getMaxDurability() - (double) player.getInventory().getHelmet().getType().getMaxDurability())));
                         ItemLoreStats.plugin.getServer().getScheduler().scheduleSyncDelayedTask(ItemLoreStats.plugin, new Runnable() {
                             public void run() {
@@ -652,7 +648,7 @@ public class Durability {
                     maximumValue = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                     calculateNewValue = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - 1;
                     if (calculateNewValue > 1) {
-                        value = Double.valueOf((double) calculateNewValue).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        value = Double.valueOf(calculateNewValue) / Double.valueOf(maximumValue);
                         player.getInventory().getChestplate().setDurability((short) ((int) Math.abs(value * (double) player.getInventory().getChestplate().getType().getMaxDurability() - (double) player.getInventory().getChestplate().getType().getMaxDurability())));
                         ItemLoreStats.plugin.getServer().getScheduler().scheduleSyncDelayedTask(ItemLoreStats.plugin, new Runnable() {
                             public void run() {
@@ -674,7 +670,7 @@ public class Durability {
                     maximumValue = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                     calculateNewValue = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - 1;
                     if (calculateNewValue > 1) {
-                        value = Double.valueOf((double) calculateNewValue).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        value = Double.valueOf(calculateNewValue) / Double.valueOf(maximumValue);
                         player.getInventory().getLeggings().setDurability((short) ((int) Math.abs(value * (double) player.getInventory().getLeggings().getType().getMaxDurability() - (double) player.getInventory().getLeggings().getType().getMaxDurability())));
                         ItemLoreStats.plugin.getServer().getScheduler().scheduleSyncDelayedTask(ItemLoreStats.plugin, new Runnable() {
                             public void run() {
@@ -696,7 +692,7 @@ public class Durability {
                     maximumValue = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                     calculateNewValue = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - 1;
                     if (calculateNewValue > 1) {
-                        value = Double.valueOf((double) calculateNewValue).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        value = Double.valueOf(calculateNewValue) / Double.valueOf(maximumValue);
                         player.getInventory().getBoots().setDurability((short) ((int) Math.abs(value * (double) player.getInventory().getBoots().getType().getMaxDurability() - (double) player.getInventory().getBoots().getType().getMaxDurability())));
                         ItemLoreStats.plugin.getServer().getScheduler().scheduleSyncDelayedTask(ItemLoreStats.plugin, new Runnable() {
                             public void run() {

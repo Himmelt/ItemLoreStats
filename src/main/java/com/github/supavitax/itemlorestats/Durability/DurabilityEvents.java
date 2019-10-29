@@ -23,11 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class DurabilityEvents implements Listener {
-
     SetBonuses setBonuses = new SetBonuses();
     Util_Colours util_Colours = new Util_Colours();
     Vanilla_Unbreaking vanilla_Unbreaking = new Vanilla_Unbreaking();
-
 
     @EventHandler(
             ignoreCancelled = true
@@ -58,7 +56,7 @@ public class DurabilityEvents implements Listener {
                                 String maximumValue = ChatColor.stripColor(getDurability).trim().replace("[", "").substring(durabilityName.length()).split(durabilitySplitter)[1].replace("]", "").trim();
                                 int currentValueMinusOne = Integer.parseInt(ChatColor.stripColor(getDurability).trim().replace("[", "").replace(": ", "").trim().substring(durabilityName.length()).split(durabilitySplitter)[0].replace("§", "").replace("]", "").trim()) - 1;
                                 if (currentValueMinusOne > 1) {
-                                    double value = Double.valueOf((double) currentValueMinusOne).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                                    double value = Double.valueOf(currentValueMinusOne) / Double.valueOf(maximumValue);
                                     item.setDurability((short) ((int) Math.abs(value * (double) item.getType().getMaxDurability() - (double) item.getType().getMaxDurability())));
                                 } else {
                                     item.setDurability((short) 1);
@@ -134,7 +132,7 @@ public class DurabilityEvents implements Listener {
                                 return;
                             }
 
-                            double value = Double.valueOf((double) currentValueMinusOne).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                            double value = Double.valueOf(currentValueMinusOne) / Double.valueOf(maximumValue);
                             player.getItemInHand().setDurability((short) ((int) Math.abs(value * (double) player.getItemInHand().getType().getMaxDurability() - (double) player.getItemInHand().getType().getMaxDurability())));
                             if (this.util_Colours.extractAndReplaceTooltipColour(setItemInHand.substring(0, 2)).contains("&")) {
                                 if (setItemInHand.length() > 4) {
@@ -194,7 +192,6 @@ public class DurabilityEvents implements Listener {
                             getItemLore.set(index, durabilityRebuilder);
                         }
                     }
-
                     ItemStack setItemInHand1 = player.getItemInHand();
                     ItemMeta setItemInHandMeta1 = setItemInHand1.getItemMeta();
                     setItemInHandMeta1.setLore(getItemLore);
@@ -237,7 +234,7 @@ public class DurabilityEvents implements Listener {
                             return;
                         }
 
-                        double value = Double.valueOf((double) currentValueMinusOne).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        double value = Double.valueOf(currentValueMinusOne) / Double.valueOf(maximumValue);
                         player.getItemInHand().setDurability((short) ((int) Math.abs(value * (double) player.getItemInHand().getType().getMaxDurability() - (double) player.getItemInHand().getType().getMaxDurability())));
                         if (setItemInHand.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(setItemInHand.substring(0, 2)).contains("&")) {
                             if (setItemInHand.length() > 4) {
@@ -297,7 +294,6 @@ public class DurabilityEvents implements Listener {
                         getItemLore.set(index, durabilityRebuilder);
                     }
                 }
-
                 ItemStack setItemInHand1 = player.getItemInHand();
                 ItemMeta setItemInHandMeta1 = setItemInHand1.getItemMeta();
                 setItemInHandMeta1.setLore(getItemLore);
@@ -337,7 +333,7 @@ public class DurabilityEvents implements Listener {
                             return;
                         }
 
-                        double value = Double.valueOf((double) currentValueMinusOne).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        double value = Double.valueOf(currentValueMinusOne) / Double.valueOf(maximumValue);
                         player.getItemInHand().setDurability((short) ((int) Math.abs(value * (double) player.getItemInHand().getType().getMaxDurability() - (double) player.getItemInHand().getType().getMaxDurability())));
                         if (setItemInHand.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(setItemInHand.substring(0, 2)).contains("&")) {
                             if (setItemInHand.length() > 4) {
@@ -397,7 +393,6 @@ public class DurabilityEvents implements Listener {
                         getItemLore.set(index, durabilityRebuilder);
                     }
                 }
-
                 ItemStack setItemInHand1 = player.getItemInHand();
                 ItemMeta setItemInHandMeta1 = setItemInHand1.getItemMeta();
                 setItemInHandMeta1.setLore(getItemLore);
@@ -437,7 +432,7 @@ public class DurabilityEvents implements Listener {
                             return;
                         }
 
-                        double value = Double.valueOf((double) currentValueMinusOne).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        double value = Double.valueOf(currentValueMinusOne) / Double.valueOf(maximumValue);
                         player.getItemInHand().setDurability((short) ((int) Math.abs(value * (double) player.getItemInHand().getType().getMaxDurability() - (double) player.getItemInHand().getType().getMaxDurability())));
                         if (setItemInHand.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(setItemInHand.substring(0, 2)).contains("&")) {
                             if (setItemInHand.length() > 4) {
@@ -537,7 +532,7 @@ public class DurabilityEvents implements Listener {
                             return;
                         }
 
-                        double value = Double.valueOf((double) currentValueMinusOne).doubleValue() / Double.valueOf(maximumValue).doubleValue();
+                        double value = Double.valueOf(currentValueMinusOne) / Double.valueOf(maximumValue);
                         player.getItemInHand().setDurability((short) ((int) Math.abs(value * (double) player.getItemInHand().getType().getMaxDurability() - (double) player.getItemInHand().getType().getMaxDurability())));
                         if (setItemInHand.split(durabilitySplitter)[1].trim().length() > 1 && this.util_Colours.extractAndReplaceTooltipColour(setItemInHand.substring(0, 2)).contains("&")) {
                             if (setItemInHand.length() > 4) {
@@ -593,7 +588,6 @@ public class DurabilityEvents implements Listener {
                         } else {
                             durabilityRebuilder = this.util_Colours.replaceTooltipColour(prefixColourOnly) + durabilityName + ": " + this.util_Colours.replaceTooltipColour(durabilityAmountColour) + currentValueMinusOne + this.util_Colours.replaceTooltipColour(prefixColourOnly) + durabilitySplitter + this.util_Colours.replaceTooltipColour(durabilityAmountColour) + maximumValue;
                         }
-
                         getItemLore.set(index, durabilityRebuilder);
                     }
                 }

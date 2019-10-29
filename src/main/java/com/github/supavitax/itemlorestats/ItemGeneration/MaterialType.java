@@ -9,9 +9,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 public class MaterialType {
-
     private FileConfiguration PlayerDataConfig;
-
 
     public String setType(String configFile, ItemStack getMaterial) {
         try {

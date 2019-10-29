@@ -8,16 +8,14 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class Prefix {
-
     Util_Random random = new Util_Random();
 
-
     public String get(FileConfiguration configFile, String entity, String dropChance) {
-        if (configFile.getString(dropChance + ".prefix").equalsIgnoreCase("Random")) {
+        if ("Random".equalsIgnoreCase(configFile.getString(dropChance + ".prefix"))) {
             List getListPrefix = ItemLoreStats.plugin.getConfig().getStringList("prefix.random");
             String selectPrefix = (String) getListPrefix.get(this.random.random(getListPrefix.size()) - 1);
             return selectPrefix;
-        } else if (!configFile.getString(dropChance + ".prefix").equalsIgnoreCase("Stat")) {
+        } else if (!"Stat".equalsIgnoreCase(configFile.getString(dropChance + ".prefix"))) {
             return configFile.getString(dropChance + ".prefix");
         } else {
             ItemLoreStats.plugin.getLogger().log(Level.SEVERE, "Unable to load prefix for " + configFile.getName());

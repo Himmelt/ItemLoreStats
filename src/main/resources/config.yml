@@ -1072,3 +1072,5 @@ npcModifier:
       x: 0
       y: 65
       z: 0
+baubles:
+  name: Bauble

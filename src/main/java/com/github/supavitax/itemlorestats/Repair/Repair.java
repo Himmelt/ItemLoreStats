@@ -13,10 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Repair {
-
     Util_Colours util_Colours = new Util_Colours();
     Util_GetResponse util_GetResponse = new Util_GetResponse();
-
 
     public void repair(Player player, String type, String material) {
         int repairCost = ItemLoreStats.plugin.getConfig().getInt("durabilityAddedOnEachRepair." + type + "." + material);
@@ -40,7 +38,7 @@ public class Repair {
                         currentAmount += repairCost;
                     }
 
-                    double value = Double.valueOf((double) currentAmount).doubleValue() / Double.valueOf((double) maxAmount).doubleValue();
+                    double value = Double.valueOf(currentAmount) / Double.valueOf(maxAmount);
                     player.getItemInHand().setDurability((short) ((int) Math.abs(value * (double) player.getItemInHand().getType().getMaxDurability() - (double) player.getItemInHand().getType().getMaxDurability())));
                     if (this.util_Colours.extractAndReplaceTooltipColour(getItemStat.substring(0, 2)).contains("&")) {
                         if (getItemStat.length() > 4) {
@@ -95,7 +93,6 @@ public class Repair {
                     int currentAmount = Integer.parseInt(this.util_Colours.extractAndReplaceTooltipColour(ChatColor.stripColor(getItemStat).split(": ")[1].split("/")[0]).replaceAll("&([0-9a-f])", ""));
                     int maxAmount = Integer.parseInt(this.util_Colours.extractAndReplaceTooltipColour(ChatColor.stripColor(getItemStat).split(": ")[1].split("/")[1]).replaceAll("&([0-9a-f])", ""));
                     return currentAmount == maxAmount;
-
                 }
             }
         }

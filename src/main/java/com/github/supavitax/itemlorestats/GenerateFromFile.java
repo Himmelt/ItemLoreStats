@@ -13,11 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 
 public class GenerateFromFile implements Listener {
-
     Util_Colours util_Colours = new Util_Colours();
     private File PlayerDataFile;
     private FileConfiguration PlayerDataConfig;
-
 
     public void exportWeapon(Player player, String WeaponName) {
         try {
@@ -30,7 +28,7 @@ public class GenerateFromFile implements Listener {
                     this.PlayerDataConfig.save(this.PlayerDataFile);
                     player.sendMessage(ChatColor.LIGHT_PURPLE + "Successfully exported " + ChatColor.GOLD + WeaponName + ChatColor.LIGHT_PURPLE + "!");
                 } else {
-                    player.sendMessage(ChatColor.RED + "Failed to export: Item in hand doesn\'t contain any lore!");
+                    player.sendMessage(ChatColor.RED + "Failed to export: Item in hand doesn't contain any lore!");
                 }
             }
         } catch (Exception var4) {

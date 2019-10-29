@@ -4,30 +4,27 @@ import com.github.supavitax.itemlorestats.ItemLoreStats;
 import com.github.supavitax.itemlorestats.Util.Util_GetResponse;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class CustomMaterial_Com {
-
     Util_GetResponse util_GetResponse = new Util_GetResponse();
-
 
     public void onCustomMaterialCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (!ItemLoreStats.plugin.getConfig().getStringList("disabledInWorlds").contains(player.getWorld().getName())) {
                 if (!player.isOp() && !player.hasPermission("ils.admin")) {
-                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", (Entity) null, (Entity) null, "", ""));
+                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
                 } else if (player.getItemInHand() != null) {
                     if (player.getItemInHand().getType() != Material.AIR) {
                         if (args.length >= 3) {
                             String itemName = player.getItemInHand().getType().toString();
                             String rebuiltName = "";
-                            if (args[0].equalsIgnoreCase("custom")) {
-                                if (args[1].equalsIgnoreCase("tool")) {
-                                    if (args[2].toString() != null) {
+                            if ("custom".equalsIgnoreCase(args[0])) {
+                                if ("tool".equalsIgnoreCase(args[1])) {
+                                    if (args[2] != null) {
                                         if (itemName != null) {
                                             List armourType = ItemLoreStats.plugin.getConfig().getList("materials.tools");
 
@@ -49,12 +46,12 @@ public class CustomMaterial_Com {
                                     } else {
                                         player.sendMessage(this.util_GetResponse.getResponse("CustomItemMessages.CustomItemType", player, player, "", ""));
                                     }
-                                } else if (args[1].equalsIgnoreCase("armour")) {
-                                    if (args[2].toString() != null) {
+                                } else if ("armour".equalsIgnoreCase(args[1])) {
+                                    if (args[2] != null) {
                                         if (args.length > 3) {
-                                            if (args[3].toString() != null) {
+                                            if (args[3] != null) {
                                                 if (itemName != null) {
-                                                    String var9 = args[2].toString().toLowerCase();
+                                                    String var9 = args[2].toLowerCase();
                                                     List var10 = ItemLoreStats.plugin.getConfig().getList("materials.armour." + var9);
 
                                                     for (int i = 0; i < args.length; ++i) {
@@ -86,19 +83,19 @@ public class CustomMaterial_Com {
                                 }
                             }
                         } else if (args.length == 2) {
-                            if (args[1].equalsIgnoreCase("tool")) {
+                            if ("tool".equalsIgnoreCase(args[1])) {
                                 player.sendMessage(this.util_GetResponse.getResponse("CustomItemMessages.CustomItemType", player, player, "", ""));
-                            } else if (args[1].equalsIgnoreCase("armour")) {
+                            } else if ("armour".equalsIgnoreCase(args[1])) {
                                 player.sendMessage(this.util_GetResponse.getResponse("CustomItemMessages.CustomArmourType", player, player, "", ""));
                             }
                         } else if (args.length == 1) {
                             player.sendMessage(this.util_GetResponse.getResponse("CustomItemMessages.CustomEquipmentType", player, player, "", ""));
                         }
                     } else {
-                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", (Entity) null, (Entity) null, "", ""));
+                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
                     }
                 } else {
-                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", (Entity) null, (Entity) null, "", ""));
+                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
                 }
             }
         }

@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.Random;
 
 public class Util_Random {
-
     public int random(int length) {
         return (new Random()).nextInt(length) + 1;
     }

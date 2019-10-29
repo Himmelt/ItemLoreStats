@@ -7,10 +7,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 public class Vanilla_Unbreaking {
-
     Util_EntityManager util_EntityManager = new Util_EntityManager();
     Util_Random util_Random = new Util_Random();
-
 
     public boolean hasUnbreaking(ItemStack itemInHand) {
         return itemInHand.getEnchantments().containsKey(Enchantment.DURABILITY);

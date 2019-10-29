@@ -12,7 +12,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class Wither {
-
     Durability durability = new Durability();
     GearStats gearStats = new GearStats();
     GetSlots getSlots = new GetSlots();
@@ -24,11 +23,10 @@ public class Wither {
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     Util_Random util_Random = new Util_Random();
 
-
     public void witherChanceOnHit(LivingEntity getDefender, LivingEntity getAttacker, boolean isTool) {
         if (!this.internalCooldown.hasCooldown(this.util_EntityManager.returnEntityName(getAttacker) + ".wit", ItemLoreStats.plugin.getConfig().getInt("secondaryStats.wither.internalCooldown"))) {
             if (getAttacker instanceof Player) {
-                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getAttacker) + ".wit", Long.valueOf(System.currentTimeMillis()));
+                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getAttacker) + ".wit", System.currentTimeMillis());
             }
 
             double witherPercent = 0.0D;
@@ -51,17 +49,17 @@ public class Wither {
 
             if ((double) this.util_Random.random(100) <= witherPercent) {
                 if (getAttacker instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.wither")) {
-                    ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.WitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                    getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.WitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                 }
 
                 if (getDefender instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.enemyWither")) {
                     if (getAttacker instanceof Player) {
-                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyWitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyWitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                     } else if (getAttacker instanceof LivingEntity) {
                         if (getAttacker.getCustomName() != null) {
-                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyWitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyWitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         } else {
-                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyWitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyWitherSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         }
                     }
                 }
@@ -69,6 +67,5 @@ public class Wither {
                 getDefender.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, ItemLoreStats.plugin.getConfig().getInt("secondaryStats.wither.effectDuration") * 20, ItemLoreStats.plugin.getConfig().getInt("secondaryStats.wither.effectAmplifier")));
             }
         }
-
     }
 }

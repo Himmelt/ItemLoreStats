@@ -10,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class CriticalStrike {
-
     Durability durability = new Durability();
     GearStats gearStats = new GearStats();
     GetSlots getSlots = new GetSlots();
@@ -22,13 +21,12 @@ public class CriticalStrike {
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     Util_Random util_Random = new Util_Random();
 
-
     public int criticalStrikeChanceOnHit(LivingEntity getAttacker, LivingEntity getDefender) {
         if (this.gearStats.getCritChanceGear(getAttacker) + this.gearStats.getCritChanceItemInHand(getAttacker) <= 0.0D) {
             return 0;
         } else if (!this.internalCooldown.hasCooldown(this.util_EntityManager.returnEntityName(getAttacker) + ".cri", ItemLoreStats.plugin.getConfig().getInt("secondaryStats.critChance.internalCooldown"))) {
             if (getAttacker instanceof Player) {
-                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getAttacker) + ".cri", Long.valueOf(System.currentTimeMillis()));
+                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getAttacker) + ".cri", System.currentTimeMillis());
             }
 
             double critPercent = 0.0D;
@@ -47,17 +45,17 @@ public class CriticalStrike {
 
             if (critPercent >= (double) this.util_Random.random(100)) {
                 if (getAttacker instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.critStrike") && getAttacker instanceof Player) {
-                    ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.CriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                    getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.CriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                 }
 
                 if (getDefender instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.enemyCritStrike")) {
                     if (getAttacker instanceof Player) {
-                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                     } else if (getAttacker instanceof LivingEntity) {
                         if (getAttacker.getCustomName() != null) {
-                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         } else {
-                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         }
                     }
                 }

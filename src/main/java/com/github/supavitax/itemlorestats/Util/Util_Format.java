@@ -5,7 +5,6 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class Util_Format {
-
     public double format(double value) {
         Locale forceLocale = new Locale("en", "UK");
         String decimalPattern = "0.0";

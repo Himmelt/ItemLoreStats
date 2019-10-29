@@ -10,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Armour {
-
     Durability durability = new Durability();
     GearStats gearStats = new GearStats();
     GetSlots getSlots = new GetSlots();
@@ -21,7 +20,6 @@ public class Armour {
     Util_Format util_Format = new Util_Format();
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     Util_Random util_Random = new Util_Random();
-
 
     public double armourChanceOnHit(LivingEntity getDefender) {
         double modifier = 0.0D;

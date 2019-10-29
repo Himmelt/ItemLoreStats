@@ -14,13 +14,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ItemUpgrade {
-
     GearStats gearStats = new GearStats();
     Util_Colours util_Colours = new Util_Colours();
     Util_Format util_Format = new Util_Format();
     Util_GetResponse util_GetResponse = new Util_GetResponse();
-    String languageRegex = "[^a-zA-Z一-龥-ÿĀ-ſƀ-ɏ]";
-
+    String languageRegex = "[^a-zA-Z一-龥\u0080-ÿĀ-ſƀ-ɏ]";
 
     public void increaseItemStatOnItemInHand(Player player) {
         if (!ItemLoreStats.plugin.getConfig().getStringList("disabledInWorlds").contains(player.getWorld().getName())) {
@@ -79,7 +77,7 @@ public class ItemUpgrade {
                             }
 
                             statName = statName.replaceAll(" ", "");
-                            String lore = ChatColor.stripColor(line.toString());
+                            String lore = ChatColor.stripColor(line);
                             String getLine;
                             double upgradeNumbers;
                             double var28;
@@ -191,7 +189,7 @@ public class ItemUpgrade {
                             }
 
                             statName = statName.replaceAll(" ", "");
-                            String lore = ChatColor.stripColor(line.toString());
+                            String lore = ChatColor.stripColor(line);
                             String getLine;
                             double upgradeNumbers;
                             double var28;
@@ -234,7 +232,6 @@ public class ItemUpgrade {
                         }
                     }
                 }
-
                 itemMeta.setLore(itemLore);
                 item.setItemMeta(itemMeta);
                 player.getInventory().setHelmet(new ItemStack(item));
@@ -303,7 +300,7 @@ public class ItemUpgrade {
                             }
 
                             statName = statName.replaceAll(" ", "");
-                            String lore = ChatColor.stripColor(line.toString());
+                            String lore = ChatColor.stripColor(line);
                             String getLine;
                             double upgradeNumbers;
                             double var28;
@@ -346,7 +343,6 @@ public class ItemUpgrade {
                         }
                     }
                 }
-
                 itemMeta.setLore(itemLore);
                 item.setItemMeta(itemMeta);
                 player.getInventory().setChestplate(new ItemStack(item));
@@ -415,7 +411,7 @@ public class ItemUpgrade {
                             }
 
                             statName = statName.replaceAll(" ", "");
-                            String lore = ChatColor.stripColor(line.toString());
+                            String lore = ChatColor.stripColor(line);
                             String getLine;
                             double upgradeNumbers;
                             double var28;
@@ -458,7 +454,6 @@ public class ItemUpgrade {
                         }
                     }
                 }
-
                 itemMeta.setLore(itemLore);
                 item.setItemMeta(itemMeta);
                 player.getInventory().setLeggings(new ItemStack(item));
@@ -527,7 +522,7 @@ public class ItemUpgrade {
                             }
 
                             statName = statName.replaceAll(" ", "");
-                            String lore = ChatColor.stripColor(line.toString());
+                            String lore = ChatColor.stripColor(line);
                             String getLine;
                             double upgradeNumbers;
                             double var28;
@@ -570,7 +565,6 @@ public class ItemUpgrade {
                         }
                     }
                 }
-
                 itemMeta.setLore(itemLore);
                 item.setItemMeta(itemMeta);
                 player.getInventory().setBoots(new ItemStack(item));

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class GetSlots {
-
     public ItemStack returnItemInHand(Entity entity) {
         ItemStack item;
         if (entity instanceof Player) {

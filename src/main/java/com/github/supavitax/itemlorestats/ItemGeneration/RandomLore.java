@@ -8,10 +8,8 @@ import org.bukkit.Material;
 import java.util.List;
 
 public class RandomLore {
-
     Util_Random random = new Util_Random();
     Util_Colours util_Colours = new Util_Colours();
-
 
     public String get(Material getMaterial) {
         String material = getMaterial.toString();

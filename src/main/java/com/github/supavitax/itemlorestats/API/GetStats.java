@@ -8,11 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class GetStats {
-
     SetBonuses setBonuses = new SetBonuses();
     GearStats gearStats = new GearStats();
     Util_Format util_Format = new Util_Format();
-
 
     private double itemInHandBaseDamage(Player player) {
         double noTool = 1.0D;
@@ -359,7 +357,7 @@ public class GetStats {
 
     public double getItemInHandValue(Player player) {
         double value = 0.0D;
-        value = this.util_Format.format((double) this.gearStats.getSellValueItemInHand(player));
+        value = this.util_Format.format(this.gearStats.getSellValueItemInHand(player));
         return value;
     }
 }

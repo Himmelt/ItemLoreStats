@@ -10,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Reflect {
-
     Durability durability = new Durability();
     GearStats gearStats = new GearStats();
     GetSlots getSlots = new GetSlots();
@@ -22,13 +21,12 @@ public class Reflect {
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     Util_Random util_Random = new Util_Random();
 
-
     public double reflectChanceOnHit(LivingEntity getAttacker, boolean isTool) {
         if (this.gearStats.getReflectGear(getAttacker) + this.gearStats.getReflectItemInHand(getAttacker) <= 0.0D) {
             return 0.0D;
         } else if (!this.internalCooldown.hasCooldown(this.util_EntityManager.returnEntityName(getAttacker) + ".ref", ItemLoreStats.plugin.getConfig().getInt("secondaryStats.reflect.internalCooldown"))) {
             if (getAttacker instanceof Player) {
-                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getAttacker) + ".ref", Long.valueOf(System.currentTimeMillis()));
+                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getAttacker) + ".ref", System.currentTimeMillis());
             }
 
             double reflect = 0.0D;

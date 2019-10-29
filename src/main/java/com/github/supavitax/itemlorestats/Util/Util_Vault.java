@@ -11,13 +11,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class Util_Vault {
-
     GearStats gearStats = new GearStats();
     Repair repair = new Repair();
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     public static Economy econ = null;
     ItemLoreStats main;
-
 
     public Util_Vault(ItemLoreStats instance) {
         this.main = instance;
@@ -45,7 +43,7 @@ public class Util_Vault {
         this.setupEconomy();
         double getBalance = econ.getBalance(player.getName());
         int currentBalanceToBeDeducted = ItemLoreStats.plugin.getConfig().getInt("durabilityAddedOnEachRepair.repairCurrencyCost." + type + "." + material);
-        EconomyResponse r = econ.withdrawPlayer(player.getName(), (double) currentBalanceToBeDeducted);
+        EconomyResponse r = econ.withdrawPlayer(player.getName(), currentBalanceToBeDeducted);
         if (Double.valueOf(getBalance).intValue() >= currentBalanceToBeDeducted) {
             if (r.transactionSuccess()) {
                 this.repair.repair(player, type, material);
@@ -62,7 +60,7 @@ public class Util_Vault {
         if (player.getItemInHand().getType() != Material.AIR) {
             int currentBalanceToBeAdded = this.gearStats.getSellValueItemInHand(player) * stackSize;
             if (currentBalanceToBeAdded > 0) {
-                EconomyResponse r = econ.depositPlayer(player.getName(), (double) currentBalanceToBeAdded);
+                EconomyResponse r = econ.depositPlayer(player.getName(), currentBalanceToBeAdded);
                 if (r.transactionSuccess()) {
                     player.sendMessage(this.util_GetResponse.getResponse("SellMessages.SellSuccessful", player, player, this.getItemInHandName(player.getItemInHand()), String.valueOf(currentBalanceToBeAdded)));
                     player.setItemInHand(new ItemStack(Material.AIR));

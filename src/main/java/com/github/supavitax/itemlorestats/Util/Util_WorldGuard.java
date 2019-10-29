@@ -6,9 +6,7 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import org.bukkit.entity.Player;
 
 public class Util_WorldGuard {
-
     ItemLoreStats main;
-
 
     public Util_WorldGuard(ItemLoreStats instance) {
         this.main = instance;

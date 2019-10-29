@@ -6,7 +6,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class Vanilla_Base_Armour {
-
     public double getDamageReductionFromArmour(Entity getDefender) {
         double reduction = 0.0D;
         ItemStack leggings;

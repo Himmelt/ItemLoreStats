@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class GearStatsBackup implements Listener {
-
     Util_Colours util_Colours = new Util_Colours();
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     GetSlots getSlots = new GetSlots();
@@ -57,7 +56,6 @@ public class GearStatsBackup implements Listener {
     String minorAOEHeal = null;
     String majorAOEHeal = null;
     String heroes_MaxMana = null;
-
 
     public double getArmourGear(Entity entity) {
         this.armour = ItemLoreStats.plugin.getConfig().getString("primaryStats.armour.name");
@@ -2063,7 +2061,6 @@ public class GearStatsBackup implements Listener {
 
                         return storeLoreValues1;
                     } catch (NumberFormatException var9) {
-                        ;
                     }
                 }
             }
@@ -2094,7 +2091,6 @@ public class GearStatsBackup implements Listener {
 
                         return storeLoreValues1;
                     } catch (NumberFormatException var9) {
-                        ;
                     }
                 }
             }
@@ -2420,7 +2416,6 @@ public class GearStatsBackup implements Listener {
 
                         return storeLoreValues1;
                     } catch (NumberFormatException var9) {
-                        ;
                     }
                 }
             }
@@ -2430,7 +2425,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getTnT(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.tnt = ItemLoreStats.plugin.getConfig().getString("spells.tnt.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
@@ -2449,7 +2444,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getFireball(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.fireball = ItemLoreStats.plugin.getConfig().getString("spells.fireball.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
@@ -2468,7 +2463,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getLightning(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.lightning = ItemLoreStats.plugin.getConfig().getString("spells.lightning.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
@@ -2487,7 +2482,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getFrostbolt(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.frostbolt = ItemLoreStats.plugin.getConfig().getString("spells.frostbolt.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
@@ -2506,7 +2501,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getMinorHeal(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.minorHeal = ItemLoreStats.plugin.getConfig().getString("spells.minorHeal.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
@@ -2525,7 +2520,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getMajorHeal(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.majorHeal = ItemLoreStats.plugin.getConfig().getString("spells.majorHeal.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
@@ -2544,7 +2539,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getMinorAOEHeal(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.minorAOEHeal = ItemLoreStats.plugin.getConfig().getString("spells.minorAOEHeal.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
@@ -2563,7 +2558,7 @@ public class GearStatsBackup implements Listener {
     }
 
     public boolean getMajorAOEHeal(Player player) {
-        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", (Entity) null, (Entity) null, "", "").replaceAll("&([0-9a-f])", "");
+        String castString = this.util_GetResponse.getResponse("SpellMessages.CastSpell.ItemInHand", null, null, "", "").replaceAll("&([0-9a-f])", "");
         this.majorAOEHeal = ItemLoreStats.plugin.getConfig().getString("spells.majorAOEHeal.name");
         ItemStack item = player.getItemInHand();
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {

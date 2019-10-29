@@ -7,7 +7,6 @@ import com.github.supavitax.itemlorestats.Util.Util_GetResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,14 +15,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Repair_Com {
-
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     Util_Colours util_Colours = new Util_Colours();
     Repair repair = new Repair();
 
-
     public void onRepairCommand(CommandSender sender, String[] args) {
-        if (args[0].equalsIgnoreCase("repair")) {
+        if ("repair".equalsIgnoreCase(args[0])) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 if (!ItemLoreStats.plugin.getConfig().getStringList("disabledInWorlds").contains(player.getWorld().getName())) {
@@ -36,16 +33,16 @@ public class Repair_Com {
                                             this.repair.payAndRepair(player, player.getItemInHand().getType());
                                         }
                                     } else {
-                                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NoLoreError", (Entity) null, (Entity) null, "", ""));
+                                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NoLoreError", null, null, "", ""));
                                     }
                                 } else {
-                                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", (Entity) null, (Entity) null, "", ""));
+                                    player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
                                 }
                             } else {
-                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", (Entity) null, (Entity) null, "", ""));
+                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
                             }
                         } else {
-                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", (Entity) null, (Entity) null, "", ""));
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
                         }
                     } else if (player.getItemInHand() != null) {
                         if (player.getItemInHand().getType() != Material.AIR) {
@@ -97,7 +94,7 @@ public class Repair_Com {
                                         repairedItem.setItemMeta(repairedItemMeta);
                                         player.setItemInHand(repairedItem);
                                         player.getItemInHand().setDurability((short) 0);
-                                        if (ItemLoreStats.plugin.getConfig().getString("durabilityAddedOnEachRepair.repairCostType").equalsIgnoreCase("Currency")) {
+                                        if ("Currency".equalsIgnoreCase(ItemLoreStats.plugin.getConfig().getString("durabilityAddedOnEachRepair.repairCostType"))) {
                                             player.sendMessage(this.util_GetResponse.getResponse("RepairMessages.RepairSuccessfulCurrency", player, player, player.getItemInHand().getItemMeta().getDisplayName(), player.getItemInHand().getItemMeta().getDisplayName()));
                                         } else {
                                             player.sendMessage(this.util_GetResponse.getResponse("RepairMessages.RepairSuccessfulMaterial", player, player, player.getItemInHand().getItemMeta().getDisplayName(), player.getItemInHand().getItemMeta().getDisplayName()));
@@ -105,17 +102,17 @@ public class Repair_Com {
                                     }
                                 }
                             } else {
-                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NoLoreError", (Entity) null, (Entity) null, "", ""));
+                                player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NoLoreError", null, null, "", ""));
                             }
                         } else {
-                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", (Entity) null, (Entity) null, "", ""));
+                            player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
                         }
                     } else {
-                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", (Entity) null, (Entity) null, "", ""));
+                        player.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.NullItemInHandError", null, null, "", ""));
                     }
                 }
             } else {
-                System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", (Entity) null, (Entity) null, "", ""));
+                System.out.println("[ILS]" + this.util_GetResponse.getResponse("ErrorMessages.IngameOnlyError", null, null, "", ""));
             }
         }
 

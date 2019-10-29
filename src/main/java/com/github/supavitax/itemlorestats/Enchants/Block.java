@@ -10,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Block {
-
     Durability durability = new Durability();
     GearStats gearStats = new GearStats();
     GetSlots getSlots = new GetSlots();
@@ -22,13 +21,12 @@ public class Block {
     Util_GetResponse util_GetResponse = new Util_GetResponse();
     Util_Random util_Random = new Util_Random();
 
-
     public boolean blockChanceOnHit(LivingEntity getDefender, boolean isTool) {
         if (this.gearStats.getBlockGear(getDefender) + this.gearStats.getBlockItemInHand(getDefender) <= 0.0D) {
             return false;
         } else if (!this.internalCooldown.hasCooldown(this.util_EntityManager.returnEntityName(getDefender) + ".blo", ItemLoreStats.plugin.getConfig().getInt("secondaryStats.block.internalCooldown"))) {
             if (getDefender instanceof Player) {
-                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getDefender) + ".blo", Long.valueOf(System.currentTimeMillis()));
+                ItemLoreStats.plugin.internalCooldowns.put(this.util_EntityManager.returnEntityName(getDefender) + ".blo", System.currentTimeMillis());
             }
 
             double blockPercent = 0.0D;
