@@ -104,6 +104,12 @@ public final class ItemLoreStats extends JavaPlugin {
     Name_Com name_Com = new Name_Com();
     Repair_Com repair_Com = new Repair_Com();
 
+    private static BaubleManager baubleManager;
+
+    public static BaubleManager getBaubleManager() {
+        return baubleManager;
+    }
+
     private int setMinecraftBuildNumber(String buildNum) {
         String version = buildNum.split("-")[0].replace(".", "");
         this.getConfig().set("serverVersion", Integer.parseInt(version));
@@ -143,14 +149,17 @@ public final class ItemLoreStats extends JavaPlugin {
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
-        } catch (IOException var3) {
+        } catch (IOException ignored) {
         }
 
         this.getConfig().options().copyDefaults(true);
         this.setMinecraftBuildNumber(Bukkit.getBukkitVersion());
         this.getConfig().set("fileVersion", Integer.parseInt(this.getDescription().getVersion().replace(".", "")));
+        baubleManager = new BaubleManager(getDataFolder().toPath());
+        baubleManager.loadConfig();
         this.saveConfig();
         this.spigotStatCapWarning.updateSpigotValues();
+        Bukkit.getPluginManager().registerEvents(baubleManager, this);
     }
 
     @Override

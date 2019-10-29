@@ -9,7 +9,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.Iterator;
 
 public class Util_GetResponse {
     private FileConfiguration PlayerDataConfig;
@@ -47,10 +46,7 @@ public class Util_GetResponse {
                 return this.util_Colours.replaceTooltipColour(this.PlayerDataConfig.getString(getKeyFromLanguageFile));
             }
 
-            Iterator defender = Bukkit.getServer().getOnlinePlayers().iterator();
-
-            while (defender.hasNext()) {
-                Player e = (Player) defender.next();
+            for (Player e : Bukkit.getServer().getOnlinePlayers()) {
                 if (e.isOp()) {
                     e.sendMessage(ChatColor.GREEN + "[ItemLoreStats]" + ChatColor.RED + " An error has occured when trying to generate a response message from Item Lore Stats. This is usually caused by the language file being out of date. Try deleting the language-en.yml file and restart the server. The language file version is " + this.PlayerDataConfig.getInt("FileVersion") + " and should be at least " + Integer.parseInt(ItemLoreStats.plugin.getDescription().getVersion().replace(".", "")) + ".");
                 }

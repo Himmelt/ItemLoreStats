@@ -6,13 +6,11 @@ import com.github.supavitax.itemlorestats.Util.Util_Format;
 import com.github.supavitax.itemlorestats.Util.Util_GetResponse;
 import com.github.supavitax.itemlorestats.Util.Util_RPGInventory;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -65,10 +63,9 @@ public class GearStats implements Listener {
     String heroes_MaxMana = null;
     String skillAPI_MaxMana = null;
     String languageRegex = "[^a-zA-Z一-龥\u0080-ÿĀ-ſƀ-ɏ가-힣Ѐ-ҁ]";
-    private boolean inited = false;
-    private String baubleName = "Bauble";
-    private HashMap<Integer, String> baubles = new HashMap<>();
+
     private static final Method cantUseStack;
+    private final BaubleManager baubleManager = ItemLoreStats.getBaubleManager();
 
     static {
         Method method = null;
@@ -76,40 +73,16 @@ public class GearStats implements Listener {
         try {
             method = Class.forName("me.cilio.lvlitem.LevelItem").getDeclaredMethod("cantUseStack", Integer.TYPE, ItemStack.class);
             method.setAccessible(true);
-        } catch (Throwable var2) {
+        } catch (Throwable ignored) {
         }
 
         cantUseStack = method;
     }
 
-    private void init() {
-        ConfigurationSection section = ItemLoreStats.plugin.getConfig().getConfigurationSection("baubles");
-        if (section != null) {
-            for (String key : section.getKeys(false)) {
-                if ("name".equals(key)) {
-                    baubleName = section.getString(key);
-                    if (baubleName == null || baubleName.isEmpty()) {
-                        baubleName = "Bauble";
-                    }
-                } else if (key.matches("\\d+")) {
-                    int slot = Integer.parseInt(key);
-                    String mark = section.getString(key);
-                    baubles.put(slot, mark);
-                }
-            }
-        }
-    }
-
     private double getDouble(LivingEntity entity, String format) {
-        if (!inited) {
-            init();
-        }
         double value = 0.0D;
         for (Map.Entry<Integer, ItemStack> entry : getStacks(entity).entrySet()) {
             double temp = 0.0D;
-            int slot = entry.getKey();
-            boolean valid = slot < 0;
-            String type = slot < 0 ? "" : baubles.get(slot);
             ItemStack stack = entry.getValue();
             if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
                 List<String> list = stack.getItemMeta().getLore();
@@ -128,33 +101,53 @@ public class GearStats implements Listener {
                 }
                 for (String line : list) {
                     String lore = ChatColor.stripColor(line);
-                    if (slot >= 0 && lore.contains(baubleName) && lore.contains(type) && lvlOK) {
-                        valid = true;
-                    }
-                    if (lore.replaceAll(this.languageRegex, "").matches(format)) {
+                    if (lvlOK && lore.replaceAll(this.languageRegex, "").matches(format)) {
                         temp += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
                     }
                 }
             }
-            if (valid) {
-                value += temp;
+            value += temp;
+        }
+        for (Map.Entry<Integer, ItemStack> entry : baubleManager.getBaubles(entity).entrySet()) {
+            double temp = 0.0D;
+            int slot = entry.getKey();
+            String type = baubleManager.getMark(slot);
+            ItemStack stack = entry.getValue();
+            if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
+                List<String> list = stack.getItemMeta().getLore();
+                boolean lvlOK = false;
+                if (entity instanceof Player) {
+                    if (cantUseStack != null) {
+                        try {
+                            lvlOK = !(Boolean) cantUseStack.invoke(((Player) entity).getLevel(), stack);
+                        } catch (Throwable ignored) {
+                            lvlOK = true;
+                        }
+                    } else {
+                        lvlOK = true;
+                    }
+                    lvlOK = lvlOK && ((Player) entity).getLevel() >= getXPLevelRequirement((Player) entity, stack);
+                }
+                for (String line : list) {
+                    String lore = ChatColor.stripColor(line);
+                    if (lvlOK && lore.contains(baubleManager.getBaubleName()) && lore.contains(type)) {
+                        if (lore.replaceAll(this.languageRegex, "").matches(format)) {
+                            temp += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                        }
+                    }
+                }
             }
+            value += temp;
         }
         return value;
     }
 
     private String getRange(LivingEntity entity, String format) {
-        if (!inited) {
-            init();
-        }
         double minValue = 0.0D;
         double maxValue = 0.0D;
         for (Map.Entry<Integer, ItemStack> entry : getStacks(entity).entrySet()) {
             double min = 0.0D;
             double max = 0.0D;
-            int slot = entry.getKey();
-            boolean valid = slot < 0;
-            String type = slot < 0 ? "" : baubles.get(slot);
             ItemStack stack = entry.getValue();
             if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
                 List<String> list = stack.getItemMeta().getLore();
@@ -173,10 +166,7 @@ public class GearStats implements Listener {
                 }
                 for (String line : list) {
                     String lore = ChatColor.stripColor(line);
-                    if (slot >= 0 && lore.contains(baubleName) && lore.contains(type) && lvlOK) {
-                        valid = true;
-                    }
-                    if (lore.replaceAll(this.languageRegex, "").matches(format)) {
+                    if (lvlOK && lore.replaceAll(this.languageRegex, "").matches(format)) {
                         if (lore.contains("-")) {
                             min += Double.parseDouble(lore.split("-")[0].replaceAll("[^0-9.+-]", ""));
                             max += Double.parseDouble(lore.split("-")[1].replaceAll("[^0-9.+-]", ""));
@@ -187,10 +177,47 @@ public class GearStats implements Listener {
                     }
                 }
             }
-            if (valid) {
-                minValue += min;
-                maxValue += max;
+            minValue += min;
+            maxValue += max;
+        }
+        for (Map.Entry<Integer, ItemStack> entry : baubleManager.getBaubles(entity).entrySet()) {
+            double min = 0.0D;
+            double max = 0.0D;
+            int slot = entry.getKey();
+            String type = baubleManager.getMark(slot);
+            ItemStack stack = entry.getValue();
+            if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
+                List<String> list = stack.getItemMeta().getLore();
+                boolean lvlOK = false;
+                if (entity instanceof Player) {
+                    if (cantUseStack != null) {
+                        try {
+                            lvlOK = !(Boolean) cantUseStack.invoke(((Player) entity).getLevel(), stack);
+                        } catch (Throwable ignored) {
+                            lvlOK = true;
+                        }
+                    } else {
+                        lvlOK = true;
+                    }
+                    lvlOK = lvlOK && ((Player) entity).getLevel() >= getXPLevelRequirement((Player) entity, stack);
+                }
+                for (String line : list) {
+                    String lore = ChatColor.stripColor(line);
+                    if (lvlOK && lore.contains(baubleManager.getBaubleName()) && lore.contains(type)) {
+                        if (lore.replaceAll(this.languageRegex, "").matches(format)) {
+                            if (lore.contains("-")) {
+                                min += Double.parseDouble(lore.split("-")[0].replaceAll("[^0-9.+-]", ""));
+                                max += Double.parseDouble(lore.split("-")[1].replaceAll("[^0-9.+-]", ""));
+                            } else {
+                                min += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                                max += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                            }
+                        }
+                    }
+                }
             }
+            minValue += min;
+            maxValue += max;
         }
         return minValue + "-" + maxValue;
     }
@@ -202,16 +229,6 @@ public class GearStats implements Listener {
         stacks.put(-2, equip.getChestplate());
         stacks.put(-3, equip.getLeggings());
         stacks.put(-4, equip.getBoots());
-
-        if (!baubles.isEmpty() && entity instanceof Player) {
-            Set<Integer> slots = baubles.keySet();
-            PlayerInventory inv = ((Player) entity).getInventory();
-            for (int slot : slots) {
-                if (slot >= 0 && slot <= 35 && slot != inv.getHeldItemSlot()) {
-                    stacks.put(slot, inv.getItem(slot));
-                }
-            }
-        }
         return stacks;
     }
 

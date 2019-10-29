@@ -416,7 +416,7 @@ public class DamageSystem implements Listener {
                         if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.damageDone")) {
                             getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDone", getAttacker, getDefender, getDefender.getCustomName(), String.valueOf(Math.round(damageDealt))));
                         }
-                    } else if (!getDefender.getType().toString().substring(0, 1).equalsIgnoreCase("a") && !getDefender.getType().toString().substring(0, 1).equalsIgnoreCase("e") && !getDefender.getType().toString().substring(0, 1).equalsIgnoreCase("i") && !getDefender.getType().toString().substring(0, 1).equalsIgnoreCase("o") && !getDefender.getType().toString().substring(0, 1).equalsIgnoreCase("u")) {
+                    } else if (!"a".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"e".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"i".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"o".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"u".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1))) {
                         if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.damageDone")) {
                             getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDoneWithoutVowel", getAttacker, getDefender, getDefender.getType().toString().substring(0, 1) + getDefender.getType().toString().substring(1).toLowerCase().replace("_", " "), String.valueOf(Math.round(damageDealt))));
                         }
@@ -598,35 +598,35 @@ public class DamageSystem implements Listener {
             weaponSpeed = this.gearStats.getSwingSpeedItemInHand(player).toLowerCase();
         }
 
-        if (weaponSpeed.equalsIgnoreCase("very fast")) {
+        if ("very fast".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
             }
 
             ItemLoreStats.plugin.removeWeaponSpeedEffects(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 99999, 1));
-        } else if (weaponSpeed.equalsIgnoreCase("fast")) {
+        } else if ("fast".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
             }
 
             ItemLoreStats.plugin.removeWeaponSpeedEffects(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 99999, 0));
-        } else if (weaponSpeed.equalsIgnoreCase("slow")) {
+        } else if ("slow".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.FAST_DIGGING);
             }
 
             ItemLoreStats.plugin.removeWeaponSpeedEffects(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 99999, 0));
-        } else if (weaponSpeed.equalsIgnoreCase("very slow")) {
+        } else if ("very slow".equalsIgnoreCase(weaponSpeed)) {
             if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                 player.removePotionEffect(PotionEffectType.FAST_DIGGING);
             }
 
             ItemLoreStats.plugin.removeWeaponSpeedEffects(player);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 99999, 1));
-        } else if (weaponSpeed.equalsIgnoreCase("normal")) {
+        } else if ("normal".equalsIgnoreCase(weaponSpeed)) {
             ItemLoreStats.plugin.removeWeaponSpeedEffects(player);
             ItemLoreStats.plugin.updateMana(player);
         }

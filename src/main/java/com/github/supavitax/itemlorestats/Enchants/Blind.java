@@ -67,6 +67,5 @@ public class Blind {
                 getDefender.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, ItemLoreStats.plugin.getConfig().getInt("secondaryStats.blind.effectDuration") * 20, ItemLoreStats.plugin.getConfig().getInt("secondaryStats.blind.effectAmplifier")));
             }
         }
-
     }
 }
