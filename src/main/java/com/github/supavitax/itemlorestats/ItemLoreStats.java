@@ -498,7 +498,7 @@ public final class ItemLoreStats extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         final Player player;
         if (sender instanceof Player) {
             player = (Player) sender;
@@ -506,7 +506,10 @@ public final class ItemLoreStats extends JavaPlugin {
             player = null;
         }
 
-        if ("ils".equalsIgnoreCase(cmd.getName())) {
+        if (("baubles".equalsIgnoreCase(label) || "sp".equalsIgnoreCase(label)) && sender instanceof Player) {
+            baubleManager.openBaubleInv((Player) sender);
+            return true;
+        } else if ("ils".equalsIgnoreCase(cmd.getName())) {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     sender.sendMessage(ChatColor.GOLD + "Item Lore Stats " + ChatColor.LIGHT_PURPLE + "commands:");
@@ -903,7 +906,7 @@ public final class ItemLoreStats extends JavaPlugin {
                     System.out.println("[ItemLoreStats] Configuration Reloaded!");
                 }
 
-                if ("baubles".equalsIgnoreCase(args[0]) && sender instanceof Player) {
+                if (("sp".equalsIgnoreCase(args[0]) || "baubles".equalsIgnoreCase(args[0])) && sender instanceof Player) {
                     baubleManager.openBaubleInv((Player) sender);
                     return true;
                 }
