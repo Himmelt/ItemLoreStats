@@ -49,17 +49,17 @@ public class LifeSteal {
             if ((double) this.util_Random.random(100) <= lifeStealPercent) {
                 lifeStealHeal = ItemLoreStats.plugin.getConfig().getDouble("secondaryStats.lifeSteal.healPercentage") * weaponDamage;
                 if (getAttacker instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.lifeSteal")) {
-                    getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.LifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
+                    ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.LifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
                 }
 
                 if (getDefender instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.enemyLifeSteal")) {
                     if (getAttacker instanceof Player) {
-                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyLifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
+                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyLifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
                     } else if (getAttacker instanceof LivingEntity) {
                         if (getAttacker.getCustomName() != null) {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyLifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyLifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
                         } else {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyLifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyLifeStealSuccess", getAttacker, getDefender, String.valueOf((int) lifeStealHeal), String.valueOf((int) lifeStealHeal)));
                         }
                     }
                 }

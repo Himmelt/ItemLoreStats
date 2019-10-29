@@ -95,11 +95,11 @@ public class Util_EntityManager {
     public String returnEntityName(Entity entity) {
         String name;
         if (entity instanceof Player) {
-            name = entity.getName();
+            name = ((Player) entity).getName();
             return name;
         } else if (entity instanceof LivingEntity) {
-            if (entity.getCustomName() != null) {
-                name = entity.getCustomName();
+            if (((LivingEntity) entity).getCustomName() != null) {
+                name = ((LivingEntity) entity).getCustomName();
                 return name;
             } else {
                 name = entity.getType().toString().substring(0, 1) + entity.getType().toString().substring(1).toLowerCase().replace("_", " ");
@@ -151,6 +151,5 @@ public class Util_EntityManager {
         } else if (entity instanceof LivingEntity) {
             ((LivingEntity) entity).setMaxHealth(health);
         }
-
     }
 }

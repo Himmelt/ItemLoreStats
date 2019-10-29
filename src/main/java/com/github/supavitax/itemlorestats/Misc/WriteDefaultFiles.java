@@ -21,8 +21,7 @@ public class WriteDefaultFiles implements Listener {
         String decimalPattern = "0.00";
         DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(forceLocale);
         decimalFormat.applyPattern(decimalPattern);
-        String format = decimalFormat.format(version);
-        return format;
+        return decimalFormat.format(version);
     }
 
     public void checkExistence() {
@@ -2135,7 +2134,7 @@ public class WriteDefaultFiles implements Listener {
         try {
             this.PlayerDataConfig = new YamlConfiguration();
             this.PlayerDataFile = new File(ItemLoreStats.plugin.getDataFolder() + File.separator + "language-en.yml");
-            this.PlayerDataConfig.set("FileVersion", Integer.parseInt(this.formatVersion(Double.parseDouble(ItemLoreStats.plugin.getDescription().getVersion())).replace(".", "")));
+            this.PlayerDataConfig.set("FileVersion", Integer.parseInt(ItemLoreStats.plugin.getDescription().getVersion().replaceAll("\\.", "")));
             this.PlayerDataConfig.set("ErrorMessages", null);
             this.PlayerDataConfig.set("ErrorMessages.PermissionDeniedError", "&cYou do not have permission to perform that command.");
             this.PlayerDataConfig.set("ErrorMessages.IngameOnlyError", "You can only run that command in-game!");

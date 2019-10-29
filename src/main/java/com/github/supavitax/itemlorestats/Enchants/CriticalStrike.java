@@ -45,17 +45,17 @@ public class CriticalStrike {
 
             if (critPercent >= (double) this.util_Random.random(100)) {
                 if (getAttacker instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.critStrike") && getAttacker instanceof Player) {
-                    getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.CriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                    ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.CriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                 }
 
                 if (getDefender instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.enemyCritStrike")) {
                     if (getAttacker instanceof Player) {
-                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                     } else if (getAttacker instanceof LivingEntity) {
                         if (getAttacker.getCustomName() != null) {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         } else {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyCriticalStrikeSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         }
                     }
                 }

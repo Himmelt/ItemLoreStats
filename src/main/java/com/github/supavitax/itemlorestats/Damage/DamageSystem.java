@@ -118,7 +118,7 @@ public class DamageSystem implements Listener {
                     return;
                 }
 
-                getDefender = (Entity) eventDamage.getShooter();
+                getDefender = eventDamage.getShooter();
                 if (eventDamage.hasMetadata("ILS_Snowball") || eventDamage.hasMetadata("ILS_SmallFireball") || eventDamage.hasMetadata("ILS_Fireball") || eventDamage.hasMetadata("ILS_Arrow") || eventDamage.hasMetadata("ILS_Egg") || eventDamage.hasMetadata("ILS_TnT")) {
                     double DirectHealAmount;
                     double AOEHealAmount;
@@ -133,7 +133,7 @@ public class DamageSystem implements Listener {
                         projectileHitEffect = this.spellCreator.getProjectileHitEffect(this.gearStats.getSpellName(this.util_EntityManager.returnItemStackInHand(getDefender)));
                         event.getEntity().getLocation().getWorld().playEffect(event.getEntity().getLocation(), projectileHitEffect, 3);
                         if (event.getEntity() instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.damageTaken")) {
-                            event.getEntity().sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Damage", getDefender, event.getEntity(), String.valueOf((int) DirectHealAmount), String.valueOf((int) DirectHealAmount)));
+                            ((Player) event.getEntity()).sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Damage", getDefender, event.getEntity(), String.valueOf((int) DirectHealAmount), String.valueOf((int) DirectHealAmount)));
                         }
 
                         if (event.getEntity() instanceof LivingEntity) {
@@ -148,7 +148,7 @@ public class DamageSystem implements Listener {
                                 if (entity.equals(event.getDamager())) {
                                     event.getEntity().getLocation().getWorld().playEffect(entity.getLocation(), projectileHitEffect, 3);
                                     if (entity instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.damageTaken")) {
-                                        entity.sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Damage", getDefender, entity, String.valueOf((int) AOEHealAmount), String.valueOf((int) AOEHealAmount)));
+                                        ((Player) entity).sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Damage", getDefender, entity, String.valueOf((int) AOEHealAmount), String.valueOf((int) AOEHealAmount)));
                                     }
 
                                     if (entity instanceof LivingEntity) {
@@ -168,7 +168,7 @@ public class DamageSystem implements Listener {
                         projectileHitEffect = this.spellCreator.getProjectileHitEffect(this.gearStats.getSpellName(this.util_EntityManager.returnItemStackInHand(getDefender)));
                         event.getEntity().getLocation().getWorld().playEffect(event.getEntity().getLocation(), projectileHitEffect, 3);
                         if (event.getEntity() instanceof Player) {
-                            event.getEntity().sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Heal", getDefender, event.getEntity(), String.valueOf((int) DirectHealAmount), String.valueOf((int) DirectHealAmount)));
+                            ((Player) event.getEntity()).sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Heal", getDefender, event.getEntity(), String.valueOf((int) DirectHealAmount), String.valueOf((int) DirectHealAmount)));
                         }
 
                         if (this.util_EntityManager.returnEntityCurrentHealth(event.getEntity()) + DirectHealAmount > this.util_EntityManager.returnEntityMaxHealth(event.getEntity())) {
@@ -184,7 +184,7 @@ public class DamageSystem implements Listener {
                                 entity = (Entity) reflectVal.next();
                                 event.getEntity().getLocation().getWorld().playEffect(entity.getLocation(), projectileHitEffect, 3);
                                 if (entity instanceof Player) {
-                                    entity.sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Heal", getDefender, entity, String.valueOf((int) AOEHealAmount), String.valueOf((int) AOEHealAmount)));
+                                    ((Player) entity).sendMessage(this.util_GetResponse.getResponse("SpellMessages.CastSpell.Heal", getDefender, entity, String.valueOf((int) AOEHealAmount), String.valueOf((int) AOEHealAmount)));
                                 }
 
                                 if (this.util_EntityManager.returnEntityCurrentHealth(entity) + AOEHealAmount > this.util_EntityManager.returnEntityMaxHealth(entity)) {
@@ -245,7 +245,7 @@ public class DamageSystem implements Listener {
                     return;
                 }
 
-                if (((Player) getAttacker).getName().equals(getDefender1.getName())) {
+                if (((Player) getAttacker).getName().equals(((Player) getDefender1).getName())) {
                     event.setCancelled(true);
                     return;
                 }
@@ -290,7 +290,7 @@ public class DamageSystem implements Listener {
                 }
 
                 if (getDefender1 instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.dodgeAttack")) {
-                    getDefender1.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DodgeSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
+                    ((Player) getDefender1).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DodgeSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
                 }
 
                 event.setCancelled(true);
@@ -303,7 +303,7 @@ public class DamageSystem implements Listener {
                 }
 
                 if (getDefender1 instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.blockAttack")) {
-                    getDefender1.sendMessage(this.util_GetResponse.getResponse("DamageMessages.BlockSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
+                    ((Player) getDefender1).sendMessage(this.util_GetResponse.getResponse("DamageMessages.BlockSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
                     getDefender1.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 30, 1));
                 }
 
@@ -355,7 +355,7 @@ public class DamageSystem implements Listener {
                     }
 
                     if (getDefender1 instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.reflectAttack")) {
-                        getDefender1.sendMessage(this.util_GetResponse.getResponse("DamageMessages.ReflectSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
+                        ((Player) getDefender1).sendMessage(this.util_GetResponse.getResponse("DamageMessages.ReflectSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
                     }
 
                     event.setCancelled(true);
@@ -366,7 +366,7 @@ public class DamageSystem implements Listener {
                     damage = getAttackerDamage - reducedDamage;
                     ((LivingEntity) getAttacker).damage(damage);
                     if (getDefender1 instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.reflectAttack")) {
-                        getDefender1.sendMessage(this.util_GetResponse.getResponse("DamageMessages.ReflectSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
+                        ((Player) getDefender1).sendMessage(this.util_GetResponse.getResponse("DamageMessages.ReflectSuccess", (Entity) getAttacker, getDefender1, String.valueOf(0), String.valueOf(0)));
                     }
 
                     event.setCancelled(true);
@@ -402,36 +402,36 @@ public class DamageSystem implements Listener {
 
     public void damageDealtMessage(Entity getAttacker, Entity getDefender, double damageDealt) {
         if (getAttacker instanceof Player) {
-            if (ItemLoreStats.plugin.combatLogVisible.get(getAttacker.getName()) == null || (Boolean) ItemLoreStats.plugin.combatLogVisible.get(getAttacker.getName())) {
+            if (ItemLoreStats.plugin.combatLogVisible.get(((Player) getAttacker).getName()) == null || (Boolean) ItemLoreStats.plugin.combatLogVisible.get(((Player) getAttacker).getName())) {
                 if (getDefender instanceof Player) {
                     if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.damageTaken")) {
-                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageTaken", getAttacker, getDefender, getAttacker.getName(), String.valueOf(Math.round(damageDealt))));
+                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageTaken", getAttacker, getDefender, ((Player) getAttacker).getName(), String.valueOf(Math.round(damageDealt))));
                     }
 
                     if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.damageDone")) {
-                        getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDone", getAttacker, getDefender, getDefender.getName(), String.valueOf(Math.round(damageDealt))));
+                        ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDone", getAttacker, getDefender, ((Player) getDefender).getName(), String.valueOf(Math.round(damageDealt))));
                     }
                 } else if (getDefender instanceof LivingEntity) {
-                    if (getDefender.getCustomName() != null) {
+                    if (((LivingEntity) getDefender).getCustomName() != null) {
                         if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.damageDone")) {
-                            getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDone", getAttacker, getDefender, getDefender.getCustomName(), String.valueOf(Math.round(damageDealt))));
+                            ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDone", getAttacker, getDefender, ((LivingEntity) getDefender).getCustomName(), String.valueOf(Math.round(damageDealt))));
                         }
                     } else if (!"a".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"e".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"i".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"o".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1)) && !"u".equalsIgnoreCase(getDefender.getType().toString().substring(0, 1))) {
                         if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.damageDone")) {
-                            getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDoneWithoutVowel", getAttacker, getDefender, getDefender.getType().toString().substring(0, 1) + getDefender.getType().toString().substring(1).toLowerCase().replace("_", " "), String.valueOf(Math.round(damageDealt))));
+                            ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDoneWithoutVowel", getAttacker, getDefender, getDefender.getType().toString().substring(0, 1) + getDefender.getType().toString().substring(1).toLowerCase().replace("_", " "), String.valueOf(Math.round(damageDealt))));
                         }
                     } else if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.damageDone")) {
-                        getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDoneWithoutVowel", getAttacker, getDefender, getAttacker.getType().toString().substring(0, 1) + getDefender.getType().toString().substring(1).toLowerCase().replace("_", " "), String.valueOf(Math.round(damageDealt))));
+                        ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageDoneWithoutVowel", getAttacker, getDefender, getAttacker.getType().toString().substring(0, 1) + getDefender.getType().toString().substring(1).toLowerCase().replace("_", " "), String.valueOf(Math.round(damageDealt))));
                     }
                 }
             }
-        } else if (getDefender instanceof Player && (ItemLoreStats.plugin.combatLogVisible.get(getDefender.getName()) == null || (Boolean) ItemLoreStats.plugin.combatLogVisible.get(getDefender.getName())) && getAttacker instanceof LivingEntity) {
-            if (getAttacker.getCustomName() != null) {
+        } else if (getDefender instanceof Player && (ItemLoreStats.plugin.combatLogVisible.get(((Player) getDefender).getName()) == null || (Boolean) ItemLoreStats.plugin.combatLogVisible.get(((Player) getDefender).getName())) && getAttacker instanceof LivingEntity) {
+            if (((LivingEntity) getAttacker).getCustomName() != null) {
                 if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.damageTaken")) {
-                    getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageTaken", getAttacker, getDefender, getAttacker.getCustomName(), String.valueOf(Math.round(damageDealt))));
+                    ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageTaken", getAttacker, getDefender, ((LivingEntity) getAttacker).getCustomName(), String.valueOf(Math.round(damageDealt))));
                 }
             } else if (ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.damageTaken")) {
-                getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageTaken", getAttacker, getDefender, getAttacker.getType().toString().substring(0, 1) + getAttacker.getType().toString().substring(1).toLowerCase().replace("_", " "), String.valueOf(Math.round(damageDealt))));
+                ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.DamageTaken", getAttacker, getDefender, getAttacker.getType().toString().substring(0, 1) + getAttacker.getType().toString().substring(1).toLowerCase().replace("_", " "), String.valueOf(Math.round(damageDealt))));
             }
         }
 

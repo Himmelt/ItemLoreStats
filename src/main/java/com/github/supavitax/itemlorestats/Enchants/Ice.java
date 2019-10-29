@@ -49,17 +49,17 @@ public class Ice {
 
             if ((double) this.util_Random.random(100) <= icePercent) {
                 if (getAttacker instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.ice")) {
-                    getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.IceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                    ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.IceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                 }
 
                 if (getDefender instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.enemyIce")) {
                     if (getAttacker instanceof Player) {
-                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyIceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyIceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                     } else if (getAttacker instanceof LivingEntity) {
                         if (getAttacker.getCustomName() != null) {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyIceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyIceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         } else {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyIceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyIceSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         }
                     }
                 }

@@ -47,17 +47,17 @@ public class Fire {
 
             if ((double) this.util_Random.random(100) <= firePercent) {
                 if (getAttacker instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.fire")) {
-                    getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.FireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                    ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.FireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                 }
 
                 if (getDefender instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.enemyFire")) {
                     if (getAttacker instanceof Player) {
-                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyFireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyFireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                     } else if (getAttacker instanceof LivingEntity) {
                         if (getAttacker.getCustomName() != null) {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyFireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyFireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         } else {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyFireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyFireSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         }
                     }
                 }
@@ -65,6 +65,5 @@ public class Fire {
                 getDefender.setFireTicks(ItemLoreStats.plugin.getConfig().getInt("secondaryStats.fire.effectDuration") * 20);
             }
         }
-
     }
 }

@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -39,6 +40,11 @@ public class BaubleManager implements Listener {
 
     public BaubleManager(Path root) {
         baublesPath = root.resolve("baubles");
+        try {
+            Files.createDirectories(baublesPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadConfig() {
@@ -142,6 +148,9 @@ public class BaubleManager implements Listener {
                 comp.set("items", list);
                 try {
                     Path dataFile = baublesPath.resolve(uuid.toString() + ".dat");
+                    if (Files.notExists(dataFile)) {
+                        Files.createFile(dataFile);
+                    }
                     NBTCompressedStreamTools.a(comp, new FileOutputStream(dataFile.toFile()));
                 } catch (Throwable e) {
                     e.printStackTrace();

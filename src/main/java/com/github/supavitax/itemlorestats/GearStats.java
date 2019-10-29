@@ -65,7 +65,6 @@ public class GearStats implements Listener {
     String languageRegex = "[^a-zA-Z一-龥\u0080-ÿĀ-ſƀ-ɏ가-힣Ѐ-ҁ]";
 
     private static final Method cantUseStack;
-    private final BaubleManager baubleManager = ItemLoreStats.getBaubleManager();
 
     static {
         Method method = null;
@@ -80,6 +79,9 @@ public class GearStats implements Listener {
     }
 
     private double getDouble(LivingEntity entity, String format) {
+        if (entity == null) {
+            return 0.0D;
+        }
         double value = 0.0D;
         for (Map.Entry<Integer, ItemStack> entry : getStacks(entity).entrySet()) {
             double temp = 0.0D;
@@ -108,10 +110,10 @@ public class GearStats implements Listener {
             }
             value += temp;
         }
-        for (Map.Entry<Integer, ItemStack> entry : baubleManager.getBaubles(entity).entrySet()) {
+        for (Map.Entry<Integer, ItemStack> entry : ItemLoreStats.getBaubleManager().getBaubles(entity).entrySet()) {
             double temp = 0.0D;
             int slot = entry.getKey();
-            String type = baubleManager.getMark(slot);
+            String type = ItemLoreStats.getBaubleManager().getMark(slot);
             ItemStack stack = entry.getValue();
             if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
                 List<String> list = stack.getItemMeta().getLore();
@@ -130,7 +132,7 @@ public class GearStats implements Listener {
                 }
                 for (String line : list) {
                     String lore = ChatColor.stripColor(line);
-                    if (lvlOK && lore.contains(baubleManager.getBaubleName()) && lore.contains(type)) {
+                    if (lvlOK && lore.contains(ItemLoreStats.getBaubleManager().getBaubleName()) && lore.contains(type)) {
                         if (lore.replaceAll(this.languageRegex, "").matches(format)) {
                             temp += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
                         }
@@ -143,6 +145,9 @@ public class GearStats implements Listener {
     }
 
     private String getRange(LivingEntity entity, String format) {
+        if (entity == null) {
+            return "0.0-0.0";
+        }
         double minValue = 0.0D;
         double maxValue = 0.0D;
         for (Map.Entry<Integer, ItemStack> entry : getStacks(entity).entrySet()) {
@@ -180,11 +185,11 @@ public class GearStats implements Listener {
             minValue += min;
             maxValue += max;
         }
-        for (Map.Entry<Integer, ItemStack> entry : baubleManager.getBaubles(entity).entrySet()) {
+        for (Map.Entry<Integer, ItemStack> entry : ItemLoreStats.getBaubleManager().getBaubles(entity).entrySet()) {
             double min = 0.0D;
             double max = 0.0D;
             int slot = entry.getKey();
-            String type = baubleManager.getMark(slot);
+            String type = ItemLoreStats.getBaubleManager().getMark(slot);
             ItemStack stack = entry.getValue();
             if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
                 List<String> list = stack.getItemMeta().getLore();
@@ -203,7 +208,7 @@ public class GearStats implements Listener {
                 }
                 for (String line : list) {
                     String lore = ChatColor.stripColor(line);
-                    if (lvlOK && lore.contains(baubleManager.getBaubleName()) && lore.contains(type)) {
+                    if (lvlOK && lore.contains(ItemLoreStats.getBaubleManager().getBaubleName()) && lore.contains(type)) {
                         if (lore.replaceAll(this.languageRegex, "").matches(format)) {
                             if (lore.contains("-")) {
                                 min += Double.parseDouble(lore.split("-")[0].replaceAll("[^0-9.+-]", ""));

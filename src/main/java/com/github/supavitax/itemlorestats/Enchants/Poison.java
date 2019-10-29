@@ -49,17 +49,17 @@ public class Poison {
 
             if ((double) this.util_Random.random(100) <= poisonPercent) {
                 if (getAttacker instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.outgoing.poison")) {
-                    getAttacker.sendMessage(this.util_GetResponse.getResponse("DamageMessages.PoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                    ((Player) getAttacker).sendMessage(this.util_GetResponse.getResponse("DamageMessages.PoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                 }
 
                 if (getDefender instanceof Player && ItemLoreStats.plugin.getConfig().getBoolean("combatMessages.incoming.enemyPoison")) {
                     if (getAttacker instanceof Player) {
-                        getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyPoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                        ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyPoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                     } else if (getAttacker instanceof LivingEntity) {
                         if (getAttacker.getCustomName() != null) {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyPoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyPoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         } else {
-                            getDefender.sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyPoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
+                            ((Player) getDefender).sendMessage(this.util_GetResponse.getResponse("DamageMessages.EnemyPoisonSuccess", getAttacker, getDefender, String.valueOf(0), String.valueOf(0)));
                         }
                     }
                 }

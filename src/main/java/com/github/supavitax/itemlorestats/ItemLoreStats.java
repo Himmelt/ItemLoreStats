@@ -405,8 +405,8 @@ public final class ItemLoreStats extends JavaPlugin {
         armourList.addAll(legsList);
         armourList.addAll(bootsList);
 
-        for (int i = 0; i < armourList.size(); ++i) {
-            if (((String) armourList.get(i)).split(":")[0].equals(material.toString())) {
+        for (Object o : armourList) {
+            if (((String) o).split(":")[0].equals(material.toString())) {
                 return true;
             }
         }
@@ -891,6 +891,7 @@ public final class ItemLoreStats extends JavaPlugin {
                             player5.sendMessage(this.util_GetResponse.getResponse("ErrorMessages.PermissionDeniedError", null, null, "", ""));
                         } else {
                             this.reloadConfig();
+                            baubleManager.loadConfig();
                             player5.sendMessage(ChatColor.GOLD + "[ItemLoreStats] " + ChatColor.GREEN + " Configuration Reloaded!");
                         }
 
@@ -898,7 +899,13 @@ public final class ItemLoreStats extends JavaPlugin {
                     }
 
                     this.reloadConfig();
+                    baubleManager.loadConfig();
                     System.out.println("[ItemLoreStats] Configuration Reloaded!");
+                }
+
+                if ("baubles".equalsIgnoreCase(args[0]) && sender instanceof Player) {
+                    baubleManager.openBaubleInv((Player) sender);
+                    return true;
                 }
 
                 if ("createlore".equalsIgnoreCase(args[0])) {
@@ -1331,10 +1338,8 @@ public final class ItemLoreStats extends JavaPlugin {
             double modifier = 0.0D;
             double healthBoost = 0.0D;
             if (player.hasPotionEffect(PotionEffectType.HEALTH_BOOST)) {
-                Iterator var7 = player.getActivePotionEffects().iterator();
 
-                while (var7.hasNext()) {
-                    PotionEffect maxHealth = (PotionEffect) var7.next();
+                for (PotionEffect maxHealth : player.getActivePotionEffects()) {
                     if (player.hasPotionEffect(PotionEffectType.HEALTH_BOOST)) {
                         healthBoost = (double) maxHealth.getAmplifier() * 4.0D;
                     }
@@ -1392,26 +1397,17 @@ public final class ItemLoreStats extends JavaPlugin {
                 if (ItemLoreStats.this.isTool(player.getItemInHand().getType())) {
                     maxSpeed = 0.99F;
                     speed = (float) (0.0020000000949949026D * (ItemLoreStats.this.gearStats.getMovementSpeedGear(player) + ItemLoreStats.this.gearStats.getMovementSpeedItemInHand(player)) + (double) compressedModifier + ItemLoreStats.plugin.getConfig().getDouble("baseMovementSpeed") + Double.valueOf(player.getLevel()) * ItemLoreStats.this.getConfig().getDouble("additionalStatsPerLevel.speed"));
-                    if (speed > maxSpeed) {
-                        player.setWalkSpeed(maxSpeed);
-                    } else {
-                        player.setWalkSpeed(speed);
-                    }
+                    player.setWalkSpeed(Math.min(speed, maxSpeed));
                 } else {
                     maxSpeed = 0.99F;
                     speed = (float) (0.0020000000949949026D * ItemLoreStats.this.gearStats.getMovementSpeedGear(player) + (double) compressedModifier + ItemLoreStats.plugin.getConfig().getDouble("baseMovementSpeed") + Double.valueOf(player.getLevel()) * ItemLoreStats.this.getConfig().getDouble("additionalStatsPerLevel.speed"));
-                    if (speed > maxSpeed) {
-                        player.setWalkSpeed(maxSpeed);
-                    } else {
-                        player.setWalkSpeed(speed);
-                    }
+                    player.setWalkSpeed(Math.min(speed, maxSpeed));
                 }
 
             }, 2L);
         } else {
             player.setWalkSpeed((float) plugin.getConfig().getDouble("baseMovementSpeed"));
         }
-
     }
 
     public void removeWeaponSpeedEffects(Player player) {
@@ -1422,7 +1418,6 @@ public final class ItemLoreStats extends JavaPlugin {
                 player.removePotionEffect(PotionEffectType.FAST_DIGGING);
             }
         }
-
     }
 
     public void checkWeaponSpeed(Player player) {
@@ -1483,7 +1478,6 @@ public final class ItemLoreStats extends JavaPlugin {
             plugin.removeWeaponSpeedEffects(player);
             plugin.updateMana(player);
         }
-
     }
 
     public class ItemLoreStatsListener implements Listener {
