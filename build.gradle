@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 group = 'com.github'
-version = '6.2.2'
+version = '6.2.3'
 archivesBaseName = "ItemLoreStats"
 
 sourceCompatibility = targetCompatibility = 1.8

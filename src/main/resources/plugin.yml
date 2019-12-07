@@ -1,11 +1,10 @@
 main: com.github.supavitax.itemlorestats.ItemLoreStats
 name: ItemLoreStats
-version: 6.2.2
+version: 6.2.3
 author: Supavitax
 website: http://dev.bukkit.org/profiles/Supavitax/
 description: Increase attributes with Item Lore Stats.
 softdepend: [WorldGuard, Vault, Heroes, BarAPI, BossBarAPI, SkillAPI, Citizens]
-
 commands:
   ils:
     description: The core ILS command.
@@ -13,7 +12,6 @@ commands:
     aliases:
       - sp
     description: Baubles inventory.
-
 permissions:
   ils.admin:
     description: Player/group is granted admin privilege.

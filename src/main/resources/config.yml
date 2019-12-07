@@ -1,6 +1,6 @@
 # Default config for ItemLoreStats.
 
-fileVersion: 511
+fileVersion: 623
 serverVersion: 0
 # checkForUpdates - As I update Item Lore Stats often I've noticed that there are quite a lot running out-of-date versions of Item Lore Stats. This will help server owners keep Item Lore Stats up to date. If there is an update available it will notify any Ops or any players with the ils.admin permission. I recommend you set this to true just to notify any ops or players/groups with ils.admin that there is a new version of Item Lore Stats available.
 checkForUpdates: true
@@ -1074,3 +1074,7 @@ npcModifier:
       z: 0
 baubles:
   name: Bauble
+  size: 2
+  0: Ring
+  1: Bell
+  2: Necklace
