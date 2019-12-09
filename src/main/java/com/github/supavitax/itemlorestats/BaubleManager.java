@@ -79,8 +79,9 @@ public class BaubleManager implements Listener {
             Set<Integer> slots = BAUBLES_MARK.keySet();
             Inventory inv = PLAYER_BAUBLES.get(player.getUniqueId());
             if (inv != null) {
+                int size = Math.min(9 * rowSize, inv.getSize());
                 for (int slot : slots) {
-                    if (slot >= 0 && slot < 9 * rowSize) {
+                    if (slot >= 0 && slot < size) {
                         stacks.put(slot, inv.getItem(slot));
                     }
                 }
