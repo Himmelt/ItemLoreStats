@@ -74,11 +74,11 @@ public class BaubleManager implements Listener {
         }
     }
 
-    public HashMap<Integer, ItemStack> getBaubles(LivingEntity entity) {
+    public HashMap<Integer, ItemStack> getBaubles(Player player) {
         HashMap<Integer, ItemStack> stacks = new HashMap<>();
-        if (!BAUBLES_MARK.isEmpty() && entity instanceof Player) {
+        if (player != null && !BAUBLES_MARK.isEmpty()) {
             Set<Integer> slots = BAUBLES_MARK.keySet();
-            Inventory inv = PLAYER_BAUBLES.get(entity.getUniqueId());
+            Inventory inv = PLAYER_BAUBLES.get(player.getUniqueId());
             if (inv != null) {
                 for (int slot : slots) {
                     if (slot >= 0 && slot < 9 * rowSize) {

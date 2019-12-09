@@ -114,35 +114,43 @@ public class GearStats implements Listener {
             value += temp;
         }
         final String baubleName = ItemLoreStats.getBaubleManager().getBaubleName();
-        for (Map.Entry<Integer, ItemStack> entry : ItemLoreStats.getBaubleManager().getBaubles(entity).entrySet()) {
-            double temp = 0.0D;
-            int slot = entry.getKey();
-            String type = ItemLoreStats.getBaubleManager().getMark(slot);
-            ItemStack stack = entry.getValue();
-            if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
-                List<String> list = stack.getItemMeta().getLore();
-                boolean lvlOK = false;
-                if (entity instanceof Player) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            for (Map.Entry<Integer, ItemStack> entry : ItemLoreStats.getBaubleManager().getBaubles(player).entrySet()) {
+                double temp = 0.0D;
+                int slot = entry.getKey();
+                String type = ItemLoreStats.getBaubleManager().getMark(slot);
+                ItemStack stack = entry.getValue();
+                if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
+                    List<String> list = stack.getItemMeta().getLore();
+                    boolean lvlOK;
                     if (cantUseStack != null) {
                         try {
-                            lvlOK = !(Boolean) cantUseStack.invoke(((Player) entity).getLevel(), stack);
+                            lvlOK = !(Boolean) cantUseStack.invoke(player.getLevel(), stack);
                         } catch (Throwable ignored) {
                             lvlOK = true;
                         }
                     } else {
                         lvlOK = true;
                     }
-                    lvlOK = lvlOK && ((Player) entity).getLevel() >= getXPLevelRequirement((Player) entity, stack);
-                }
-                for (String line : list) {
-                    String lore = ChatColor.stripColor(line);
-                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
-                    if (lvlOK && lore.contains(baubleName) && lore.contains(type) && lore.contains(format) && matcher.find()) {
-                        temp += Double.parseDouble(matcher.group());
+                    lvlOK = lvlOK && (player.getLevel() >= getXPLevelRequirement(player, stack));
+                    if (lvlOK) {
+                        boolean valid = false;
+                        for (String line : list) {
+                            line = ChatColor.stripColor(line);
+                            if (line.contains(baubleName) && line.contains(type)) {
+                                valid = true;
+                            }
+                            Matcher matcher = NUMBER_PATTERN.matcher(line);
+                            if (valid && line.contains(format) && matcher.find()) {
+                                temp += Double.parseDouble(matcher.group());
+                                break;
+                            }
+                        }
                     }
                 }
+                value += temp;
             }
-            value += temp;
         }
         return value;
     }
@@ -189,44 +197,53 @@ public class GearStats implements Listener {
             maxValue += max;
         }
         final String baubleName = ItemLoreStats.getBaubleManager().getBaubleName();
-        for (Map.Entry<Integer, ItemStack> entry : ItemLoreStats.getBaubleManager().getBaubles(entity).entrySet()) {
-            double min = 0.0D;
-            double max = 0.0D;
-            int slot = entry.getKey();
-            String type = ItemLoreStats.getBaubleManager().getMark(slot);
-            ItemStack stack = entry.getValue();
-            if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
-                List<String> list = stack.getItemMeta().getLore();
-                boolean lvlOK = false;
-                if (entity instanceof Player) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            for (Map.Entry<Integer, ItemStack> entry : ItemLoreStats.getBaubleManager().getBaubles(player).entrySet()) {
+                double min = 0.0D;
+                double max = 0.0D;
+                int slot = entry.getKey();
+                String type = ItemLoreStats.getBaubleManager().getMark(slot);
+                ItemStack stack = entry.getValue();
+                if (stack != null && stack.hasItemMeta() && stack.getItemMeta().hasLore()) {
+                    List<String> list = stack.getItemMeta().getLore();
+                    boolean lvlOK = false;
                     if (cantUseStack != null) {
                         try {
-                            lvlOK = !(Boolean) cantUseStack.invoke(((Player) entity).getLevel(), stack);
+                            lvlOK = !(Boolean) cantUseStack.invoke(player, stack);
                         } catch (Throwable ignored) {
                             lvlOK = true;
                         }
                     } else {
                         lvlOK = true;
                     }
-                    lvlOK = lvlOK && ((Player) entity).getLevel() >= getXPLevelRequirement((Player) entity, stack);
-                }
-                for (String line : list) {
-                    String lore = ChatColor.stripColor(line);
-                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
-                    if (lvlOK && lore.contains(baubleName) && lore.contains(type) && lore.contains(format) && matcher.find()) {
-                        String left = matcher.group();
-                        min += Double.parseDouble(left);
-                        if (matcher.find()) {
-                            String right = matcher.group();
-                            max += Double.parseDouble(right);
-                        } else {
-                            max += Double.parseDouble(left);
+                    lvlOK = lvlOK && (player.getLevel() >= getXPLevelRequirement(player, stack));
+
+                    if (lvlOK) {
+                        boolean valid = false;
+                        for (String line : list) {
+                            line = ChatColor.stripColor(line);
+                            if (line.contains(baubleName) && line.contains(type)) {
+                                valid = true;
+                            }
+                            Matcher matcher = NUMBER_PATTERN.matcher(line);
+                            if (valid && line.contains(format) && matcher.find()) {
+                                String left = matcher.group();
+                                min += Double.parseDouble(left);
+                                if (matcher.find()) {
+                                    String right = matcher.group();
+                                    max += Double.parseDouble(right);
+                                } else {
+                                    max += Double.parseDouble(left);
+                                }
+                                break;
+                            }
                         }
                     }
                 }
+                minValue += min;
+                maxValue += max;
             }
-            minValue += min;
-            maxValue += max;
         }
         return minValue + "-" + maxValue;
     }
@@ -519,10 +536,9 @@ public class GearStats implements Listener {
         this.xplevel = ItemLoreStats.plugin.getConfig().getString("bonusStats.xpLevel.name").replaceAll(" ", "");
         byte itemXPLevel = 0;
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-            List itemLore = item.getItemMeta().getLore();
+            List<String> itemLore = item.getItemMeta().getLore();
 
-            for (Object o : itemLore) {
-                String line = (String) o;
+            for (String line : itemLore) {
                 String lore = ChatColor.stripColor(line);
                 if (lore.replaceAll(this.languageRegex, "").matches(this.xplevel)) {
                     return Integer.parseInt(lore.split("\\+")[0].replaceAll("[^0-9.+-]", ""));
@@ -537,10 +553,9 @@ public class GearStats implements Listener {
         this.xplevel = ItemLoreStats.plugin.getConfig().getString("bonusStats.xpLevel.name").replaceAll(" ", "");
         byte itemInHandValue = 0;
         if (itemOnPickup != null && itemOnPickup.hasItemMeta() && itemOnPickup.getItemMeta().hasLore()) {
-            List itemLore = itemOnPickup.getItemMeta().getLore();
+            List<String> itemLore = itemOnPickup.getItemMeta().getLore();
 
-            for (Object o : itemLore) {
-                String line = (String) o;
+            for (String line : itemLore) {
                 String lore = ChatColor.stripColor(line);
                 if (lore.replaceAll(this.languageRegex, "").matches(this.xplevel)) {
                     return Integer.parseInt(lore.split("\\+")[0].replaceAll("[^0-9.+-]", ""));

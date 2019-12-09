@@ -48,15 +48,11 @@ public class HealPotions implements Listener {
     @EventHandler
     public void useSplashHealPotion(PotionSplashEvent event) {
         if (ItemLoreStats.plugin.getBarAPI() != null) {
-            Iterator var3 = event.getPotion().getEffects().iterator();
 
-            while (var3.hasNext()) {
-                PotionEffect e = (PotionEffect) var3.next();
+            for (PotionEffect e : event.getPotion().getEffects()) {
                 if (e.getType().equals(PotionEffectType.HEAL)) {
-                    Iterator var5 = event.getAffectedEntities().iterator();
 
-                    while (var5.hasNext()) {
-                        LivingEntity entity = (LivingEntity) var5.next();
+                    for (LivingEntity entity : event.getAffectedEntities()) {
                         if (entity instanceof Player) {
                             double playerFinal;
                             if (event.getPotion().getItem().getDurability() == 16453) {
