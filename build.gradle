@@ -7,8 +7,8 @@ archivesBaseName = "ItemLoreStats"
 sourceCompatibility = targetCompatibility = 1.8
 
 dependencies {
-    compile 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
-    compile files('lib/spigot-nms-1.7.10.jar')
+    //compile 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
+    compile files('lib/spigot-1.7.10.jar')
     compile files('lib/ArmorWeight-0.3.16.jar')
     compile files('lib/BarAPI-3.5.jar')
     compile files('lib/BossBarAPI-2.4.1.jar')
@@ -24,4 +24,9 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+jar{
+    includeEmptyDirs false
+    exclude 'org/bukkit/'
 }

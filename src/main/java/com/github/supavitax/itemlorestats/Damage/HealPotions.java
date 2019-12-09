@@ -10,8 +10,6 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Iterator;
-
 public class HealPotions implements Listener {
     @EventHandler
     public void drinkHealPotion(PlayerItemConsumeEvent event) {

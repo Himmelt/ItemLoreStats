@@ -60,7 +60,7 @@ messages:
 vanilla:
   includeDamage: true
   includeArmour: false
-  
+
 # combatMessages - This allows full control of all of the combat messages. This offers individual messages for the attacker and a message for the victim. Outgoing is for the attacker and incoming is for the victim.
 combatMessages:
   outgoing:
@@ -93,51 +93,51 @@ combatMessages:
 # prefix - These are the random prefixes used to grab a prefix for a specified item in the mob configs when it when it drops.
 prefix:
   random:
-   - 'Angelic'
-   - 'Brutal'
-   - 'Cursed'
-   - 'Empowered'
-   - 'Fine'
-   - 'Gleaming'
-   - 'Heavy'
-   - 'Perfect'
-   - 'Sharp'
-   - 'Standard'
-   - 'Worn'
-   - 'Light'
-   - 'Smooth'
-   - 'Slick'
-   - 'Hard'
-   - 'Thick'
-   - 'Grim'
- 
+    - 'Angelic'
+    - 'Brutal'
+    - 'Cursed'
+    - 'Empowered'
+    - 'Fine'
+    - 'Gleaming'
+    - 'Heavy'
+    - 'Perfect'
+    - 'Sharp'
+    - 'Standard'
+    - 'Worn'
+    - 'Light'
+    - 'Smooth'
+    - 'Slick'
+    - 'Hard'
+    - 'Thick'
+    - 'Grim'
+
 # suffix - These are the random suffixes used to grab a suffix for a specified item in the mob configs when it when it drops.
 suffix:
   random:
-   - 'of Chaos'
-   - 'of Destruction'
-   - 'of Murder'
-   - 'of Power'
-   - 'of Silence'
-   - 'of Sorrows'
-   - 'of Terror'
-   - 'of Thunder'
-   - 'of the Ancients'
-   - 'of the UnderWorld'
-   - 'of the Wilderness'
- 
+    - 'of Chaos'
+    - 'of Destruction'
+    - 'of Murder'
+    - 'of Power'
+    - 'of Silence'
+    - 'of Sorrows'
+    - 'of Terror'
+    - 'of Thunder'
+    - 'of the Ancients'
+    - 'of the UnderWorld'
+    - 'of the Wilderness'
+
 # randomLore - If addRandomLore is set to true this will grab a random lore from the section below to the item that drops (These are not stats).
 randomLore:
   tools:
-    bow: 
+    bow:
       - '&cCrafted with the essence of the Ancient Tree.'
       - '&aThe corruption has weakened this {item}.'
       - '&9This lightweight {item} is easy to carry.'
-    stick: 
+    stick:
       - '&cCrafted with the essence of the Ancient Tree.'
       - '&aThe corruption has weakened this {item}.'
       - '&9This lightweight {item} is easy to carry.'
-    blazeRod: 
+    blazeRod:
       - '&cCrafted with the essence of the Eternal Flame.'
       - '&aThe corruption has weakened this {item}.'
       - '&9This lightweight {item} is easy to carry.'
@@ -185,7 +185,7 @@ randomLore:
       - '&9This {item} is very strong.'
     mobHead:
       - '&cDecapitated head.'
-      
+
 # 
 weight:
   enabled: true
@@ -194,7 +194,7 @@ weight:
     gold:
     iron:
     diamond:
-    
+
 
 # The section below offers full control over all of the stats within Item Lore Stats.
 primaryStats:
@@ -415,7 +415,7 @@ secondaryStats:
       colour: "&6"
       list:
         - "of Swiftness"
-        
+
 bonusStats:
   pvpDamage:
     name: "PvP Dmg Modifier"
@@ -458,13 +458,13 @@ bonusStats:
     name: "Durability"
     colour: "&8"
     sellValuePerStat: 0
-# Changing this splitter after the plugin has generated any items will remove them from the durability system and make them invincible. Only change this if you intend on deleting every item or you're starting fresh.
+    # Changing this splitter after the plugin has generated any items will remove them from the durability system and make them invincible. Only change this if you intend on deleting every item or you're starting fresh.
     splitter: "/"
   setBonus:
     name: "Set Bonus"
     colour: "&6"
     sellValuePerStat: 0
-    #sets:
+      #sets:
       #- "Path of the Windwalker"
       ##Speed
       ##Dodge
@@ -473,13 +473,13 @@ bonusStats:
       ##Poison
       #- "Armour of the Champion"
       ##Health
-      ##Block
+    ##Block
   class:
     name: "Class"
     colour: "&3"
     sellValuePerStat: 0
     separator: ","
-    list: 
+    list:
       - '&4Warrior'
       - '&bMage'
       - '&6Thief'
@@ -489,14 +489,14 @@ bonusStats:
     currency:
       name: "Coins"
       colour: "&f"
-      
+
 heroesOnlyStats:
   heroesMaxMana:
     enabled: true
     name: "Mana"
     colour: "&3"
     sellValuePerStat: 2
-    
+
 #skillAPIOnlyStats:
 #  skillAPIMaxMana:
 #    enabled: true
@@ -535,13 +535,13 @@ bossBar:
     name: "Exp"
     colour: "&b"
     splitter: "/"
-  
+
 # upgradeStatsOnLevelChange - This allows the players armour/item in hand to upgrade by increasing the values of the stats on the item when the player levels. There is a cap that can be added to prevent items from continuously upgrading.
 upgradeStatsOnLevelChange:
   enabled: true
-# The amount of times an item can upgrade.
+  # The amount of times an item can upgrade.
   upgradeCap: 5
-# The values below CANNOT be less than 0.1. These are the amount each stat will upgrade by when the item upgrades.
+  # The values below CANNOT be less than 0.1. These are the amount each stat will upgrade by when the item upgrades.
   stats:
     armour: 0.1
     dodge: 0.1
@@ -610,7 +610,7 @@ environmentalDamage:
     damage: 2
     durabilityLost: 4
 
-# damage - DO NOT CHANGE THIS!
+  # damage - DO NOT CHANGE THIS!
   damage:
     durabilityLost: 1
 
@@ -624,19 +624,19 @@ potions:
 # rarity - Using the drop percentages from the SavedMob configs ILS will choose the correct title format for that drop. If an item has a 7% drop chance then using the values below it will fall under the "Uncommon" section.
 rarity:
   15:
-   #Common
+    #Common
     colour: "&l&f"
   9:
-   #Uncommon
+    #Uncommon
     colour: "&l&2"
   5:
-   #Rare
+    #Rare
     colour: "&l&3"
   3:
-   #Epic
+    #Epic
     colour: "&l&5"
   1:
-   #Legendary
+    #Legendary
     colour: "&l&6"
 
 # additionalStatsPerLevel - These are bonus stats that are added to the player based on their level. (level x additionalStatValue = additionalStat)
@@ -670,7 +670,7 @@ defaultCraftedDurability:
     gold: '&72200-2500'
     diamond: '&72400-3200'
     mobHead: '&71600-2550'
-    
+
 # defaultCraftedArmour - This will add a random amount of the Armour stat from the specified range to each piece of armour crafted.
 defaultCraftedArmour:
   enableArmourOnCrafted: true
@@ -736,7 +736,7 @@ durabilityAddedOnEachRepair:
       chainmail: 290
       gold: 300
       diamond: 400
-      
+
 # materialSellValue - When an item is generated it will add a specific amount to the sell value(if enabled) based on the type of item.
 materialSellValue:
   tools:
@@ -745,7 +745,7 @@ materialSellValue:
     flintAndSteel: 10
     fishingRod: 10
     carrotStick: 15
-    wood: 
+    wood:
       sword: 35
       axe: 25
       hoe: 15
@@ -822,7 +822,7 @@ npcDropEquippedGear:
     leggings: 100
     boots: 100
     itemInHand: 100
-    
+
 # materials - This is to add support for custom items from mods. DO NOT TOUCH THIS UNLESS YOU UNDERSTAND WHAT YOU'RE DOING.
 materials:
   tools:
@@ -854,7 +854,7 @@ materials:
     - STONE_SPADE
     - IRON_SPADE
     - GOLD_SPADE
-    - DIAMOND_SPADE  
+    - DIAMOND_SPADE
     - WOOD_HOE
     - STONE_HOE
     - IRON_HOE
@@ -996,64 +996,64 @@ materials:
       - X20411:HAZMAT_BOOTS
       - X25030:POWER_ARMOUR_BOOTS
   potions:
-  - 8193
-  - 8194
-  - 8196
-  - 8201
-  - 8225
-  - 8226
-  - 8227
-  - 8228
-  - 8229
-  - 8230
-  - 8232
-  - 8233
-  - 8234
-  - 8235
-  - 8236
-  - 8237
-  - 8238
-  - 8257
-  - 8258
-  - 8259
-  - 8260
-  - 8261
-  - 8262
-  - 8264
-  - 8265
-  - 8266
-  - 8267
-  - 8268
-  - 8269
-  - 8270
-  - 16385
-  - 16386
-  - 16388
-  - 16393
-  - 16417
-  - 16418
-  - 16419
-  - 16421
-  - 16422
-  - 16424
-  - 16425
-  - 16426
-  - 16427
-  - 16428
-  - 16429
-  - 16430
-  - 16449
-  - 16450
-  - 16451
-  - 16452
-  - 16453
-  - 16454
-  - 16456
-  - 16457
-  - 16459
-  - 16460
-  - 16461
-  - 16462
+    - 8193
+    - 8194
+    - 8196
+    - 8201
+    - 8225
+    - 8226
+    - 8227
+    - 8228
+    - 8229
+    - 8230
+    - 8232
+    - 8233
+    - 8234
+    - 8235
+    - 8236
+    - 8237
+    - 8238
+    - 8257
+    - 8258
+    - 8259
+    - 8260
+    - 8261
+    - 8262
+    - 8264
+    - 8265
+    - 8266
+    - 8267
+    - 8268
+    - 8269
+    - 8270
+    - 16385
+    - 16386
+    - 16388
+    - 16393
+    - 16417
+    - 16418
+    - 16419
+    - 16421
+    - 16422
+    - 16424
+    - 16425
+    - 16426
+    - 16427
+    - 16428
+    - 16429
+    - 16430
+    - 16449
+    - 16450
+    - 16451
+    - 16452
+    - 16453
+    - 16454
+    - 16456
+    - 16457
+    - 16459
+    - 16460
+    - 16461
+    - 16462
 
 npcModifier:
   worldNEW:

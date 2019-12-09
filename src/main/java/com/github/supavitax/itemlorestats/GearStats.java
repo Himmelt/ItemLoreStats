@@ -600,7 +600,7 @@ public class GearStats implements Listener {
         return storeLoreValues;
     }
 
-    public ArrayList getClass(ItemStack item) {
+    public ArrayList<String> getClass(ItemStack item) {
         this.className = ItemLoreStats.plugin.getConfig().getString("bonusStats.class.name").replaceAll(" ", "");
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
             List<String> itemLore = item.getItemMeta().getLore();
@@ -619,10 +619,8 @@ public class GearStats implements Listener {
         this.setbonus = ItemLoreStats.plugin.getConfig().getString("bonusStats.setBonus.name").replaceAll(" ", "");
         String weaponKey = "";
         if (itemstack != null && itemstack.hasItemMeta() && ItemLoreStats.plugin.isTool(itemstack.getType()) && itemstack.getItemMeta().hasLore()) {
-            List itemInHandLore = itemstack.getItemMeta().getLore();
-
-            for (Object o : itemInHandLore) {
-                String line = (String) o;
+            List<String> itemInHandLore = itemstack.getItemMeta().getLore();
+            for (String line : itemInHandLore) {
                 if (line.contains(this.setbonus)) {
                     return this.util_Colours.extractAndReplaceTooltipColour(line.substring(0, 6));
                 }
@@ -636,10 +634,9 @@ public class GearStats implements Listener {
         this.soulbound = ItemLoreStats.plugin.getConfig().getString("bonusStats.soulbound.name");
         String storeLoreValues = "";
         if (itemstack != null && itemstack.hasItemMeta() && itemstack.getItemMeta().hasLore()) {
-            List itemLore = itemstack.getItemMeta().getLore();
+            List<String> itemLore = itemstack.getItemMeta().getLore();
 
-            for (Object o : itemLore) {
-                String line = (String) o;
+            for (String line : itemLore) {
                 if (ChatColor.stripColor(line).startsWith(this.soulbound)) {
                     return ChatColor.stripColor(line).substring(this.soulbound.length()).trim();
                 }
@@ -653,10 +650,9 @@ public class GearStats implements Listener {
         this.className = ItemLoreStats.plugin.getConfig().getString("bonusStats.class.name").replaceAll(" ", "");
         String storeLoreValues = "";
         if (itemstack != null && itemstack.hasItemMeta() && itemstack.getItemMeta().hasLore()) {
-            List itemLore = itemstack.getItemMeta().getLore();
+            List<String> itemLore = itemstack.getItemMeta().getLore();
 
-            for (Object o : itemLore) {
-                String line = (String) o;
+            for (String line : itemLore) {
                 if (ChatColor.stripColor(line).startsWith(this.className + ": ")) {
                     return ChatColor.stripColor(line).substring((this.className + ": ").length()).trim();
                 }
@@ -670,10 +666,9 @@ public class GearStats implements Listener {
         this.xplevel = ItemLoreStats.plugin.getConfig().getString("bonusStats.xpLevel.name").replaceAll(" ", "");
         boolean storeLoreValues = false;
         if (itemstack != null && itemstack.hasItemMeta() && itemstack.getItemMeta().hasLore()) {
-            List itemInHandLore = itemstack.getItemMeta().getLore();
+            List<String> itemInHandLore = itemstack.getItemMeta().getLore();
 
-            for (Object o : itemInHandLore) {
-                String line = (String) o;
+            for (String line : itemInHandLore) {
                 if (ChatColor.stripColor(line).startsWith(this.xplevel + ": ")) {
                     String xpLevelValue = ChatColor.stripColor(line).substring((this.xplevel + ": ").length()).trim();
 
@@ -1044,5 +1039,4 @@ public class GearStats implements Listener {
 
         return 0;
     }
-
 }
