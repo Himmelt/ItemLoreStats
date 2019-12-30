@@ -132,8 +132,8 @@ public class BaubleManager implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         Inventory inv = PLAYER_BAUBLES.remove(uuid);
+        NBTTagList list = new NBTTagList();
         if (inv != null) {
-            NBTTagList list = new NBTTagList();
             for (byte i = 0; i < inv.getSize(); i++) {
                 ItemStack stack = inv.getItem(i);
                 if (stack != null && stack.getType() != Material.AIR) {
@@ -143,19 +143,17 @@ public class BaubleManager implements Listener {
                     list.add(item);
                 }
             }
-            if (list.size() > 0) {
-                NBTTagCompound comp = new NBTTagCompound();
-                comp.set("items", list);
-                try {
-                    Path dataFile = baublesPath.resolve(uuid.toString() + ".dat");
-                    if (Files.notExists(dataFile)) {
-                        Files.createFile(dataFile);
-                    }
-                    NBTCompressedStreamTools.a(comp, new FileOutputStream(dataFile.toFile()));
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
+        }
+        NBTTagCompound comp = new NBTTagCompound();
+        comp.set("items", list);
+        try {
+            Path dataFile = baublesPath.resolve(uuid.toString() + ".dat");
+            if (Files.notExists(dataFile)) {
+                Files.createFile(dataFile);
             }
+            NBTCompressedStreamTools.a(comp, new FileOutputStream(dataFile.toFile()));
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 

@@ -709,16 +709,25 @@ public class GearStats implements Listener {
     /**************************************************************************/
 
     public double getArmourItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.armour = ItemLoreStats.plugin.getConfig().getString("primaryStats.armour.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.armour));
     }
 
     public double getDodgeItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.dodge = ItemLoreStats.plugin.getConfig().getString("secondaryStats.dodge.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.dodge));
     }
 
     public double getBlockItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.block = ItemLoreStats.plugin.getConfig().getString("secondaryStats.block.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.block));
     }
@@ -749,91 +758,145 @@ public class GearStats implements Listener {
     }
 
     public double getCritChanceItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.critChance = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critChance.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.critChance));
     }
 
     public double getCritDamageItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.critDamage = ItemLoreStats.plugin.getConfig().getString("secondaryStats.critDamage.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.critDamage));
     }
 
     public double getHealthItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.health = ItemLoreStats.plugin.getConfig().getString("primaryStats.health.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.health));
     }
 
     public double getHealthRegenItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.healthRegen = ItemLoreStats.plugin.getConfig().getString("primaryStats.healthRegen.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.healthRegen));
     }
 
     public double getLifeStealItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.lifeSteal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeSteal.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.lifeSteal));
     }
 
     public double getLifeStealHealItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.lifeStealHeal = ItemLoreStats.plugin.getConfig().getString("secondaryStats.lifeStealHeal.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.lifeStealHeal));
     }
 
     public double getReflectItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.reflect = ItemLoreStats.plugin.getConfig().getString("secondaryStats.reflect.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.reflect));
     }
 
     public double getIceItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.ice = ItemLoreStats.plugin.getConfig().getString("secondaryStats.ice.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.ice));
     }
 
     public double getFireItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.fire = ItemLoreStats.plugin.getConfig().getString("secondaryStats.fire.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.fire));
     }
 
     public double getPoisonItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.poison = ItemLoreStats.plugin.getConfig().getString("secondaryStats.poison.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.poison));
     }
 
     public double getWitherItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.wither = ItemLoreStats.plugin.getConfig().getString("secondaryStats.wither.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.wither));
     }
 
     public double getHarmingItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.harming = ItemLoreStats.plugin.getConfig().getString("secondaryStats.harming.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.harming));
     }
 
     public double getBlindItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.blind = ItemLoreStats.plugin.getConfig().getString("secondaryStats.blind.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.blind));
     }
 
     public double getMovementSpeedItemInHand(Player player) {
+        if (player == null) {
+            return 0.0D;
+        }
         this.movementspeed = ItemLoreStats.plugin.getConfig().getString("secondaryStats.movementSpeed.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(player.getEquipment().getItemInHand(), this.movementspeed));
     }
 
     public double getXPMultiplierItemInHand(Player player) {
+        if (player == null) {
+            return 0.0D;
+        }
         this.xpmultiplier = ItemLoreStats.plugin.getConfig().getString("bonusStats.xpMultiplier.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(player.getEquipment().getItemInHand(), this.xpmultiplier));
     }
 
     public double getPvPDamageModifierItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.pvpdamage = ItemLoreStats.plugin.getConfig().getString("bonusStats.pvpDamage.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.pvpdamage));
     }
 
     public double getPvEDamageModifierItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         this.pvedamage = ItemLoreStats.plugin.getConfig().getString("bonusStats.pveDamage.name").replaceAll(" ", "");
         return this.util_Format.format(this.getHandDouble(entity.getEquipment().getItemInHand(), this.pvedamage));
     }
 
     public int getSellValueItemInHand(Player player) {
+        if (player == null) {
+            return 0;
+        }
         this.sellValueName = ItemLoreStats.plugin.getConfig().getString("bonusStats.sellValue.name").replaceAll(" ", "");
         this.currencyName = ItemLoreStats.plugin.getConfig().getString("bonusStats.sellValue.currency.name").replaceAll(" ", "");
         int value = 0;
@@ -851,6 +914,9 @@ public class GearStats implements Listener {
     }
 
     public double get_MaxManaItemInHand(LivingEntity entity) {
+        if (entity == null) {
+            return 0.0D;
+        }
         String mana = null;
         if (ItemLoreStats.plugin.getHeroes() != null) {
             this.heroes_MaxMana = ItemLoreStats.plugin.getConfig().getString("heroesOnlyStats.heroesMaxMana.name").replaceAll(" ", "");
