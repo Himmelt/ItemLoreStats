@@ -64,7 +64,6 @@ public class GearStats implements Listener {
     String majorAOEHeal = null;
     String heroes_MaxMana = null;
     String skillAPI_MaxMana = null;
-    String languageRegex = "[^a-zA-Z一-龥\u0080-ÿĀ-ſƀ-ɏ가-힣Ѐ-ҁ]";
 
     private static final Method cantUseStack;
     private static final Pattern NUMBER_PATTERN = Pattern.compile("[+]?\\d+(\\.\\d+)?");
@@ -106,8 +105,11 @@ public class GearStats implements Listener {
                 }
                 for (String line : list) {
                     String lore = ChatColor.stripColor(line);
-                    if (lvlOK && lore.replaceAll(this.languageRegex, "").matches(format)) {
-                        temp += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                    if (lvlOK && lore.contains(format)) {
+                        Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                        if (matcher.find()) {
+                            temp += Double.parseDouble(matcher.group());
+                        }
                     }
                 }
             }
@@ -182,13 +184,16 @@ public class GearStats implements Listener {
                 }
                 for (String line : list) {
                     String lore = ChatColor.stripColor(line);
-                    if (lvlOK && lore.replaceAll(this.languageRegex, "").matches(format)) {
-                        if (lore.contains("-")) {
-                            min += Double.parseDouble(lore.split("-")[0].replaceAll("[^0-9.+-]", ""));
-                            max += Double.parseDouble(lore.split("-")[1].replaceAll("[^0-9.+-]", ""));
-                        } else {
-                            min += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
-                            max += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                    if (lvlOK && lore.contains(format)) {
+                        Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                        if (matcher.find()) {
+                            double left = Double.parseDouble(matcher.group());
+                            min += left;
+                            if (matcher.find()) {
+                                max += Double.parseDouble(matcher.group());
+                            } else {
+                                max += left;
+                            }
                         }
                     }
                 }
@@ -373,8 +378,11 @@ public class GearStats implements Listener {
             List<String> list = stack.getItemMeta().getLore();
             for (String line : list) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(format)) {
-                    value += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                if (lore.contains(format)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    if (matcher.find()) {
+                        value += Double.parseDouble(matcher.group());
+                    }
                 }
             }
         }
@@ -404,13 +412,16 @@ public class GearStats implements Listener {
             List<String> itemLore = item.getItemMeta().getLore();
             for (String line : itemLore) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(this.damage)) {
-                    if (lore.contains("-")) {
-                        damageMinValue += Double.parseDouble(lore.split("-")[0].replaceAll("[^0-9.+-]", ""));
-                        damageMaxValue += Double.parseDouble(lore.split("-")[1].replaceAll("[^0-9.+-]", ""));
-                    } else {
-                        damageMinValue += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
-                        damageMaxValue += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                if (lore.contains(this.damage)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    if (matcher.find()) {
+                        double left = Double.parseDouble(matcher.group());
+                        damageMinValue += left;
+                        if (matcher.find()) {
+                            damageMaxValue += Double.parseDouble(matcher.group());
+                        } else {
+                            damageMaxValue += left;
+                        }
                     }
                 }
             }
@@ -511,8 +522,11 @@ public class GearStats implements Listener {
             List<String> list = item.getItemMeta().getLore();
             for (String line : list) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(this.sellValueName + this.currencyName)) {
-                    value += Integer.parseInt(lore.replaceAll("[^0-9.+-]", ""));
+                if (lore.contains(this.sellValueName) && lore.contains(this.currencyName)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    if (matcher.find()) {
+                        value += Double.parseDouble(matcher.group());
+                    }
                 }
             }
         }
@@ -540,8 +554,13 @@ public class GearStats implements Listener {
 
             for (String line : itemLore) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(this.xplevel)) {
-                    return Integer.parseInt(lore.split("\\+")[0].replaceAll("[^0-9.+-]", ""));
+                if (lore.contains(this.xplevel)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    if (matcher.find()) {
+                        return (int) Double.parseDouble(matcher.group());
+                    } else {
+                        return 0;
+                    }
                 }
             }
         }
@@ -557,8 +576,13 @@ public class GearStats implements Listener {
 
             for (String line : itemLore) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(this.xplevel)) {
-                    return Integer.parseInt(lore.split("\\+")[0].replaceAll("[^0-9.+-]", ""));
+                if (lore.contains(this.xplevel)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    if (matcher.find()) {
+                        return (int) Double.parseDouble(matcher.group());
+                    } else {
+                        return 0;
+                    }
                 }
             }
         }
@@ -570,10 +594,9 @@ public class GearStats implements Listener {
         this.soulbound = ItemLoreStats.plugin.getConfig().getString("bonusStats.soulbound.name");
         String storeLoreValues = "";
         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-            List itemLore = item.getItemMeta().getLore();
+            List<String> itemLore = item.getItemMeta().getLore();
 
-            for (Object o : itemLore) {
-                String line = (String) o;
+            for (String line : itemLore) {
                 if (ChatColor.stripColor(line).startsWith(this.soulbound)) {
                     return ChatColor.stripColor(line).substring(this.soulbound.length()).trim();
                 }
@@ -587,10 +610,9 @@ public class GearStats implements Listener {
         this.soulbound = ItemLoreStats.plugin.getConfig().getString("bonusStats.soulbound.name");
         String storeLoreValues = "";
         if (itemOnPickup != null && itemOnPickup.hasItemMeta() && itemOnPickup.getItemMeta().hasLore()) {
-            List itemLore = itemOnPickup.getItemMeta().getLore();
+            List<String> itemLore = itemOnPickup.getItemMeta().getLore();
 
-            for (Object o : itemLore) {
-                String line = (String) o;
+            for (String line : itemLore) {
                 if (ChatColor.stripColor(line).startsWith(this.soulbound)) {
                     return ChatColor.stripColor(line).substring(this.soulbound.length()).trim();
                 }
@@ -742,13 +764,16 @@ public class GearStats implements Listener {
 
             for (String line : itemLore) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(this.damage)) {
-                    if (lore.contains("-")) {
-                        damageMinValue += Double.parseDouble(lore.split("-")[0].replaceAll("[^0-9.+-]", ""));
-                        damageMaxValue += Double.parseDouble(lore.split("-")[1].replaceAll("[^0-9.+-]", ""));
-                    } else {
-                        damageMinValue += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
-                        damageMaxValue += Double.parseDouble(lore.replaceAll("[^0-9.+-]", ""));
+                if (lore.contains(this.damage)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    if (matcher.find()) {
+                        double left = Double.parseDouble(matcher.group());
+                        damageMinValue += left;
+                        if (matcher.find()) {
+                            damageMaxValue += Double.parseDouble(matcher.group());
+                        } else {
+                            damageMaxValue += left;
+                        }
                     }
                 }
             }
@@ -905,8 +930,11 @@ public class GearStats implements Listener {
             List<String> list = stack.getItemMeta().getLore();
             for (String line : list) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(this.sellValueName + this.currencyName)) {
-                    value += Integer.parseInt(lore.replaceAll("[^0-9.+-]", ""));
+                if (lore.contains(this.sellValueName) && lore.contains(this.currencyName)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    if (matcher.find()) {
+                        value += Double.parseDouble(matcher.group());
+                    }
                 }
             }
         }
@@ -937,8 +965,13 @@ public class GearStats implements Listener {
 
             for (String line : itemLore) {
                 String lore = ChatColor.stripColor(line);
-                if (lore.replaceAll(this.languageRegex, "").matches(this.weaponspeed)) {
-                    builder.append(Integer.parseInt(lore.replaceAll("Very Slow", "").replaceAll("Slow", "").replaceAll("Normal", "").replaceAll("Fast", "").replaceAll("Very Fast", "").replaceAll("[^0-9.+-]", "")));
+                if (lore.contains(this.weaponspeed)) {
+                    Matcher matcher = NUMBER_PATTERN.matcher(lore);
+                    int speed = 0;
+                    if (matcher.find()) {
+                        speed = (int) Double.parseDouble(matcher.group());
+                    }
+                    builder.append(speed);
                 }
             }
         }
@@ -1102,7 +1135,6 @@ public class GearStats implements Listener {
                 }
             }
         }
-
         return 0;
     }
 }
